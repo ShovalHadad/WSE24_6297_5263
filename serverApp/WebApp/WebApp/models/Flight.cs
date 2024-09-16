@@ -7,7 +7,7 @@ namespace WebApp.Models
     {
         public int FlightId { get; set; } // flight number
         public int PlaneId { get; set; } // plan number
-        //public Plane? Plane { get; set; }
+        public Plane? Plane { get; set; } // Navigation to plane
         public string DepartureLocation { get; set; } = string.Empty; // Departure Location /\
         public string ArrivalLocation { get; set; } = string.Empty; // Arrival Location  \/
         public DateTime DepartureDateTime { get; set; }  // Departure Date
