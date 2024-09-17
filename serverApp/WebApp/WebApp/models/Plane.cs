@@ -1,7 +1,10 @@
-﻿namespace WebApp.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace WebApp.Models
 {
     public class Plane
     {
+        [Key]
         public int PlaneId { get; set; }  // plane number
         public string Name { get; set; } = string.Empty; // plane name
         public int Year { get; set; } // Year of manufacture

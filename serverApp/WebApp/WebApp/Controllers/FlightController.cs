@@ -29,7 +29,7 @@ namespace WebApp.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Flight>> GetFlight(int id)
+        public async Task<ActionResult<Flight>> GetFlight(int id) //GetFlight([FromeRoute] int id) - optional
         {
             var flight = await _context.Flights.FindAsync(id);
             if (flight == null)
