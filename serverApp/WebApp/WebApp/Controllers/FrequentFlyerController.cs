@@ -4,7 +4,6 @@ using WebApp.Data;
 using WebApp.Models;
 
 
-
 namespace WebApp.Controllers
 {
     [Route("api/[controller]")]

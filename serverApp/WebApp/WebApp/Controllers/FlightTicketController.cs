@@ -59,7 +59,6 @@ namespace WebApp.Controllers
             {
                 return BadRequest();
             }
-
             _context.Entry(flightTicket).State = EntityState.Modified;
 
             try

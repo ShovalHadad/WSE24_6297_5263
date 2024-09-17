@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using WebApp.Models;
 
+
 namespace WebApp.models
 {
     public class FlightTicket
