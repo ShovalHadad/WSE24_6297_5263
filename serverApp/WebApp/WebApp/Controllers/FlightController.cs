@@ -12,22 +12,30 @@ namespace WebApp.Controllers
     [ApiController]
     public class FlightController : ControllerBase
     {
-        private readonly ApplicationDBContext _context;
-
+        private readonly ApplicationDBContext _context;  // _context = list of flights
+        // constractor 
         public FlightController(ApplicationDBContext context)
         {
             _context = context;
         }
 
-
-
-        //GET - read
+        /// <summary>
+        /// GET ALL - read all
+        /// returns the flights from _context in a list
+        /// </summary>
+        /// <returns> list of flights </returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Flight>>> GetFlights()
         {
             return await _context.Flights.ToListAsync();
         }
 
+        /// <summary>
+        /// GET - read
+        /// returns a flight from _context that match the id
+        /// </summary>
+        /// <param name="id"> id of wanted flight </param>
+        /// <returns> flight </returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<Flight>> GetFlight(int id) //GetFlight([FromeRoute] int id) - optional
         {
@@ -38,19 +46,33 @@ namespace WebApp.Controllers
             }
             return flight;
         }
-        
 
-        //POST - create
+        /// <summary>
+        /// POST - create
+        /// creates a new flight and add to _context
+        /// </summary>
+        /// <param name="flight"> the new flight </param>
+        /// <returns> result of CreatedAtAction </returns>
         [HttpPost]
         public async Task<ActionResult<Flight>> CreateFlight(Flight flight)
         {
+            // set the number of sites in the plane
+            var plane = await _context.Planes.FindAsync(flight.PlaneId);
+            flight.NumOfTakenSeats1 = plane?.NumOfSeats1;
+            flight.NumOfTakenSeats2 = plane?.NumOfSeats2;
+            flight.NumOfTakenSeats3 = plane?.NumOfSeats3;
             _context.Flights.Add(flight);
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(GetFlight), new { id = flight.FlightId }, flight);
         }
 
-
-        //PUT- update
+        /// <summary>
+        /// PUT- update
+        /// updates the flight that match the id with the updatedFlight
+        /// </summary>
+        /// <param name="id"> the id fo the flight we need to update </param>
+        /// <param name="updatedFlight"> the flight with the updated details </param>
+        /// <returns> NoContent if update was successful </returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateFlight(int id, Flight updatedFlight)
         {
@@ -61,13 +83,15 @@ namespace WebApp.Controllers
             }
 
             // Update the flight fields
+            flight.PlaneId = updatedFlight.PlaneId;
+            var plane = await _context.Planes.FindAsync(flight.PlaneId);
             flight.DepartureLocation = updatedFlight.DepartureLocation;
             flight.ArrivalLocation = updatedFlight.ArrivalLocation;
             flight.DepartureDateTime = updatedFlight.DepartureDateTime;
             flight.EstimatedArrivalDateTime = updatedFlight.EstimatedArrivalDateTime;
-            flight.NumOfTakenSeats1 = updatedFlight.NumOfTakenSeats1;
-            flight.NumOfTakenSeats2 = updatedFlight.NumOfTakenSeats2;
-            flight.NumOfTakenSeats3 = updatedFlight.NumOfTakenSeats3;
+            flight.NumOfTakenSeats1 = plane?.NumOfSeats1;
+            flight.NumOfTakenSeats2 = plane?.NumOfSeats2;
+            flight.NumOfTakenSeats3 = plane?.NumOfSeats3;
 
             // Save changes to the database
             try
@@ -89,45 +113,12 @@ namespace WebApp.Controllers
             return NoContent(); // Return 204 No Content on successful update
         }
 
-        private bool FlightExists(int id)
-        {
-            return _context.Flights.Any(e => e.FlightId == id);
-        }
-
-
-        /* another option->
-         public async Task<IActionResult> PutFlight(int id, Flight flight)
-        {
-            if (id != flight.FlightId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(flight).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!FlightExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-         */
-
-
-
-        //DELETE
+        /// <summary>
+        /// DELETE - delete
+        /// deletes the flight that match the id
+        /// </summary>
+        /// <param name="id"> id of the flight we need to delete </param>
+        /// <returns> NoContent if delete was successful </returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteFlight(int id)
         {
@@ -143,6 +134,11 @@ namespace WebApp.Controllers
 
             return NoContent(); // Return 204 No Content after successful deletion
         }
-
+        
+        // private function for Update function
+        private bool FlightExists(int id)
+        {
+            return _context.Flights.Any(e => e.FlightId == id);
+        }
     }
 }

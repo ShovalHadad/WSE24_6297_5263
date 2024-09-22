@@ -11,26 +11,34 @@ namespace WebApp.Controllers
     public class FlightTicketController : ControllerBase
     {
 
-        private readonly ApplicationDBContext _context;
-
+        private readonly ApplicationDBContext _context; // _context = list of FlightTickets
+        // constractor
         public FlightTicketController(ApplicationDBContext context)
         {
             _context = context;
         }
 
-
-        // GET: api/FlightTicket
+        /// <summary>
+        /// GET ALL - read all
+        /// returns the FlightTickets from _context in a list
+        /// </summary>
+        /// <returns> list of FlightTickets </returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<FlightTicket>>> GetFlightTickets()
         {
-            return await _context.FlightTickets.Include(ft => ft.Flight).ToListAsync();
+            return await _context.FlightTickets.ToListAsync();
         }
 
-        // GET: api/FlightTicket/5
+        /// <summary>
+        /// GET - read
+        /// returns a FlightTicket from _context that match the id
+        /// </summary>
+        /// <param name="id"> id of wanted FlightTicket </param>
+        /// <returns> FlightTicket </returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<FlightTicket>> GetFlightTicket(int id)
         {
-            var flightTicket = await _context.FlightTickets.Include(ft => ft.Flight).FirstOrDefaultAsync(ft => ft.TicketId == id);
+            var flightTicket = await _context.FlightTickets.FirstOrDefaultAsync(ft => ft.TicketId == id);
 
             if (flightTicket == null)
             {
@@ -40,18 +48,57 @@ namespace WebApp.Controllers
             return flightTicket;
         }
 
-
-        // POST api/<FlightTicketController>
+        /// <summary>
+        /// POST - create
+        /// creates a new FlightTicket and add to _context
+        /// </summary>
+        /// <param name="flightTicket"> the new FlightTicket </param>
+        /// <returns> result of CreatedAtAction </returns>
         [HttpPost]
         public async Task<ActionResult<FlightTicket>> PostFlightTicket(FlightTicket flightTicket)
         {
+            var flight = await _context.Flights.FindAsync(flightTicket.FlightId);
+            switch (flightTicket.TicketType)  // ?
+            { 
+                case 1:
+                    if (flight?.NumOfTakenSeats1 != 0)
+                    {
+                        flight.NumOfTakenSeats1--;
+                        _context.Flights.Update(flight);
+                    }
+                    else throw new Exception("there is no sits left in this class");
+                    break;
+                case 2:
+                    if (flight?.NumOfTakenSeats2 != 0)
+                    {
+                        flight.NumOfTakenSeats2--;
+                        _context.Flights.Update(flight);
+                    }
+                    else throw new Exception("there is no sits left in this class");
+                    break;
+                case 3:
+                    if (flight?.NumOfTakenSeats3 != 0)
+                    {
+                        flight.NumOfTakenSeats3--;
+                        _context.Flights.Update(flight);
+                    }
+                    else throw new Exception("there is no sits left in this class");
+                    break;
+                case 0:
+                    throw new Exception("did not chose a Ticket Type");
+            }
             _context.FlightTickets.Add(flightTicket);
             await _context.SaveChangesAsync();
-
             return CreatedAtAction(nameof(GetFlightTicket), new { id = flightTicket.TicketId }, flightTicket);
         }
 
-
+        /// <summary>
+        /// PUT- update
+        /// updates the flightTicket that match the id with the flightTicket
+        /// </summary>
+        /// <param name="id"> the id fo the flightTicket we need to update </param>
+        /// <param name="flightTicket"> the flightTicket with the updated details </param>
+        /// <returns> NoContent if update was successful </returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutFlightTicket(int id, FlightTicket flightTicket)
         {
@@ -80,7 +127,12 @@ namespace WebApp.Controllers
             return NoContent();
         }
 
-        // DELETE: api/FlightTicket/5
+        /// <summary>
+        /// DELETE - delete
+        /// deletes the FlightTicket that match the id
+        /// </summary>
+        /// <param name="id"> id of the FlightTicket we need to delete </param>
+        /// <returns> NoContent if delete was successful </returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteFlightTicket(int id)
         {
@@ -96,6 +148,7 @@ namespace WebApp.Controllers
             return NoContent();
         }
 
+        // private function for Update function
         private bool FlightTicketExists(int id)
         {
             return _context.FlightTickets.Any(e => e.TicketId == id);

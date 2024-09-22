@@ -10,25 +10,34 @@ namespace WebApp.Controllers
     [ApiController]
     public class FrequentFlyerController : ControllerBase
     {
-        private readonly ApplicationDBContext _context;
-
+        private readonly ApplicationDBContext _context; // _context = list of FrequentFlyers
+        // constractor
         public FrequentFlyerController(ApplicationDBContext context)
         {
             _context = context;
         }
 
-        // GET: api/FrequentFlyer
+        /// <summary>
+        /// GET ALL - read all
+        /// returns the FrequentFlyers from _context in a list
+        /// </summary>
+        /// <returns> list of FrequentFlyers </returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<FrequentFlyer>>> GetFrequentFlyers()
         {
-            return await _context.FrequentFlyers.Include(f => f.UserFlights).ToListAsync();
+            return await _context.FrequentFlyers.Include(f => f.FlightsIds).ToListAsync();
         }
 
-        // GET: api/FrequentFlyer/5
+        /// <summary>
+        /// GET - read
+        /// returns a FrequentFlyer from _context that match the id
+        /// </summary>
+        /// <param name="id"> id of wanted FrequentFlyer </param>
+        /// <returns> FrequentFlyer </returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<FrequentFlyer>> GetFrequentFlyer(int id)
         {
-            var frequentFlyer = await _context.FrequentFlyers.Include(f => f.UserFlights).FirstOrDefaultAsync(f => f.FlyerId == id);
+            var frequentFlyer = await _context.FrequentFlyers.Include(f => f.FlightsIds).FirstOrDefaultAsync(f => f.FlyerId == id);
 
             if (frequentFlyer == null)
             {
@@ -38,7 +47,12 @@ namespace WebApp.Controllers
             return frequentFlyer;
         }
 
-        // POST: api/FrequentFlyer
+        /// <summary>
+        /// POST - create
+        /// creates a new FrequentFlyer and add to _context
+        /// </summary>
+        /// <param name="frequentFlyer"> the new FrequentFlyer </param>
+        /// <returns> result of CreatedAtAction </returns>
         [HttpPost]
         public async Task<ActionResult<FrequentFlyer>> PostFrequentFlyer(FrequentFlyer frequentFlyer)
         {
@@ -48,7 +62,13 @@ namespace WebApp.Controllers
             return CreatedAtAction(nameof(GetFrequentFlyer), new { id = frequentFlyer.FlyerId }, frequentFlyer);
         }
 
-        // PUT: api/FrequentFlyer/5
+        /// <summary>
+        /// PUT- update ??
+        /// updates the FrequentFlyer that match the id with the input FrequentFlyer
+        /// </summary>
+        /// <param name="id"> id if FrequentFlyer we need to update </param>
+        /// <param name="frequentFlyer"> the FrequentFlyer with the updated details </param>
+        /// <returns> NoContent if update was successful </returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutFrequentFlyer(int id, FrequentFlyer frequentFlyer)
         {
@@ -78,7 +98,12 @@ namespace WebApp.Controllers
             return NoContent();
         }
 
-        // DELETE: api/FrequentFlyer/5
+        /// <summary>
+        /// DELETE - delete
+        /// deletes the FrequentFlyer that match the id
+        /// </summary>
+        /// <param name="id"> id of the FrequentFlyer we need to delete </param>
+        /// <returns> NoContent if delete was successful </returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteFrequentFlyer(int id)
         {
@@ -94,12 +119,11 @@ namespace WebApp.Controllers
             return NoContent();
         }
 
+        // private function for Update function
         private bool FrequentFlyerExists(int id)
         {
             return _context.FrequentFlyers.Any(e => e.FlyerId == id);
         }
-
-
 
     }
 }
