@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Data;
+using WebApp.Interfaces;
 using WebApp.models;
+using WebApp.Repository;
 
 
 namespace WebApp.Controllers
@@ -11,147 +13,84 @@ namespace WebApp.Controllers
     public class FlightTicketController : ControllerBase
     {
 
-        private readonly ApplicationDBContext _context; // _context = list of FlightTickets
-        // constractor
-        public FlightTicketController(ApplicationDBContext context)
+        private readonly ApplicationDBContext _context;
+        private readonly IFlightTicketRepository _flightTicketRepository;
+
+        public FlightTicketController(ApplicationDBContext context, IFlightTicketRepository flightTicketRepository)
         {
             _context = context;
+            _flightTicketRepository = flightTicketRepository;
         }
 
-        /// <summary>
-        /// GET ALL - read all
-        /// returns the FlightTickets from _context in a list
-        /// </summary>
-        /// <returns> list of FlightTickets </returns>
+
+        // GET: api/FlightTicket
         [HttpGet]
         public async Task<ActionResult<IEnumerable<FlightTicket>>> GetFlightTickets()
         {
-            return await _context.FlightTickets.ToListAsync();
+            var tickets = await _flightTicketRepository.GetFlightTicketsAsync();
+            return Ok(tickets);
         }
 
-        /// <summary>
-        /// GET - read
-        /// returns a FlightTicket from _context that match the id
-        /// </summary>
-        /// <param name="id"> id of wanted FlightTicket </param>
-        /// <returns> FlightTicket </returns>
+        // GET: api/FlightTicket/5
         [HttpGet("{id}")]
         public async Task<ActionResult<FlightTicket>> GetFlightTicket(int id)
         {
-            var flightTicket = await _context.FlightTickets.FirstOrDefaultAsync(ft => ft.TicketId == id);
-
-            if (flightTicket == null)
+            var ticket = await _flightTicketRepository.GetFlightTicketByIdAsync(id);
+            if (ticket == null)
             {
                 return NotFound();
             }
-
-            return flightTicket;
+            return Ok(ticket);
         }
 
-        /// <summary>
-        /// POST - create
-        /// creates a new FlightTicket and add to _context
-        /// </summary>
-        /// <param name="flightTicket"> the new FlightTicket </param>
-        /// <returns> result of CreatedAtAction </returns>
+
+        // POST api/<FlightTicketController>
         [HttpPost]
-        public async Task<ActionResult<FlightTicket>> PostFlightTicket(FlightTicket flightTicket)
+        public async Task<ActionResult<FlightTicket>> CreateFlightTicket(FlightTicket flightTicket)
         {
-            var flight = await _context.Flights.FindAsync(flightTicket.FlightId);
-            switch (flightTicket.TicketType)  // ?
-            { 
-                case 1:
-                    if (flight?.NumOfTakenSeats1 != 0)
-                    {
-                        flight.NumOfTakenSeats1--;
-                        _context.Flights.Update(flight);
-                    }
-                    else throw new Exception("there is no sits left in this class");
-                    break;
-                case 2:
-                    if (flight?.NumOfTakenSeats2 != 0)
-                    {
-                        flight.NumOfTakenSeats2--;
-                        _context.Flights.Update(flight);
-                    }
-                    else throw new Exception("there is no sits left in this class");
-                    break;
-                case 3:
-                    if (flight?.NumOfTakenSeats3 != 0)
-                    {
-                        flight.NumOfTakenSeats3--;
-                        _context.Flights.Update(flight);
-                    }
-                    else throw new Exception("there is no sits left in this class");
-                    break;
-                case 0:
-                    throw new Exception("did not chose a Ticket Type");
-            }
-            _context.FlightTickets.Add(flightTicket);
-            await _context.SaveChangesAsync();
+            await _flightTicketRepository.CreateFlightTicketAsync(flightTicket);
             return CreatedAtAction(nameof(GetFlightTicket), new { id = flightTicket.TicketId }, flightTicket);
         }
 
-        /// <summary>
-        /// PUT- update
-        /// updates the flightTicket that match the id with the flightTicket
-        /// </summary>
-        /// <param name="id"> the id fo the flightTicket we need to update </param>
-        /// <param name="flightTicket"> the flightTicket with the updated details </param>
-        /// <returns> NoContent if update was successful </returns>
+
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutFlightTicket(int id, FlightTicket flightTicket)
+        public async Task<IActionResult> UpdateFlightTicket(int id, FlightTicket flightTicket)
         {
             if (id != flightTicket.TicketId)
             {
                 return BadRequest();
             }
-            _context.Entry(flightTicket).State = EntityState.Modified;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!FlightTicketExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        /// <summary>
-        /// DELETE - delete
-        /// deletes the FlightTicket that match the id
-        /// </summary>
-        /// <param name="id"> id of the FlightTicket we need to delete </param>
-        /// <returns> NoContent if delete was successful </returns>
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteFlightTicket(int id)
-        {
-            var flightTicket = await _context.FlightTickets.FindAsync(id);
-            if (flightTicket == null)
+            var exists = await _flightTicketRepository.FlightTicketExistsAsync(id);
+            if (!exists)
             {
                 return NotFound();
             }
 
-            _context.FlightTickets.Remove(flightTicket);
-            await _context.SaveChangesAsync();
-
+            await _flightTicketRepository.UpdateFlightTicketAsync(flightTicket);
             return NoContent();
         }
 
-        // private function for Update function
-        private bool FlightTicketExists(int id)
+        // DELETE: api/FlightTicket/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteFlightTicket(int id)
         {
-            return _context.FlightTickets.Any(e => e.TicketId == id);
+            var ticket = await _flightTicketRepository.GetFlightTicketByIdAsync(id);
+            if (ticket == null)
+            {
+                return NotFound();
+            }
+
+            await _flightTicketRepository.DeleteFlightTicketAsync(id);
+            return NoContent();
         }
+
+
+        private Task<bool> FlightTicketExists(int id)
+        {
+            return _flightTicketRepository.FlightTicketExistsAsync(id);
+        }
+
     }
+    
 }
