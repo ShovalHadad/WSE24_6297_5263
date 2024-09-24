@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\studies\\הנדסת מערכות חלונות\\finalProject\\WSEproject\\serverApp\\WebApp\\WebApp\\WebApp.csproj": {}
+    "C:\\Users\\user\\Source\\Repos\\WSE24_6297_5263\\serverApp\\WebApp\\WebApp\\WebApp.csproj": {}
   },
   "projects": {
-    "C:\\studies\\הנדסת מערכות חלונות\\finalProject\\WSEproject\\serverApp\\WebApp\\WebApp\\WebApp.csproj": {
+    "C:\\Users\\user\\Source\\Repos\\WSE24_6297_5263\\serverApp\\WebApp\\WebApp\\WebApp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\studies\\הנדסת מערכות חלונות\\finalProject\\WSEproject\\serverApp\\WebApp\\WebApp\\WebApp.csproj",
+        "projectUniqueName": "C:\\Users\\user\\Source\\Repos\\WSE24_6297_5263\\serverApp\\WebApp\\WebApp\\WebApp.csproj",
         "projectName": "WebApp",
-        "projectPath": "C:\\studies\\הנדסת מערכות חלונות\\finalProject\\WSEproject\\serverApp\\WebApp\\WebApp\\WebApp.csproj",
-        "packagesPath": "C:\\Users\\USER\\.nuget\\packages\\",
-        "outputPath": "C:\\studies\\הנדסת מערכות חלונות\\finalProject\\WSEproject\\serverApp\\WebApp\\WebApp\\obj\\",
+        "projectPath": "C:\\Users\\user\\Source\\Repos\\WSE24_6297_5263\\serverApp\\WebApp\\WebApp\\WebApp.csproj",
+        "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\user\\Source\\Repos\\WSE24_6297_5263\\serverApp\\WebApp\\WebApp\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\USER\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -34,12 +34,41 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Microsoft.Data.SqlClient": {
+              "target": "Package",
+              "version": "[5.2.1, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.8, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[8.0.8, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.8, )"
+            },
+            "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
+              "target": "Package",
+              "version": "[8.0.5, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.4.0, )"
@@ -64,7 +93,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.205/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
