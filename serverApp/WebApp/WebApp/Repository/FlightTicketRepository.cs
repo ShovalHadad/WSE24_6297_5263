@@ -16,22 +16,48 @@ namespace WebApp.Repository
         // Get all flight tickets with their associated flights
         public async Task<IEnumerable<FlightTicket>> GetFlightTicketsAsync()
         {
-            return await _context.FlightTickets
-                                 .Include(ft => ft.Flight) // Include associated flight details
-                                 .ToListAsync();
+            return await _context.FlightTickets.ToListAsync();
         }
 
         // Get a flight ticket by its ID with associated flight
         public async Task<FlightTicket> GetFlightTicketByIdAsync(int id)
         {
-            return await _context.FlightTickets
-                                 .Include(ft => ft.Flight) // Include associated flight details
-                                 .FirstOrDefaultAsync(ft => ft.TicketId == id);
+            return await _context.FlightTickets.FirstOrDefaultAsync(ft => ft.TicketId == id);
         }
 
         // Create a new flight ticket
         public async Task CreateFlightTicketAsync(FlightTicket flightTicket)
         {
+            var flight = await _context.Flights.FindAsync(flightTicket.FlightId);
+            switch (flightTicket.TicketType)  // ?
+            {
+                case 1:
+                    if (flight?.NumOfTakenSeats1 != 0)
+                    {
+                        flight.NumOfTakenSeats1--;
+                        _context.Flights.Update(flight);
+                    }
+                    else throw new Exception("there is no sits left in this class");
+                    break;
+                case 2:
+                    if (flight?.NumOfTakenSeats2 != 0)
+                    {
+                        flight.NumOfTakenSeats2--;
+                        _context.Flights.Update(flight);
+                    }
+                    else throw new Exception("there is no sits left in this class");
+                    break;
+                case 3:
+                    if (flight?.NumOfTakenSeats3 != 0)
+                    {
+                        flight.NumOfTakenSeats3--;
+                        _context.Flights.Update(flight);
+                    }
+                    else throw new Exception("there is no sits left in this class");
+                    break;
+                case 0:
+                    throw new Exception("did not chose a Ticket Type");
+            }
             _context.FlightTickets.Add(flightTicket);
             await _context.SaveChangesAsync();
         }
