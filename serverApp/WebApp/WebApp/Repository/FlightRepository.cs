@@ -29,8 +29,13 @@ namespace WebApp.Repositories
 
         public async Task CreateFlightAsync(Flight flight)
         {
+            var plane = await _context.Planes.FindAsync(flight.PlaneId);
+            flight.NumOfTakenSeats1 = plane?.NumOfSeats1;
+            flight.NumOfTakenSeats2 = plane?.NumOfSeats2;
+            flight.NumOfTakenSeats3 = plane?.NumOfSeats3;
             _context.Flights.Add(flight);
             await _context.SaveChangesAsync();
+            //לבדוק
         }
 
         public async Task UpdateFlightAsync(Flight flight)

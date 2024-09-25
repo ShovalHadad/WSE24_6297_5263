@@ -16,12 +16,13 @@ namespace WebApp.Repository
 
         public async Task<IEnumerable<FrequentFlyer>> GetFrequentFlyersAsync()
         {
-            return await _context.FrequentFlyers.Include(f => f.UserFlights).ToListAsync();
+            return await _context.FrequentFlyers.ToListAsync();
         }
 
         public async Task<FrequentFlyer> GetFrequentFlyerByIdAsync(int id)
         {
-            return await _context.FrequentFlyers.Include(f => f.UserFlights).FirstOrDefaultAsync(f => f.FlyerId == id);
+            return await _context.FrequentFlyers.FindAsync(id);
+
         }
 
         public async Task CreateFrequentFlyerAsync(FrequentFlyer frequentFlyer)
@@ -50,5 +51,7 @@ namespace WebApp.Repository
         {
             return await _context.FrequentFlyers.AnyAsync(e => e.FlyerId == id);
         }
+
     }
+
 }

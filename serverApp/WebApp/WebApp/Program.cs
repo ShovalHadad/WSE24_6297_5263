@@ -24,10 +24,9 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
 
 // Register the FrequentFlyer repository
 builder.Services.AddScoped<IPlaneRepository, PlaneRepository>();
-builder.Services.AddScoped<IFrequentFlyerRepository, FrequentFlyerRepository>();
 builder.Services.AddScoped<IFlightRepository, FlightRepository>();
-
-
+builder.Services.AddScoped<IFlightTicketRepository, FlightTicketRepository>();
+builder.Services.AddScoped<IFrequentFlyerRepository, FrequentFlyerRepository>();
 
 var app = builder.Build();
 
