@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApp.Data;
 
@@ -11,9 +12,11 @@ using WebApp.Data;
 namespace WebApp.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240925093242_CorrectMigrationName")]
+    partial class CorrectMigrationName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,7 +47,7 @@ namespace WebApp.Migrations
                     b.Property<DateTime>("EstimatedArrivalDateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("FrequentFlyerFlyerId")
+                    b.Property<int>("FlyerId")
                         .HasColumnType("int");
 
                     b.Property<int?>("NumOfTakenSeats1")
@@ -61,7 +64,7 @@ namespace WebApp.Migrations
 
                     b.HasKey("FlightId");
 
-                    b.HasIndex("FrequentFlyerFlyerId");
+                    b.HasIndex("FlyerId");
 
                     b.ToTable("Flights");
                 });
@@ -166,7 +169,7 @@ namespace WebApp.Migrations
                 {
                     b.HasOne("WebApp.Models.FrequentFlyer", "FrequentFlyer")
                         .WithMany("UserFlights")
-                        .HasForeignKey("FrequentFlyerFlyerId")
+                        .HasForeignKey("FlyerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

@@ -20,6 +20,9 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IPlaneRepository, PlaneRepository>();
+builder.Services.AddScoped<IFlightRepository, FlightRepository>();
+builder.Services.AddScoped<IFlightTicketRepository, FlightTicketRepository>();
+builder.Services.AddScoped<IFrequentFlyerRepository, FrequentFlyerRepository>();
 
 var app = builder.Build();
 

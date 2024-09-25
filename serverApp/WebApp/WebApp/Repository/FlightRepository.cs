@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WebApp.Data;
+using WebApp.Interfaces;
 using WebApp.Models;
 
 namespace WebApp.Repository
 {
-    public class FlightRepository
+    public class FlightRepository : IFlightRepository
     {
         private readonly ApplicationDBContext _context;
 

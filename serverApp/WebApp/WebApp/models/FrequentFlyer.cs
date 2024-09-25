@@ -13,7 +13,9 @@ namespace WebApp.Models
         public string LastName { get; set; } = string.Empty;  // user last name
         public string? Email { get; set; } = string.Empty;  // user email
         public int? PhoneNumber { get; set; }  // user phone number              
+         
         public List<int>? FlightsIds { get; set; } // list of past flights
+        //public List<Flight> UserFlights { get; set; } = new List<Flight>();
         public bool IsManager { get; set; } = false;  // false =  FrequentFlyer, true = manager
     }
 }

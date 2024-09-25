@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WebApp.Data;
+using WebApp.Interfaces;
 using WebApp.Models;
 
 namespace WebApp.Repository
 {
-    public class FrequentFlyerRepository
+    public class FrequentFlyerRepository : IFrequentFlyerRepository
     {
         private readonly ApplicationDBContext _context;
 
@@ -15,12 +16,12 @@ namespace WebApp.Repository
 
         public async Task<IEnumerable<FrequentFlyer>> GetFrequentFlyersAsync()
         {
-            return await _context.FrequentFlyers.Include(f => f.FlightsIds).ToListAsync();
+            return await _context.FrequentFlyers.ToListAsync();
         }
 
         public async Task<FrequentFlyer> GetFrequentFlyerByIdAsync(int id)
         {
-            return await _context.FrequentFlyers.Include(f => f.FlightsIds).FirstOrDefaultAsync(f => f.FlyerId == id);
+            return await _context.FrequentFlyers.FindAsync(id);
 
         }
 
