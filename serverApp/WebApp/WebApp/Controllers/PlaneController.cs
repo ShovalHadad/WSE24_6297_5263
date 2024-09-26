@@ -12,20 +12,15 @@ namespace WebApp.Controllers
     [ApiController]
     public class PlaneController : ControllerBase
     {
-        private readonly ApplicationDBContext _context; // _context = list of planes
+        private readonly ApplicationDBContext _context;
         private readonly IPlaneRepository _planeRepo;
-        // constractor 
         public PlaneController(ApplicationDBContext context, IPlaneRepository planeRepo) //add the interface
         {
             _planeRepo = planeRepo;
             _context = context;
         }
 
-        /// <summary>
-        /// GET ALL - read all
-        /// returns the planes from _context in a list
-        /// </summary>
-        /// <returns> list of planes </returns>
+        //GET - read
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Plane>>> GetPlanes()
         {
@@ -34,12 +29,6 @@ namespace WebApp.Controllers
             return Ok(planes);
         }
 
-        /// <summary>
-        /// GET - read
-        /// returns a plane from _context that match the id
-        /// </summary>
-        /// <param name="id"> id of wanted plane </param>
-        /// <returns> plane </returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<Plane>> GetPlane(int id)
         {
@@ -51,12 +40,8 @@ namespace WebApp.Controllers
             return plane;
         }
 
-        /// <summary>
-        /// POST - create
-        /// creates a new plane and add to _context
-        /// </summary>
-        /// <param name="plane"> the new plane </param>
-        /// <returns> result of CreatedAtAction </returns>
+
+        //POST - create
         [HttpPost]
         public async Task<ActionResult<Flight>> CreatePlane(Plane plane)
         {
@@ -66,15 +51,10 @@ namespace WebApp.Controllers
             return CreatedAtAction(nameof(GetPlane), new { id = plane.PlaneId }, plane);
         }
 
-        /// <summary>
-        /// PUT- update
-        /// updates the plane that match the id with the plane
-        /// </summary>
-        /// <param name="id"> the id fo the plane we need to update </param>
-        /// <param name="plane"> the plane with the updated details </param>
-        /// <returns> NoContent if update was successful </returns>
+
+        //PUT- update
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPlane(int id, Plane plane)
+        public async Task<IActionResult> UpdatePlane(int id, Plane plane)
         {
             if (id != plane.PlaneId)
             {
@@ -100,12 +80,10 @@ namespace WebApp.Controllers
             return NoContent();
         }
 
-        /// <summary>
-        /// DELETE - delete
-        /// deletes the plane that match the id
-        /// </summary>
-        /// <param name="id"> id of the plane we need to delete </param>
-        /// <returns> NoContent if delete was successful </returns>
+
+
+
+        //DELETE
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePlane(int id)
         {
@@ -119,11 +97,10 @@ namespace WebApp.Controllers
             return NoContent();
         }
 
-        // private function for Update function
-        private async Task<bool> PlaneExistsAsync(int id)
+        private Task<bool> PlaneExists(int id)
         {
             //return _context.Planes.Any(e => e.PlaneId == id);
-            return await _planeRepo.PlaneExistsAsync(id);
+            return _planeRepo.PlaneExistsAsync(id);
         }
 
     }

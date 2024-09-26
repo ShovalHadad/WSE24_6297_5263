@@ -2,8 +2,11 @@
 using WebApp.Data;
 using WebApp.Interfaces;
 using WebApp.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace WebApp.Repository
+
+namespace WebApp.Repositories
 {
     public class FlightRepository : IFlightRepository
     {

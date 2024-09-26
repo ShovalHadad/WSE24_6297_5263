@@ -2,7 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using WebApp.Data;
 using WebApp.Interfaces;
+using WebApp.Repositories;
 using WebApp.Repository;
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +21,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+
+// Register the FrequentFlyer repository
 builder.Services.AddScoped<IPlaneRepository, PlaneRepository>();
 builder.Services.AddScoped<IFlightRepository, FlightRepository>();
 builder.Services.AddScoped<IFlightTicketRepository, FlightTicketRepository>();

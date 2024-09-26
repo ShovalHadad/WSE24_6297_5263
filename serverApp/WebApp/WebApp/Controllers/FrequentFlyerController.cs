@@ -5,6 +5,7 @@ using WebApp.Interfaces;
 using WebApp.Models;
 
 
+
 namespace WebApp.Controllers
 {
     [Route("api/[controller]")]
@@ -12,7 +13,7 @@ namespace WebApp.Controllers
     public class FrequentFlyerController : ControllerBase
     {
         private readonly ApplicationDBContext _context;
-
+      
         private readonly IFrequentFlyerRepository _frequentFlyerRepo;
 
 

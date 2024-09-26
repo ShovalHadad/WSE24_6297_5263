@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-
 namespace WebApp.Models
 {
     public class Flight
@@ -16,10 +15,6 @@ namespace WebApp.Models
         public DateTime EstimatedArrivalDateTime { get; set; }  // Arrival Date
         public int? NumOfTakenSeats1 { get; set; } // number of taken seats in first class
         public int? NumOfTakenSeats2 { get; set; } // number of taken seats in business
-        public int? NumOfTakenSeats3 { get; set; } // number of taken seats in economy
-                                                   // 
-       // Foreign key property to FrequentFlyer
-        //public int FrequentFlyerFlyerId { get; set; }
-        //public FrequentFlyer FrequentFlyer { get; set; } // Navigation property back to FrequentFlyer
+        public int? NumOfTakenSeats3 { get; set; } // number of taken seats in economy    
     }
 }

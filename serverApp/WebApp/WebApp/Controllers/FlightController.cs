@@ -2,10 +2,10 @@
 using System;
 using WebApp.Models;
 using WebApp.Data;
+using WebApp.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Interfaces;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace WebApp.Controllers
 {
@@ -41,7 +41,7 @@ namespace WebApp.Controllers
             }
             return flight;
         }
-
+        
 
         //POST - create
         [HttpPost]
@@ -119,7 +119,7 @@ namespace WebApp.Controllers
 
             return NoContent();
         }
-
+         
 
 
 
