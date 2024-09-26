@@ -1,0 +1,11 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/serverApp/WebApp/.vs/WebApp/FileContentIndex/177aa8b2-7d43-4d30-9677-d50e0a2737c1.vsidx
+/.vs/slnx.sqlite
+/serverApp/WebApp/.vs/WebApp/FileContentIndex/489525c7-52e2-46fc-8bc5-892480773a5e.vsidx
+/serverApp/WebApp/.vs/WebApp/FileContentIndex/66b9165a-b828-4c1b-bcdb-768cb67c1281.vsidx
+/serverApp/WebApp/.vs/WebApp/FileContentIndex/bd0a8ed0-686e-4392-8c18-a781bfe45228.vsidx
+/serverApp/WebApp/.vs/WebApp/FileContentIndex/fb07358a-3958-4f8e-b61f-e24fb8a67ae0.vsidx
+/.gitignore
