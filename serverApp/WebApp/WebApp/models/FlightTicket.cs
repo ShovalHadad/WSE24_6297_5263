@@ -8,8 +8,7 @@ namespace WebApp.models
         [Key]
         public int TicketId { get; set; } // Flight Ticket number
         public int TicketType { get; set; } = 0; // first class = 1 , business = 2 , economy = 3
-        public Flight Flight { get; set; } = new Flight();  // Navigation to flight
-        public int FlightId { get; set; }
-
+        public int UserId { get; set; }  // Navigation to user/flyer
+        public int FlightId { get; set; }// Navigation to flight
     }
 }

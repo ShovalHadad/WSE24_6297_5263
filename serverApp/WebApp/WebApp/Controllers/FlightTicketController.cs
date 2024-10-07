@@ -12,85 +12,105 @@ namespace WebApp.Controllers
     [ApiController]
     public class FlightTicketController : ControllerBase
     {
-
         private readonly ApplicationDBContext _context;
         private readonly IFlightTicketRepository _flightTicketRepository;
-
+        // Constructor
         public FlightTicketController(ApplicationDBContext context, IFlightTicketRepository flightTicketRepository)
         {
             _context = context;
             _flightTicketRepository = flightTicketRepository;
         }
 
-
-        // GET: api/FlightTicket
+        // GET - read all
         [HttpGet]
         public async Task<ActionResult<IEnumerable<FlightTicket>>> GetFlightTickets()
         {
-            var tickets = await _flightTicketRepository.GetFlightTicketsAsync();
-            return Ok(tickets);
+            try
+            {
+                var tickets = await _flightTicketRepository.GetFlightTicketsAsync();
+                return Ok(tickets);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("can not read all flight tickets ", ex);
+            }
         }
 
-        // GET: api/FlightTicket/5
+        // GET - read
         [HttpGet("{id}")]
         public async Task<ActionResult<FlightTicket>> GetFlightTicket(int id)
         {
-            var ticket = await _flightTicketRepository.GetFlightTicketByIdAsync(id);
-            if (ticket == null)
+            try
             {
-                return NotFound();
+                var ticket = await _flightTicketRepository.GetFlightTicketByIdAsync(id);
+                if (ticket == null)
+                {
+                    return NotFound();
+                }
+                return Ok(ticket);
             }
-            return Ok(ticket);
+            catch (Exception ex)
+            {
+                throw new Exception($"can not read the flight ticket {id} ", ex);
+            }
         }
 
-
-        // POST api/<FlightTicketController>
+        // POST - create
         [HttpPost]
         public async Task<ActionResult<FlightTicket>> CreateFlightTicket(FlightTicket flightTicket)
         {
-            await _flightTicketRepository.CreateFlightTicketAsync(flightTicket);
-            return CreatedAtAction(nameof(GetFlightTicket), new { id = flightTicket.TicketId }, flightTicket);
+            try
+            {
+                await _flightTicketRepository.CreateFlightTicketAsync(flightTicket);
+                return CreatedAtAction(nameof(GetFlightTicket), new { id = flightTicket.TicketId }, flightTicket);
+            }
+            catch (Exception ex) 
+            {
+                throw new Exception("can not create new flight ticket ", ex);
+            }
         }
 
-
+        // PUT - update
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateFlightTicket(int id, FlightTicket flightTicket)
         {
             if (id != flightTicket.TicketId)
-            {
                 return BadRequest();
-            }
-
-            var exists = await _flightTicketRepository.FlightTicketExistsAsync(id);
-            if (!exists)
-            {
+            if (!await _flightTicketRepository.FlightTicketExistsAsync(id))
                 return NotFound();
+            try
+            {
+                await _flightTicketRepository.UpdateFlightTicketAsync(flightTicket);
+                return NoContent();
             }
-
-            await _flightTicketRepository.UpdateFlightTicketAsync(flightTicket);
-            return NoContent();
+            catch (Exception ex) 
+            {
+                throw new Exception($"can not update the flight ticket {id} ", ex);
+            }
         }
 
-        // DELETE: api/FlightTicket/5
+        // DELETE - delete
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteFlightTicket(int id)
         {
             var ticket = await _flightTicketRepository.GetFlightTicketByIdAsync(id);
             if (ticket == null)
-            {
                 return NotFound();
+            try
+            {
+                await _flightTicketRepository.DeleteFlightTicketAsync(id);
+                return NoContent();
             }
-
-            await _flightTicketRepository.DeleteFlightTicketAsync(id);
-            return NoContent();
+            catch(Exception ex) 
+            {
+                throw new Exception($"can not delete the flight ticket {id} ", ex);
+            }
         }
-
 
         private Task<bool> FlightTicketExists(int id)
         {
             return _flightTicketRepository.FlightTicketExistsAsync(id);
         }
-
     }
     
 }

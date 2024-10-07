@@ -8,7 +8,6 @@ namespace WebApp.Models
         [Key]
         public int FlightId { get; set; } // flight number
         public int PlaneId { get; set; } // Navigation to plane
-        //public Plane? Plane { get; set; } 
         public string DepartureLocation { get; set; } = string.Empty; // Departure Location /\
         public string ArrivalLocation { get; set; } = string.Empty; // Arrival Location  \/
         public DateTime DepartureDateTime { get; set; }  // Departure Date

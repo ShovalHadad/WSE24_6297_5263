@@ -13,95 +13,103 @@ namespace WebApp.Controllers
     public class FrequentFlyerController : ControllerBase
     {
         private readonly ApplicationDBContext _context;
-      
         private readonly IFrequentFlyerRepository _frequentFlyerRepo;
-
-
+        // Constructor
         public FrequentFlyerController(ApplicationDBContext context, IFrequentFlyerRepository frequentFlyerRepo) // Inject the repository interface
         {
             _context = context;
             _frequentFlyerRepo = frequentFlyerRepo;
         }
 
-        // GET: api/FrequentFlyer
+        // GET - read all
         [HttpGet]
         public async Task<ActionResult<IEnumerable<FrequentFlyer>>> GetFrequentFlyers()
         {
-            var frequentFlyers = await _frequentFlyerRepo.GetFrequentFlyersAsync();
-            return Ok(frequentFlyers);
+            try
+            {
+                var frequentFlyers = await _frequentFlyerRepo.GetFrequentFlyersAsync();
+                return Ok(frequentFlyers);
+            }
+            catch (Exception ex) 
+            {
+                throw new Exception("can not read all frequent flyers ", ex);
+            }
         }
 
-        // GET: api/FrequentFlyer/5
+        // GET - read
         [HttpGet("{id}")]
         public async Task<ActionResult<FrequentFlyer>> GetFrequentFlyer(int id)
         {
-            var frequentFlyer = await _frequentFlyerRepo.GetFrequentFlyerByIdAsync(id);
-
-            if (frequentFlyer == null)
+            try
             {
-                return NotFound();
+                var frequentFlyer = await _frequentFlyerRepo.GetFrequentFlyerByIdAsync(id);
+                if (frequentFlyer == null)
+                {
+                    return NotFound();
+                }
+                return frequentFlyer;
             }
-
-            return frequentFlyer;
+            catch (Exception ex) 
+            {
+                throw new Exception($"can not read the frequent flyer {id} ", ex);
+            }
         }
 
-        // POST: api/FrequentFlyer
+        // POST - create
         [HttpPost]
         public async Task<ActionResult<FrequentFlyer>> CreateFrequentFlyer(FrequentFlyer frequentFlyer)
         {
-            await _frequentFlyerRepo.CreateFrequentFlyerAsync(frequentFlyer);
-            return CreatedAtAction(nameof(GetFrequentFlyer), new { id = frequentFlyer.FlyerId }, frequentFlyer);
+            try
+            {
+                await _frequentFlyerRepo.CreateFrequentFlyerAsync(frequentFlyer);
+                return CreatedAtAction(nameof(GetFrequentFlyer), new { id = frequentFlyer.FlyerId }, frequentFlyer);
+            }
+            catch(Exception ex)
+            {
+                throw new Exception("can not create new frequent flyer ", ex);
+            }
         }
 
-        // PUT: api/FrequentFlyer/5
+        // PUT - update
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateFrequentFlyer(int id, FrequentFlyer frequentFlyer)
         {
             if (id != frequentFlyer.FlyerId)
-            {
                 return BadRequest();
-            }
-
+            if (!await _frequentFlyerRepo.FrequentFlyerExistsAsync(id))
+                return NotFound();
             try
             {
                 await _frequentFlyerRepo.UpdateFrequentFlyerAsync(frequentFlyer);
+                return NoContent();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
-                if (!await _frequentFlyerRepo.FrequentFlyerExistsAsync(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                throw new Exception($"can not update the frequent flyer {id} ", ex);
             }
-
-            return NoContent();
-
         }
 
-
-        // DELETE: api/FrequentFlyer/5
+        // DELETE - delete
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteFrequentFlyer(int id)
         {
             var frequentFlyer = await _frequentFlyerRepo.GetFrequentFlyerByIdAsync(id);
             if (frequentFlyer == null)
-            {
                 return NotFound();
+            try
+            {
+                await _frequentFlyerRepo.DeleteFrequentFlyerAsync(id);
+                return NoContent();
             }
-
-            await _frequentFlyerRepo.DeleteFrequentFlyerAsync(id);
-            return NoContent();
+            catch (Exception ex)
+            {
+                throw new Exception($"can not delete the frequent flyer {id} ", ex);
+            }
         }
 
         private Task<bool> FrequentFlyerExists(int id)
         {
             return _frequentFlyerRepo.FrequentFlyerExistsAsync(id);
         }
-
-
     }
 }

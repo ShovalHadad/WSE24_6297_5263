@@ -1,87 +1,210 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WebApp.Data;
+using WebApp.Exceptions;
 using WebApp.Interfaces;
 using WebApp.models;
+using WebApp.Models;
 
 namespace WebApp.Repository
 {
     public class FlightTicketRepository : IFlightTicketRepository
     {
         private readonly ApplicationDBContext _context;
-
+        // Constructor
         public FlightTicketRepository(ApplicationDBContext context)
         {
             _context = context;
         }
 
-        // Get all flight tickets with their associated flights
+        // read all flight tickets
         public async Task<IEnumerable<FlightTicket>> GetFlightTicketsAsync()
         {
-            return await _context.FlightTickets.ToListAsync();
+            try
+            {
+                return await _context.FlightTickets.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new FlightTicketRepositoryException("Failed to retrieve flight tickets.", ex);
+            }
         }
 
-        // Get a flight ticket by its ID with associated flight
+        // read flight ticket by id
         public async Task<FlightTicket> GetFlightTicketByIdAsync(int id)
         {
-            return await _context.FlightTickets.FirstOrDefaultAsync(ft => ft.TicketId == id);
+            try
+            {
+                var flightTicket = await _context.FlightTickets.FindAsync(id);
+                if (flightTicket == null)
+                    throw new FlightTicketRepositoryException($"Flight ticket with ID {id} not found.");
+                return flightTicket;   //return await _context.FlightTickets.FirstOrDefaultAsync(ft => ft.TicketId == id);
+            }
+            catch (Exception ex)
+            {
+                throw new FlightTicketRepositoryException("An error occurred while retrieving the flight ticket.", ex);
+            }
         }
 
-        // Create a new flight ticket
+        // create new flight ticket
         public async Task CreateFlightTicketAsync(FlightTicket flightTicket)
         {
-            var flight = await _context.Flights.FindAsync(flightTicket.FlightId);
-            switch (flightTicket.TicketType)  // ?
+            try
             {
-                case 1:
-                    if (flight?.NumOfTakenSeats1 != 0)
-                    {
-                        flight.NumOfTakenSeats1--;
-                        _context.Flights.Update(flight);
-                    }
-                    else throw new Exception("there is no sits left in this class");
-                    break;
-                case 2:
-                    if (flight?.NumOfTakenSeats2 != 0)
-                    {
-                        flight.NumOfTakenSeats2--;
-                        _context.Flights.Update(flight);
-                    }
-                    else throw new Exception("there is no sits left in this class");
-                    break;
-                case 3:
-                    if (flight?.NumOfTakenSeats3 != 0)
-                    {
-                        flight.NumOfTakenSeats3--;
-                        _context.Flights.Update(flight);
-                    }
-                    else throw new Exception("there is no sits left in this class");
-                    break;
-                case 0:
-                    throw new Exception("did not chose a Ticket Type");
+                if (await _context.FrequentFlyers.FindAsync(flightTicket.UserId) == null)
+                    throw new FlightTicketRepositoryException();
+                if (await _context.Flights.FindAsync(flightTicket.FlightId) == null) 
+                    throw new FlightTicketRepositoryException();
+
+                var flight = await _context.Flights.FindAsync(flightTicket.FlightId);
+                switch (flightTicket.TicketType)  
+                {
+                    case 1:
+                        if (flight?.NumOfTakenSeats1 != 0)
+                            flight.NumOfTakenSeats1--;  
+                            //_context.Flights.Update(flight);
+                        else 
+                            throw new FlightTicketRepositoryException("there is no sits left in this class");
+                        break;
+                    case 2:
+                        if (flight?.NumOfTakenSeats2 != 0)
+                            flight.NumOfTakenSeats2--;
+                        else 
+                            throw new FlightTicketRepositoryException("there is no sits left in this class");
+                        break;
+                    case 3:
+                        if (flight?.NumOfTakenSeats3 != 0)
+                            flight.NumOfTakenSeats3--;
+                        else 
+                            throw new FlightTicketRepositoryException("there is no sits left in this class");
+                        break;
+                    case 0:
+                        throw new FlightTicketRepositoryException("Ticket Type is required.");
+                    default:
+                        throw new FlightTicketRepositoryException("something went wrong in ticket type.")
+                }
+                _context.FlightTickets.Add(flightTicket);
+                await _context.SaveChangesAsync();
             }
-            _context.FlightTickets.Add(flightTicket);
-            await _context.SaveChangesAsync();
+            catch (Exception ex)
+            {
+                throw new FlightTicketRepositoryException("An error occurred while creating the flight ticket.", ex);
+            }
         }
 
-        // Update an existing flight ticket
+        // update a flight ticket
         public async Task UpdateFlightTicketAsync(FlightTicket flightTicket)
         {
-            _context.Entry(flightTicket).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            try
+            {
+                FlightTicket newTicket = _context.FlightTickets.FirstOrDefault(e => e.TicketId == flightTicket.TicketId);
+                if(newTicket.TicketType != flightTicket.TicketType) // changed the ticket class
+                {
+                    Flight flight = _context.Flights.FirstOrDefault(e => e.FlightId == flightTicket.FlightId);
+                    switch(newTicket.TicketType)  // cancel the old set
+                    {
+                        case 1:
+                            flight.NumOfTakenSeats1++;
+                            break;
+                        case 2:
+                            flight.NumOfTakenSeats2++;
+                            break;
+                        case 3:
+                            flight.NumOfTakenSeats3++;
+                            break;
+                        default:
+                            break;
+                    }
+                    switch(flightTicket.TicketType)  // add the new set
+                    {
+                        case 1:
+                            {
+                                if (flight.NumOfTakenSeats1 != 0)
+                                {
+                                    flight.NumOfTakenSeats1--;
+                                    newTicket.TicketType = flightTicket.TicketType;
+                                }
+                                else
+                                    throw new FlightTicketRepositoryException("there is no sits left in this class");
+                            }
+                            break;
+                        case 2:
+                            {
+                                if (flight.NumOfTakenSeats2 != 0)
+                                {
+                                    flight.NumOfTakenSeats2--;
+                                    newTicket.TicketType = flightTicket.TicketType;
+                                }
+                                else 
+                                    throw new FlightTicketRepositoryException("there is no sits left in this class");
+                            }
+                            break;
+                        case 3:
+                            {
+                                if (flight.NumOfTakenSeats3 != 0)
+                                {
+                                    flight.NumOfTakenSeats3--;
+                                    newTicket.TicketType = flightTicket.TicketType;
+                                }
+                                else
+                                    throw new FlightTicketRepositoryException("there is no sits left in this class");
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                if (newTicket.UserId != flightTicket.UserId || newTicket.FlightId != flightTicket.FlightId)
+                    throw new FlightTicketRepositoryException("can not have different user or flight numbers.");
+               // _context.Entry(flightTicket).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new FlightTicketRepositoryException("An error occurred while updating the flight ticket.", ex);
+            }
         }
 
-        // Delete a flight ticket by ID
+        // delete flight ticket by id
         public async Task DeleteFlightTicketAsync(int id)
         {
-            var flightTicket = await _context.FlightTickets.FindAsync(id);
-            if (flightTicket != null)
+            try
             {
+                var flightTicket = await _context.FlightTickets.FindAsync(id);
+                if (flightTicket == null)
+                    throw new FlightTicketRepositoryException($"can not find flight ticket with {id} id to delete.");
+                Flight? flight = await _context.Flights.FindAsync(flightTicket.FlightId);
+                if (flight != null)
+                {
+                    switch (flightTicket.TicketType)
+                    {
+                        case 1:
+                            flight.NumOfTakenSeats1++;
+                            break;
+                        case 2:
+                            flight.NumOfTakenSeats2++;
+                            break;
+                        case 3:
+                            flight.NumOfTakenSeats3++;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                FrequentFlyer? flyer = await _context.FrequentFlyers.FindAsync(flightTicket.UserId);
+                if(flyer != null)
+                {
+                    flyer.FlightsIds.Remove(flight.FlightId);
+                }
                 _context.FlightTickets.Remove(flightTicket);
                 await _context.SaveChangesAsync();
             }
+            catch (Exception ex)
+            {
+                throw new FlightTicketRepositoryException("An error occurred while deleting the flight ticket.", ex);
+            }
         }
 
-        // Check if a flight ticket exists by ID
+        // function to know if the flight ticket exist by id
         public async Task<bool> FlightTicketExistsAsync(int id)
         {
             return await _context.FlightTickets.AnyAsync(e => e.TicketId == id);

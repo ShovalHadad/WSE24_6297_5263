@@ -22,7 +22,7 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 
-// Register the FrequentFlyer repository
+// Add the repositories to Server
 builder.Services.AddScoped<IPlaneRepository, PlaneRepository>();
 builder.Services.AddScoped<IFlightRepository, FlightRepository>();
 builder.Services.AddScoped<IFlightTicketRepository, FlightTicketRepository>();
