@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using WebApp.Exceptions;
 using WebApp.models;
+using WebApp.Services;
+using System.Globalization;
 
 
 namespace WebApp.Repositories
@@ -13,10 +15,13 @@ namespace WebApp.Repositories
     public class FlightRepository : IFlightRepository
     {
         private readonly ApplicationDBContext _context;
+        private readonly HebCalService _hebCalService;
+
         // Constructor
-        public FlightRepository(ApplicationDBContext context)
+        public FlightRepository(ApplicationDBContext context, HebCalService hebCalService)
         {
             _context = context;
+            _hebCalService = hebCalService;
         }
 
         // read all flights
@@ -67,6 +72,8 @@ namespace WebApp.Repositories
                     {
                         if (flight.EstimatedArrivalDateTime < flight.DepartureDateTime)
                             throw new FlightRepositoryException("Departure date time is bigger then arrival date time.");
+                        // if(flight.EstimatedArrivalDateTime.DayOfWeek == DayOfWeek.Friday)
+                        // check if in shabat ? if yes throw error   ????????????????????????????
                     }
                     else 
                         throw new FlightRepositoryException("one of Departure or arrival date time is null");
@@ -97,13 +104,26 @@ namespace WebApp.Repositories
                     flight.NumOfTakenSeats2 = (newPlane.NumOfSeats2 == flight.NumOfTakenSeats2)? flight.NumOfTakenSeats2 - numOfFlyers2 : flight.NumOfTakenSeats2;
                     flight.NumOfTakenSeats3 = (newPlane.NumOfSeats3 == flight.NumOfTakenSeats3)? flight.NumOfTakenSeats3 - numOfFlyers3 : flight.NumOfTakenSeats3;
                 }
-                if(flight.DepartureDateTime != newFlight.DepartureDateTime || flight.EstimatedArrivalDateTime != newFlight.EstimatedArrivalDateTime)  // change date times
+                if (flight.DepartureDateTime != newFlight.DepartureDateTime || flight.EstimatedArrivalDateTime != newFlight.EstimatedArrivalDateTime)  // change date times
+                {
                     if (flight.EstimatedArrivalDateTime < flight.DepartureDateTime)
                         throw new FlightRepositoryException("Departure date time is bigger then arrival date time.");
-                newFlight.EstimatedArrivalDateTime = flight.EstimatedArrivalDateTime;
-                newFlight.DepartureDateTime = flight.DepartureDateTime;
-                newFlight.ArrivalLocation = flight.ArrivalLocation;
-                newFlight.DepartureLocation = flight.DepartureLocation;
+                    if (flight.EstimatedArrivalDateTime != null && flight.EstimatedArrivalDateTime != newFlight.EstimatedArrivalDateTime)
+                    {
+                        // check if in shabat ? if yes throw error   ????????????????????????????
+                        foreach (FlightTicket flightTicket in await _context.FlightTickets.ToListAsync())
+                        {
+                            if (flightTicket.FlightId == flight.FlightId) // to find the flight tickets that in this flight
+                            {
+                                flightTicket.ShabatTimes = await _hebCalService.GetHebrewDates(flight.EstimatedArrivalDateTime.ToString());  // update shabat times
+                            }
+                        }
+                    }
+                }
+                newFlight.EstimatedArrivalDateTime =(flight.EstimatedArrivalDateTime != null) ? flight.EstimatedArrivalDateTime : newFlight.EstimatedArrivalDateTime;
+                newFlight.DepartureDateTime = (flight.DepartureDateTime != null) ? flight.DepartureDateTime : newFlight.DepartureDateTime;
+                newFlight.ArrivalLocation = (flight.ArrivalLocation != null) ? flight.ArrivalLocation : newFlight.ArrivalLocation;
+                newFlight.DepartureLocation = (flight.DepartureLocation != null) ? flight.DepartureLocation : newFlight.DepartureLocation;
                 newFlight.NumOfTakenSeats1 = flight.NumOfTakenSeats1;
                 newFlight.NumOfTakenSeats2 = flight.NumOfTakenSeats2;
                 newFlight.NumOfTakenSeats3 = flight.NumOfTakenSeats3;
@@ -141,7 +161,7 @@ namespace WebApp.Repositories
                             frequentFlyer.FlightsIds.Remove(id);
                         }
                     }
-                    foreach (int ids in ticketsIds)
+                    foreach (int ids in ticketsIds) // delete the flight tickets that are in this flight
                         _context.FlightTickets.Remove(_context.FlightTickets.FirstOrDefault(e => e.TicketId == ids));
                     _context.Flights.Remove(flight);
                     await _context.SaveChangesAsync();  

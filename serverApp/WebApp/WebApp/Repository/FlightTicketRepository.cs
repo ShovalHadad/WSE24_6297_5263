@@ -4,16 +4,20 @@ using WebApp.Exceptions;
 using WebApp.Interfaces;
 using WebApp.models;
 using WebApp.Models;
+using WebApp.Services;
 
 namespace WebApp.Repository
 {
     public class FlightTicketRepository : IFlightTicketRepository
     {
         private readonly ApplicationDBContext _context;
+        private readonly HebCalService _hebCalService;
+
         // Constructor
-        public FlightTicketRepository(ApplicationDBContext context)
+        public FlightTicketRepository(ApplicationDBContext context, HebCalService hebCalService)
         {
             _context = context;
+            _hebCalService = hebCalService;
         }
 
         // read all flight tickets
@@ -37,7 +41,7 @@ namespace WebApp.Repository
                 var flightTicket = await _context.FlightTickets.FindAsync(id);
                 if (flightTicket == null)
                     throw new FlightTicketRepositoryException($"Flight ticket with ID {id} not found.");
-                return flightTicket;   //return await _context.FlightTickets.FirstOrDefaultAsync(ft => ft.TicketId == id);
+                return flightTicket;   // return await _context.FlightTickets.FirstOrDefaultAsync(ft => ft.TicketId == id);
             }
             catch (Exception ex)
             {
@@ -52,10 +56,17 @@ namespace WebApp.Repository
             {
                 if (await _context.FrequentFlyers.FindAsync(flightTicket.UserId) == null)
                     throw new FlightTicketRepositoryException();
-                if (await _context.Flights.FindAsync(flightTicket.FlightId) == null) 
-                    throw new FlightTicketRepositoryException();
-
                 var flight = await _context.Flights.FindAsync(flightTicket.FlightId);
+                if ( flight == null) 
+                    throw new FlightTicketRepositoryException();
+                else
+                {
+                    if(flight.EstimatedArrivalDateTime != null)
+                    {
+                        flightTicket.ShabatTimes = await _hebCalService.GetHebrewDates(flight.EstimatedArrivalDateTime.ToString()); 
+                        // flightTicket.ShabatTimes = _hebCalService.GetHebrewDates(flight.EstimatedArrivalDateTime.ToString()).Result;
+                    }
+                }
                 switch (flightTicket.TicketType)  
                 {
                     case 1:
@@ -80,7 +91,7 @@ namespace WebApp.Repository
                     case 0:
                         throw new FlightTicketRepositoryException("Ticket Type is required.");
                     default:
-                        throw new FlightTicketRepositoryException("something went wrong in ticket type.")
+                        throw new FlightTicketRepositoryException("something went wrong in ticket type.");
                 }
                 _context.FlightTickets.Add(flightTicket);
                 await _context.SaveChangesAsync();

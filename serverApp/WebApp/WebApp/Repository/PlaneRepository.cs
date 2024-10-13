@@ -11,19 +11,15 @@ namespace WebApp.Repository
     public class PlaneRepository : IPlaneRepository
     {
         private readonly ApplicationDBContext _context;
-        //private readonly ImaggaService _imaggaService;
+        private readonly ImaggaService _imaggaService;
+
         // Constructor
-        public PlaneRepository(ApplicationDBContext context)
-        {
-            _context = context;
-        }
-        /*
          public PlaneRepository(ApplicationDBContext context, ImaggaService ImaggaService)
         {
             _context = context;
             _imaggaService = ImaggaService;
         }
-        */
+        
 
         // read all planes
         public async Task<IEnumerable<Plane>> GetPlanesAsync()
@@ -89,15 +85,14 @@ namespace WebApp.Repository
                     throw new PlaneRepositoryException("Plane year can not be less then 1000");
                 if (plane.MadeBy == "" || plane.MadeBy == "string")
                     throw new PlaneRepositoryException("Plane company name is required.");
-                /* if (plane.Picture != null)  // check if the picture is indeed a plane 
+                 if (plane.Picture != null)  // check if the picture is indeed a plane 
                  {
                      var imageAnalysisResult = await _imaggaService.AnalyzeImage(plane.Picture);
-                     // Check if the image matches a plane
-                     if (!IsPlaneImage(imageAnalysisResult)) // Implement IsPlaneImage function to check if the image is a plane
+                     if (imageAnalysisResult != "good") // check the results if the image is a plane
                      {
                          throw new Exception("The uploaded image is not recognized as a plane.");
                      }
-                 } */
+                 } 
                 if (plane.NumOfSeats1 == null || plane.NumOfSeats2 == null || plane.NumOfSeats3 == null)
                     throw new PlaneRepositoryException("The number of sits for each department is required.");
                 _context.Planes.Add(plane);
@@ -115,12 +110,12 @@ namespace WebApp.Repository
             try
             {
                 Plane newPlane = _context.Planes.FirstOrDefault(e => e.PlaneId == plane.PlaneId);
-                if(newPlane.Picture != plane.Picture) // change the picture 
+                if (newPlane.Picture != plane.Picture) // change the picture 
                 {
-                    //if(_imaggaService.isPlane() == true)
-                    newPlane.Picture = plane.Picture;
-                    //else
-                    //    throw new PlaneRepositoryException("There is no plane in this picture.");
+                    if (await _imaggaService.AnalyzeImage(plane.Picture) == "good")
+                        newPlane.Picture = plane.Picture;
+                    else
+                        throw new PlaneRepositoryException("There is no plane in this picture.");
                 }
                 if(newPlane.NumOfSeats1 != plane.NumOfSeats1)  // change number of seats in class 1
                 {
