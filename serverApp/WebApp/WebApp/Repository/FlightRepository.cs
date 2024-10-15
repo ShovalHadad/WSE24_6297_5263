@@ -72,8 +72,15 @@ namespace WebApp.Repositories
                     {
                         if (flight.EstimatedArrivalDateTime < flight.DepartureDateTime)
                             throw new FlightRepositoryException("Departure date time is bigger then arrival date time.");
-                        // if(flight.EstimatedArrivalDateTime.DayOfWeek == DayOfWeek.Friday)
-                        // check if in shabat ? if yes throw error   ????????????????????????????
+                        if (flight.ArrivalLocation != null)
+                        { try {
+                                string temp = await _hebCalService.GetShabbatTimesAsync(flight.ArrivalLocation, flight.EstimatedArrivalDateTime);
+                                }
+                            catch(Exception ex) 
+                            {
+                                throw new FlightRepositoryException("can not create a flight tht arrived in Shabbat.", ex);
+                            }
+                        }
                     }
                     else 
                         throw new FlightRepositoryException("one of Departure or arrival date time is null");
@@ -110,12 +117,11 @@ namespace WebApp.Repositories
                         throw new FlightRepositoryException("Departure date time is bigger then arrival date time.");
                     if (flight.EstimatedArrivalDateTime != null && flight.EstimatedArrivalDateTime != newFlight.EstimatedArrivalDateTime)
                     {
-                        // check if in shabat ? if yes throw error   ????????????????????????????
                         foreach (FlightTicket flightTicket in await _context.FlightTickets.ToListAsync())
                         {
                             if (flightTicket.FlightId == flight.FlightId) // to find the flight tickets that in this flight
                             {
-                                flightTicket.ShabatTimes = await _hebCalService.GetHebrewDates(flight.EstimatedArrivalDateTime.ToString());  // update shabat times
+                                flightTicket.ShabatTimes = await _hebCalService.GetShabbatTimesAsync(flight.ArrivalLocation, flight.EstimatedArrivalDateTime);  // update Shabbat times
                             }
                         }
                     }

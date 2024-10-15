@@ -102,8 +102,6 @@ namespace WebApp.Repository
                 newFrequentFlyer.Password = frequentFlyer.Password;
                 newFrequentFlyer.Email = frequentFlyer.Email;
                 newFrequentFlyer.IsManager = frequentFlyer.IsManager;
-                //newFrequentFlyer.FlightsIds = frequentFlyer.FlightsIds;
-                //_context.Entry(frequentFlyer).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)

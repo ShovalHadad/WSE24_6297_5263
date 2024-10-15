@@ -41,7 +41,7 @@ namespace WebApp.Repository
                 var flightTicket = await _context.FlightTickets.FindAsync(id);
                 if (flightTicket == null)
                     throw new FlightTicketRepositoryException($"Flight ticket with ID {id} not found.");
-                return flightTicket;   // return await _context.FlightTickets.FirstOrDefaultAsync(ft => ft.TicketId == id);
+                return flightTicket;
             }
             catch (Exception ex)
             {
@@ -63,8 +63,7 @@ namespace WebApp.Repository
                 {
                     if(flight.EstimatedArrivalDateTime != null)
                     {
-                        flightTicket.ShabatTimes = await _hebCalService.GetHebrewDates(flight.EstimatedArrivalDateTime.ToString()); 
-                        // flightTicket.ShabatTimes = _hebCalService.GetHebrewDates(flight.EstimatedArrivalDateTime.ToString()).Result;
+                        flightTicket.ShabatTimes = await _hebCalService.GetShabbatTimesAsync(flight.ArrivalLocation, flight.EstimatedArrivalDateTime); 
                     }
                 }
                 switch (flightTicket.TicketType)  
@@ -72,7 +71,6 @@ namespace WebApp.Repository
                     case 1:
                         if (flight?.NumOfTakenSeats1 != 0)
                             flight.NumOfTakenSeats1--;  
-                            //_context.Flights.Update(flight);
                         else 
                             throw new FlightTicketRepositoryException("there is no sits left in this class");
                         break;
@@ -166,7 +164,6 @@ namespace WebApp.Repository
                 }
                 if (newTicket.UserId != flightTicket.UserId || newTicket.FlightId != flightTicket.FlightId)
                     throw new FlightTicketRepositoryException("can not have different user or flight numbers.");
-               // _context.Entry(flightTicket).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)

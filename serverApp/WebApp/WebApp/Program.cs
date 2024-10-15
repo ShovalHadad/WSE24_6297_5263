@@ -4,6 +4,7 @@ using WebApp.Data;
 using WebApp.Interfaces;
 using WebApp.Repositories;
 using WebApp.Repository;
+using WebApp.Services;
 
 
 
@@ -18,9 +19,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Configure Entity Framework with SQL Server
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Register the services
+builder.Services.AddHttpClient<ImaggaService>();
+builder.Services.AddHttpClient<HebCalService>();
 
 // Add the repositories to Server
 builder.Services.AddScoped<IPlaneRepository, PlaneRepository>();

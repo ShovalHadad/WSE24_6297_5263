@@ -52,31 +52,7 @@ namespace WebApp.Repository
 
         // create new plane
         public async Task CreatePlaneAsync(Plane plane)
-        {/*
-            if (plane.Image != null)
-            {
-                // Convert image to a stream
-                using var stream = imageFile.OpenReadStream();
-
-                // Upload the image to Imagga or any external service and get the image URL
-                string imageUrl = await UploadImageAndGetUrl(stream);
-
-                // Use ImaggaService to verify the image
-                var imageAnalysisResult = await _imaggaService.AnalyzeImage(imageUrl);
-
-                // Check if the image matches a plane
-                if (!IsPlaneImage(imageAnalysisResult)) // Implement IsPlaneImage function to check if the image is a plane
-                {
-                    throw new Exception("The uploaded image is not recognized as a plane.");
-                }
-
-                // If image is valid, assign the imageUrl to the plane object
-                plane.ImageUrl = imageUrl;
-            }
-            else
-            {
-                throw new Exception("An image file is required.");
-            }*/
+        {
             try
             {
                 if (plane.Name == "string" || plane.Name == "")
@@ -86,13 +62,8 @@ namespace WebApp.Repository
                 if (plane.MadeBy == "" || plane.MadeBy == "string")
                     throw new PlaneRepositoryException("Plane company name is required.");
                  if (plane.Picture != null)  // check if the picture is indeed a plane 
-                 {
-                     var imageAnalysisResult = await _imaggaService.AnalyzeImage(plane.Picture);
-                     if (imageAnalysisResult != "good") // check the results if the image is a plane
-                     {
+                     if (!await _imaggaService.AnalyzeImageForPlane(plane.Picture)) // check the results if the image is a plane
                          throw new Exception("The uploaded image is not recognized as a plane.");
-                     }
-                 } 
                 if (plane.NumOfSeats1 == null || plane.NumOfSeats2 == null || plane.NumOfSeats3 == null)
                     throw new PlaneRepositoryException("The number of sits for each department is required.");
                 _context.Planes.Add(plane);
@@ -112,7 +83,7 @@ namespace WebApp.Repository
                 Plane newPlane = _context.Planes.FirstOrDefault(e => e.PlaneId == plane.PlaneId);
                 if (newPlane.Picture != plane.Picture) // change the picture 
                 {
-                    if (await _imaggaService.AnalyzeImage(plane.Picture) == "good")
+                    if (await _imaggaService.AnalyzeImageForPlane(plane.Picture))
                         newPlane.Picture = plane.Picture;
                     else
                         throw new PlaneRepositoryException("There is no plane in this picture.");
