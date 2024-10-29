@@ -37,4 +37,4 @@ class FlightTicketController:
         if response.status_code == 204:
             return "Flight ticket deleted successfully."
         else:
-            raise Exception(f"Failed to delete flight ticket with ID {ticket_id}.")
+            raise Exception(f"Failed to delete flight ticket with ID {ticket_id}.")   
