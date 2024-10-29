@@ -83,8 +83,8 @@ namespace WebApp.Repository
         {
             try
             {
-                FrequentFlyer? newFrequentFlyer = _context.FrequentFlyers.FirstOrDefault(e => e.FlyerId == frequentFlyer.FlyerId);
-                if(newFrequentFlyer.UserName != frequentFlyer.UserName)
+                FrequentFlyer? oldFrequentFlyer = _context.FrequentFlyers.FirstOrDefault(e => e.FlyerId == frequentFlyer.FlyerId);
+                if(oldFrequentFlyer.UserName != frequentFlyer.UserName)
                 {
                     bool flag = false;
                     foreach (FrequentFlyer flyer in await _context.FrequentFlyers.ToListAsync())
@@ -95,13 +95,13 @@ namespace WebApp.Repository
                     if (flag == true)
                         throw new FrequentFlyerRepositoryException($"{frequentFlyer.UserName} This user name already exist.");
                 }
-                newFrequentFlyer.UserName = frequentFlyer.UserName;
-                newFrequentFlyer.LastName = frequentFlyer.LastName;
-                newFrequentFlyer.FirstName = frequentFlyer.FirstName;
-                newFrequentFlyer.PhoneNumber = frequentFlyer.PhoneNumber;
-                newFrequentFlyer.Password = frequentFlyer.Password;
-                newFrequentFlyer.Email = frequentFlyer.Email;
-                newFrequentFlyer.IsManager = frequentFlyer.IsManager;
+                oldFrequentFlyer.UserName = frequentFlyer.UserName;
+                oldFrequentFlyer.LastName = frequentFlyer.LastName;
+                oldFrequentFlyer.FirstName = frequentFlyer.FirstName;
+                oldFrequentFlyer.PhoneNumber = frequentFlyer.PhoneNumber;
+                oldFrequentFlyer.Password = frequentFlyer.Password;
+                oldFrequentFlyer.Email = frequentFlyer.Email;
+                oldFrequentFlyer.IsManager = frequentFlyer.IsManager;
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -115,7 +115,7 @@ namespace WebApp.Repository
         {
             try
             {
-                var frequentFlyer = await _context.FrequentFlyers.FindAsync(id);
+                var frequentFlyer = _context.FrequentFlyers.FirstOrDefault(e => e.FlyerId == id);
                 if (frequentFlyer == null)
                     throw new FrequentFlyerRepositoryException($"can not find frequent flyer with {id} id to delete."); // return;
                 if (frequentFlyer.FlightsIds == null)
@@ -128,7 +128,7 @@ namespace WebApp.Repository
                     List<int> ticketsIds = new List<int>();
                     foreach (int flightId in frequentFlyer.FlightsIds)
                     {
-                        Flight flight = await _context.Flights.FindAsync(flightId);
+                        Flight flight = _context.Flights.FirstOrDefault(e => e.FlightId == flightId);
                         foreach (FlightTicket flightTicket in await _context.FlightTickets.ToListAsync())
                         {
                             if (flightTicket.UserId == id && flightTicket.FlightId == flightId)

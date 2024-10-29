@@ -19,7 +19,6 @@ namespace WebApp.Repository
             _context = context;
             _imaggaService = ImaggaService;
         }
-        
 
         // read all planes
         public async Task<IEnumerable<Plane>> GetPlanesAsync()
@@ -141,7 +140,7 @@ namespace WebApp.Repository
         {
             try
             {
-                var plane = await _context.Planes.FindAsync(id);
+                Plane? plane = _context.Planes.FirstOrDefault(e => e.PlaneId == id);
                 foreach (Flight flight in await _context.Flights.ToListAsync())
                 {
                     if (flight.PlaneId == id)
@@ -152,7 +151,8 @@ namespace WebApp.Repository
                         flight.NumOfTakenSeats3 = null;
                     }
                 }
-                _context.Planes.Remove(plane);
+                if (plane != null)
+                    _context.Planes.Remove(plane);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
