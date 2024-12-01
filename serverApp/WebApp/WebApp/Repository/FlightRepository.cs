@@ -58,27 +58,34 @@ namespace WebApp.Repositories
         {
             try
             {
-                if (flight.DepartureLocation == "string" || flight.ArrivalLocation == "string" || flight.ArrivalLocation == "" || flight.DepartureLocation == "")
-                    throw new FlightRepositoryException("Departure or arrival locations are required.");
+                Flight emptyFlight = new Flight();
+                if (flight.ArrivalLocation == emptyFlight.ArrivalLocation)
+                    throw new FlightRepositoryException("Arrival locations is required.");
+                if (flight.DepartureLocation == emptyFlight.DepartureLocation)
+                    throw new FlightRepositoryException("Departure locations is required.");
+                if (flight.PlaneId == emptyFlight.PlaneId)
+                    throw new FlightRepositoryException("Plane Id is required.");
                 var plane = await _context.Planes.FindAsync(flight.PlaneId);
                 if (plane == null)
                     throw new FlightRepositoryException("A valid plane ID is required to create a flight.");
                 flight.NumOfTakenSeats1 = plane.NumOfSeats1;
                 flight.NumOfTakenSeats2 = plane.NumOfSeats2;
                 flight.NumOfTakenSeats3 = plane.NumOfSeats3;
-                if (flight.EstimatedArrivalDateTime != null || flight.DepartureDateTime != null)
+                if (flight.ArrivalLocation == emptyFlight.ArrivalLocation || flight.DepartureLocation == emptyFlight.ArrivalLocation || flight.ArrivalLocation == "string" || flight.DepartureLocation == "string")
+                    throw new FlightRepositoryException("one of Departure or arrival location is null");
+                if (flight.EstimatedArrivalDateTime.ToString("O").EndsWith("Z"))
+                    throw new FlightRepositoryException("The Arrival date time is null");
+                if (flight.DepartureDateTime.ToString("O").EndsWith("Z"))
+                    throw new FlightRepositoryException("The Departure date time is null");
+                if (flight.EstimatedArrivalDateTime != emptyFlight.EstimatedArrivalDateTime && flight.DepartureDateTime != emptyFlight.DepartureDateTime)
                 {
-                    if(flight.EstimatedArrivalDateTime != null)
-                        if(await _hebCalService.IsDateInShabbat(flight.EstimatedArrivalDateTime) == false)
-                            throw new FlightRepositoryException("can not create a flight that arrived in Shabbat.");
-                    if (flight.EstimatedArrivalDateTime != null && flight.DepartureDateTime != null)
-                    {
-                        if (flight.EstimatedArrivalDateTime < flight.DepartureDateTime)
-                            throw new FlightRepositoryException("Departure date time is bigger then arrival date time.");
-                    }
-                    else 
-                        throw new FlightRepositoryException("one of Departure or arrival date time is null");
+                    if (await _hebCalService.IsDateInShabbat(flight.EstimatedArrivalDateTime) == true)
+                        throw new FlightRepositoryException("can not create a flight that arrived in Shabbat.");
+                    if (flight.EstimatedArrivalDateTime < flight.DepartureDateTime)
+                        throw new FlightRepositoryException("Departure date time is bigger then arrival date time.");
                 }
+                else
+                    throw new FlightRepositoryException("one of Departure or Arrival date time is null");
                 _context.Flights.Add(flight);
                 await _context.SaveChangesAsync();
             }
@@ -89,12 +96,17 @@ namespace WebApp.Repositories
         }
 
         // update a flight
-        public async Task UpdateFlightAsync(Flight flight)
+        public async Task UpdateFlightAsync(int id, Flight flight)
         {
             try
             {
-                Flight? oldFlight =  _context.Flights.FirstOrDefault(e => e.FlightId == flight.FlightId);
-                if (oldFlight.PlaneId != flight.PlaneId)  // change planes 
+                Flight emptyFlight = new Flight();
+                emptyFlight.EstimatedArrivalDateTime = DateTime.Now;
+                emptyFlight.DepartureDateTime = DateTime.Now;
+                Flight? oldFlight = _context.Flights.FirstOrDefault(e => e.FlightId == id);
+                if (oldFlight == null)
+                    throw new FlightRepositoryException("can not find the flight.");
+                if (oldFlight.PlaneId != flight.PlaneId && flight.PlaneId != emptyFlight.PlaneId)  // change planes 
                 {
                     var oldPlane = await _context.Planes.FindAsync(oldFlight.PlaneId);
                     // number of people in every department in the flight
@@ -103,31 +115,49 @@ namespace WebApp.Repositories
                     int? numOfFlyers3 = oldPlane.NumOfSeats3 - oldFlight.NumOfTakenSeats3;
                     Plane newPlane = await _context.Planes.FindAsync(flight.PlaneId);
                     // update number of people in every department
-                    flight.NumOfTakenSeats1 = newPlane.NumOfSeats1 - numOfFlyers1;
-                    flight.NumOfTakenSeats2 = newPlane.NumOfSeats2 - numOfFlyers2;
-                    flight.NumOfTakenSeats3 = newPlane.NumOfSeats3 - numOfFlyers3;
+                    oldFlight.NumOfTakenSeats1 = newPlane.NumOfSeats1 - numOfFlyers1;
+                    oldFlight.NumOfTakenSeats2 = newPlane.NumOfSeats2 - numOfFlyers2;
+                    oldFlight.NumOfTakenSeats3 = newPlane.NumOfSeats3 - numOfFlyers3;
+                    oldFlight.PlaneId = flight.PlaneId;  // update planeId
                 }
-                if (flight.DepartureDateTime != oldFlight.DepartureDateTime || flight.EstimatedArrivalDateTime != oldFlight.EstimatedArrivalDateTime)  // change date times
+               
+                if (flight.DepartureDateTime.Date != emptyFlight.DepartureDateTime.Date &&
+                   flight.EstimatedArrivalDateTime.Date != emptyFlight.EstimatedArrivalDateTime.Date)  // change date times
                 {
                     if (flight.EstimatedArrivalDateTime < flight.DepartureDateTime)
                         throw new FlightRepositoryException("Departure date time is bigger then arrival date time.");
-                    if (flight.EstimatedArrivalDateTime != null && flight.EstimatedArrivalDateTime != oldFlight.EstimatedArrivalDateTime)
+                    if (await _hebCalService.IsDateInShabbat(flight.EstimatedArrivalDateTime) == true)
+                        throw new FlightRepositoryException("can not create a flight that arrived in Shabbat.");
+                    oldFlight.DepartureDateTime = flight.DepartureDateTime;
+                    oldFlight.EstimatedArrivalDateTime = flight.EstimatedArrivalDateTime;
+                }
+                else
+                {
+                    if (flight.DepartureDateTime.Date != emptyFlight.DepartureDateTime.Date)
                     {
-                        foreach (FlightTicket flightTicket in await _context.FlightTickets.ToListAsync())
+                        if (oldFlight.EstimatedArrivalDateTime < flight.DepartureDateTime)
+                            throw new FlightRepositoryException("Departure date time is bigger then arrival date time.");
+                        oldFlight.DepartureDateTime = flight.DepartureDateTime;
+                    }
+                    else
+                    {
+                        if (flight.EstimatedArrivalDateTime.Date != emptyFlight.EstimatedArrivalDateTime.Date)
                         {
-                            if (flightTicket.FlightId == flight.FlightId) // to find the flight tickets that in this flight
-                                flightTicket.ShabatTimes = await _hebCalService.GetShabbatTimesAndParashaAsync(flight.EstimatedArrivalDateTime); // update Shabbat times
+                            if (flight.EstimatedArrivalDateTime < oldFlight.DepartureDateTime)
+                                throw new FlightRepositoryException("Departure date time is bigger then arrival date time.");
+                            if (await _hebCalService.IsDateInShabbat(flight.EstimatedArrivalDateTime) == true)
+                                throw new FlightRepositoryException("can not create a flight that arrived in Shabbat.");
+                            foreach (FlightTicket flightTicket in await _context.FlightTickets.ToListAsync())
+                            {
+                                if (flightTicket.FlightId == flight.FlightId) // to find the flight tickets that in this flight
+                                    flightTicket.ShabatTimes = await _hebCalService.GetShabbatTimesAndParashaAsync(flight.EstimatedArrivalDateTime); // update Shabbat times
+                            }
+                            oldFlight.EstimatedArrivalDateTime = flight.EstimatedArrivalDateTime;
                         }
                     }
                 }
-                oldFlight.EstimatedArrivalDateTime =(flight.EstimatedArrivalDateTime != null) ? flight.EstimatedArrivalDateTime : oldFlight.EstimatedArrivalDateTime;
-                oldFlight.DepartureDateTime = (flight.DepartureDateTime != null) ? flight.DepartureDateTime : oldFlight.DepartureDateTime;
-                oldFlight.ArrivalLocation = (flight.ArrivalLocation != null) ? flight.ArrivalLocation : oldFlight.ArrivalLocation;
-                oldFlight.DepartureLocation = (flight.DepartureLocation != null) ? flight.DepartureLocation : oldFlight.DepartureLocation;
-                oldFlight.NumOfTakenSeats1 = flight.NumOfTakenSeats1;
-                oldFlight.NumOfTakenSeats2 = flight.NumOfTakenSeats2;
-                oldFlight.NumOfTakenSeats3 = flight.NumOfTakenSeats3;
-                oldFlight.PlaneId = flight.PlaneId;
+                oldFlight.ArrivalLocation = (flight.ArrivalLocation != emptyFlight.ArrivalLocation && flight.ArrivalLocation != "string") ? flight.ArrivalLocation : oldFlight.ArrivalLocation;
+                oldFlight.DepartureLocation = (flight.DepartureLocation != emptyFlight.DepartureLocation && flight.DepartureLocation != "string") ? flight.DepartureLocation : oldFlight.DepartureLocation;
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)

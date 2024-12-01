@@ -54,15 +54,19 @@ namespace WebApp.Repository
         {
             try
             {
-                FrequentFlyer flyer = _context.FrequentFlyers.FirstOrDefault(e => e.FlyerId == flightTicket.UserId);
+                FlightTicket emptyTicket = new FlightTicket();
+                if(flightTicket.TicketType == emptyTicket.TicketType || flightTicket.UserId == emptyTicket.UserId || flightTicket.FlightId == emptyTicket.FlightId)
+                    throw new FlightTicketRepositoryException("one of the fields is missing.");
+                FrequentFlyer? flyer = _context.FrequentFlyers.FirstOrDefault(e => e.FlyerId == flightTicket.UserId);
                 if (flyer == null)
-                    throw new FlightTicketRepositoryException();
-                Flight flight = _context.Flights.FirstOrDefault(e => e.FlightId == flightTicket.FlightId);
+                    throw new FlightTicketRepositoryException("can not find the flyer.");
+                Flight? flight = _context.Flights.FirstOrDefault(e => e.FlightId == flightTicket.FlightId);
                 if (flight == null)
-                    throw new FlightTicketRepositoryException();
+                    throw new FlightTicketRepositoryException("can not find the flight.");
                 else
                 {
-                    if (flight.EstimatedArrivalDateTime != null)
+                    Flight emptyFlight = new Flight();
+                    if (flight.EstimatedArrivalDateTime != emptyFlight.EstimatedArrivalDateTime)
                         flightTicket.ShabatTimes = await _hebCalService.GetShabbatTimesAndParashaAsync(flight.EstimatedArrivalDateTime);
                 }
                 switch (flightTicket.TicketType)
@@ -114,14 +118,19 @@ namespace WebApp.Repository
         }
 
         // update a flight ticket
-        public async Task UpdateFlightTicketAsync(FlightTicket flightTicket)
+        public async Task UpdateFlightTicketAsync(int id, FlightTicket flightTicket)
         {
             try
             {
-                FlightTicket oldTicket = _context.FlightTickets.FirstOrDefault(e => e.TicketId == flightTicket.TicketId);
-                if((oldTicket.TicketType != flightTicket.TicketType) && flightTicket.TicketType != 0) // changed the ticket class
+                FlightTicket emptyTicket = new FlightTicket();
+                FlightTicket oldTicket = _context.FlightTickets.FirstOrDefault(e => e.TicketId == id);
+                if (oldTicket == null)
+                    throw new FlightTicketRepositoryException("Can not find the ticket.");
+                if (oldTicket.TicketType != flightTicket.TicketType && flightTicket.TicketType != emptyTicket.TicketType) // changed the ticket class
                 {
                     Flight flight = _context.Flights.FirstOrDefault(e => e.FlightId == oldTicket.FlightId);
+                    if (flight == null)
+                        throw new FlightTicketRepositoryException("can not find the flight that in the ticket.");
                     switch(oldTicket.TicketType)  // cancel the old seat
                     {
                         case 1:
@@ -147,7 +156,7 @@ namespace WebApp.Repository
                                     oldTicket.price = "1500$";
                                 }
                                 else
-                                    throw new FlightTicketRepositoryException("there is no sits left in this class");
+                                    throw new FlightTicketRepositoryException("there is no seats left in this class");
                             }
                             break;
                         case 2:
@@ -159,7 +168,7 @@ namespace WebApp.Repository
                                     oldTicket.price = "800$";
                                 }
                                 else 
-                                    throw new FlightTicketRepositoryException("there is no sits left in this class");
+                                    throw new FlightTicketRepositoryException("there is no seats left in this class");
                             }
                             break;
                         case 3:
@@ -171,7 +180,7 @@ namespace WebApp.Repository
                                     oldTicket.price = "300$";
                                 }
                                 else
-                                    throw new FlightTicketRepositoryException("there is no sits left in this class");
+                                    throw new FlightTicketRepositoryException("there is no seats left in this class");
                             }
                             break;
                         default:

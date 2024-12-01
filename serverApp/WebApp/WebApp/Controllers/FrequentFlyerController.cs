@@ -80,7 +80,7 @@ namespace WebApp.Controllers
                 return NotFound();
             try
             {
-                await _frequentFlyerRepo.UpdateFrequentFlyerAsync(frequentFlyer);
+                await _frequentFlyerRepo.UpdateFrequentFlyerAsync(id, frequentFlyer);
                 return NoContent();
             }
             catch (Exception ex)

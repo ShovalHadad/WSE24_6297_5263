@@ -7,7 +7,7 @@ namespace WebApp.Interfaces
         Task<IEnumerable<Flight>> GetFlightsAsync();
         Task<Flight> GetFlightByIdAsync(int id);
         Task CreateFlightAsync(Flight flight);
-        Task UpdateFlightAsync(Flight flight);
+        Task UpdateFlightAsync(int id, Flight flight);
         Task DeleteFlightAsync(int id);
         Task<bool> FlightExistsAsync(int id);
     }

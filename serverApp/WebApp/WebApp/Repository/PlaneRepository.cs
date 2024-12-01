@@ -54,8 +54,13 @@ namespace WebApp.Repository
         {
             try
             {
-                if (plane.Name == "string" || plane.Name == "")
+                Plane emptyPlane = new Plane();
+                if (plane.Name == emptyPlane.Name)
                     throw new PlaneRepositoryException("Plane name is required.");
+                if (plane.NumOfSeats1 == emptyPlane.NumOfSeats1 || plane.NumOfSeats2 == emptyPlane.NumOfSeats2 || plane.NumOfSeats3 == emptyPlane.NumOfSeats3)
+                    throw new PlaneRepositoryException("The number of sits for each department is required.");
+                if (plane.Year == emptyPlane.Year || plane.MadeBy == emptyPlane.MadeBy)
+                    throw new PlaneRepositoryException("one of the fields is missing.");
                 if (plane.Year < 1000)
                     throw new PlaneRepositoryException("Plane year can not be less then 1000");
                 if (plane.MadeBy == "" || plane.MadeBy == "string")
@@ -63,8 +68,6 @@ namespace WebApp.Repository
                  if (plane.Picture != null)  // check if the picture is indeed a plane 
                      if (!await _imaggaService.AnalyzeImageForPlane(plane.Picture)) // check the results if the image is a plane
                          throw new Exception("The uploaded image is not recognized as a plane.");
-                if (plane.NumOfSeats1 == null || plane.NumOfSeats2 == null || plane.NumOfSeats3 == null)
-                    throw new PlaneRepositoryException("The number of sits for each department is required.");
                 _context.Planes.Add(plane);
                 await _context.SaveChangesAsync();
             }
@@ -75,57 +78,60 @@ namespace WebApp.Repository
         }
 
         // update a plane by id
-        public async Task UpdatePlaneAsync(Plane plane)
+        public async Task UpdatePlaneAsync(int id, Plane plane)
         {
             try
             {
-                Plane newPlane = _context.Planes.FirstOrDefault(e => e.PlaneId == plane.PlaneId);
-                if (newPlane.Picture != plane.Picture) // change the picture 
+                Plane emptyPlane = new Plane();
+                Plane oldPlane = _context.Planes.FirstOrDefault(e => e.PlaneId == id);
+                if (emptyPlane == null)
+                    throw new PlaneRepositoryException("can not find the plane.");
+                if (oldPlane.Picture != plane.Picture && plane.Picture != emptyPlane.Picture) // change the picture 
                 {
                     if (await _imaggaService.AnalyzeImageForPlane(plane.Picture))
-                        newPlane.Picture = plane.Picture;
+                        oldPlane.Picture = plane.Picture;
                     else
                         throw new PlaneRepositoryException("There is no plane in this picture.");
                 }
-                if(newPlane.NumOfSeats1 != plane.NumOfSeats1)  // change number of seats in class 1
+                if(oldPlane.NumOfSeats1 != plane.NumOfSeats1 && plane.NumOfSeats1 != emptyPlane.NumOfSeats1)  // change number of seats in class 1
                 {
                     foreach (Flight flight in await _context.Flights.ToListAsync())
                     {
                         if(flight.PlaneId == plane.PlaneId)
                         {
                             Flight? newFlight = _context.Flights.FirstOrDefault(e => e.FlightId == flight.FlightId);
-                            newFlight.NumOfTakenSeats1 = newPlane.NumOfSeats1 - (newPlane.NumOfSeats1 - flight.NumOfTakenSeats1);
+                            newFlight.NumOfTakenSeats1 = oldPlane.NumOfSeats1 - (oldPlane.NumOfSeats1 - flight.NumOfTakenSeats1);
                         }
                     }
-                    newPlane.NumOfSeats1 = plane.NumOfSeats1;
+                    oldPlane.NumOfSeats1 = plane.NumOfSeats1;
                 }
-                if (newPlane.NumOfSeats2 != plane.NumOfSeats2)  // change number of seats in class 2
+                if (oldPlane.NumOfSeats2 != plane.NumOfSeats2 && plane.NumOfSeats2 != emptyPlane.NumOfSeats2)  // change number of seats in class 2
                 {
                     foreach (Flight flight in await _context.Flights.ToListAsync())
                     {
                         if (flight.PlaneId == plane.PlaneId)
                         {
                             Flight? newFlight = _context.Flights.FirstOrDefault(e => e.FlightId == flight.FlightId);
-                            newFlight.NumOfTakenSeats2 = newPlane.NumOfSeats2 - (newPlane.NumOfSeats2 - flight.NumOfTakenSeats2);
+                            newFlight.NumOfTakenSeats2 = oldPlane.NumOfSeats2 - (oldPlane.NumOfSeats2 - flight.NumOfTakenSeats2);
                         }
                     }
-                    newPlane.NumOfSeats2 = plane.NumOfSeats2;
+                    oldPlane.NumOfSeats2 = plane.NumOfSeats2;
                 }
-                if (newPlane.NumOfSeats3 != plane.NumOfSeats3)  // change number of seats in class 3
+                if (oldPlane.NumOfSeats3 != plane.NumOfSeats3 && plane.NumOfSeats3 != emptyPlane.NumOfSeats3)  // change number of seats in class 3
                 {
                     foreach (Flight flight in await _context.Flights.ToListAsync())
                     {
                         if (flight.PlaneId == plane.PlaneId)
                         {
                             Flight? newFlight = _context.Flights.FirstOrDefault(e => e.FlightId == flight.FlightId);
-                            newFlight.NumOfTakenSeats3 = newPlane.NumOfSeats3 - (newPlane.NumOfSeats3 - flight.NumOfTakenSeats3);
+                            newFlight.NumOfTakenSeats3 = oldPlane.NumOfSeats3 - (oldPlane.NumOfSeats3 - flight.NumOfTakenSeats3);
                         }
                     }
-                    newPlane.NumOfSeats3 = plane.NumOfSeats3;
+                    oldPlane.NumOfSeats3 = plane.NumOfSeats3;
                 }
-                newPlane.Name = plane.Name;
-                newPlane.Year = plane.Year;
-                newPlane.MadeBy = plane.MadeBy;
+                oldPlane.Name = (plane.Name != oldPlane.Name && plane.Name != emptyPlane.Name) ? plane.Name : oldPlane.Name;
+                oldPlane.Year = (plane.Year != oldPlane.Year && plane.Year != emptyPlane.Year) ? plane.Year : oldPlane.Year;
+                oldPlane.MadeBy = (plane.MadeBy != oldPlane.MadeBy && plane.MadeBy != emptyPlane.MadeBy) ? plane.MadeBy : oldPlane.MadeBy;
                 //_context.Entry(plane).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
             }

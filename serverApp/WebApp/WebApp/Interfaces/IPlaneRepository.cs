@@ -7,7 +7,7 @@ namespace WebApp.Interfaces
         Task<IEnumerable<Plane>> GetPlanesAsync();
         Task<Plane> GetPlaneByIdAsync(int id);
         Task CreatePlaneAsync(Plane plane);
-        Task UpdatePlaneAsync(Plane plane);
+        Task UpdatePlaneAsync(int id, Plane plane);
         Task DeletePlaneAsync(int id);
         Task<bool> PlaneExistsAsync(int id);
     }

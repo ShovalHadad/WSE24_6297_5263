@@ -50,13 +50,14 @@ namespace WebApp.Repository
         {
             try
             {
-                if (frequentFlyer.Password == "" || frequentFlyer.Password == "string")
+                FrequentFlyer emptyFlyer = new FrequentFlyer();
+                if (frequentFlyer.Password == emptyFlyer.Password)
                     throw new FrequentFlyerRepositoryException("Password is required.");
-                if (frequentFlyer.FirstName == "" || frequentFlyer.FirstName == "string")
+                if (frequentFlyer.FirstName == emptyFlyer.FirstName)
                     throw new FrequentFlyerRepositoryException("First name is required.");
-                if (frequentFlyer.LastName == "" || frequentFlyer.LastName == "string")
+                if (frequentFlyer.LastName == emptyFlyer.LastName)
                     throw new FrequentFlyerRepositoryException("Last name is required.");
-                if (frequentFlyer.UserName == "" || frequentFlyer.UserName == "string")
+                if (frequentFlyer.UserName == emptyFlyer.UserName)
                     throw new FrequentFlyerRepositoryException("User name is required.");
                 else   // check if this user name already exist  
                 {
@@ -79,12 +80,17 @@ namespace WebApp.Repository
         }
 
         // update a frequent flyer
-        public async Task UpdateFrequentFlyerAsync(FrequentFlyer frequentFlyer)
+        public async Task UpdateFrequentFlyerAsync(int id, FrequentFlyer frequentFlyer)
         {
             try
             {
-                FrequentFlyer? oldFrequentFlyer = _context.FrequentFlyers.FirstOrDefault(e => e.FlyerId == frequentFlyer.FlyerId);
-                if(oldFrequentFlyer.UserName != frequentFlyer.UserName)
+                FrequentFlyer emptyFlyer = new FrequentFlyer();
+                FrequentFlyer? oldFrequentFlyer = _context.FrequentFlyers.FirstOrDefault(e => e.FlyerId == id);
+                if(oldFrequentFlyer == null)
+                    throw new FrequentFlyerRepositoryException("Can not find the user.");
+                if (frequentFlyer.Password != oldFrequentFlyer.Password && frequentFlyer.Password != emptyFlyer.Password)
+                    throw new FrequentFlyerRepositoryException($"{frequentFlyer.UserName} Can not change the Password.");
+                if (oldFrequentFlyer.UserName != frequentFlyer.UserName && frequentFlyer.UserName != emptyFlyer.UserName)
                 {
                     bool flag = false;
                     foreach (FrequentFlyer flyer in await _context.FrequentFlyers.ToListAsync())
@@ -94,14 +100,13 @@ namespace WebApp.Repository
                     }
                     if (flag == true)
                         throw new FrequentFlyerRepositoryException($"{frequentFlyer.UserName} This user name already exist.");
+                    oldFrequentFlyer.UserName = frequentFlyer.UserName;
                 }
-                oldFrequentFlyer.UserName = frequentFlyer.UserName;
-                oldFrequentFlyer.LastName = frequentFlyer.LastName;
-                oldFrequentFlyer.FirstName = frequentFlyer.FirstName;
-                oldFrequentFlyer.PhoneNumber = frequentFlyer.PhoneNumber;
-                oldFrequentFlyer.Password = frequentFlyer.Password;
-                oldFrequentFlyer.Email = frequentFlyer.Email;
-                oldFrequentFlyer.IsManager = frequentFlyer.IsManager;
+                oldFrequentFlyer.LastName = ((frequentFlyer.LastName != oldFrequentFlyer.LastName) && (frequentFlyer.LastName != emptyFlyer.LastName)) ? frequentFlyer.LastName : oldFrequentFlyer.LastName;
+                oldFrequentFlyer.FirstName = ((frequentFlyer.FirstName != oldFrequentFlyer.FirstName) && (frequentFlyer.FirstName != emptyFlyer.FirstName)) ? frequentFlyer.FirstName : oldFrequentFlyer.FirstName;
+                oldFrequentFlyer.PhoneNumber = ((frequentFlyer.PhoneNumber != oldFrequentFlyer.PhoneNumber) && (frequentFlyer.PhoneNumber != emptyFlyer.PhoneNumber)) ? frequentFlyer.PhoneNumber : oldFrequentFlyer.PhoneNumber;
+                oldFrequentFlyer.Email = ((frequentFlyer.Email != oldFrequentFlyer.Email) && (frequentFlyer.Email != emptyFlyer.Email)) ? frequentFlyer.Email : oldFrequentFlyer.Email;
+                oldFrequentFlyer.IsManager = ((frequentFlyer.IsManager != oldFrequentFlyer.IsManager) && (frequentFlyer.IsManager != emptyFlyer.IsManager)) ? frequentFlyer.IsManager : oldFrequentFlyer.IsManager;
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)

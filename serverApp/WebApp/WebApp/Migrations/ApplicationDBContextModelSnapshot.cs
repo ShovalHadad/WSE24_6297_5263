@@ -44,9 +44,6 @@ namespace WebApp.Migrations
                     b.Property<DateTime>("EstimatedArrivalDateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("FrequentFlyerFlyerId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("NumOfTakenSeats1")
                         .HasColumnType("int");
 
@@ -60,8 +57,6 @@ namespace WebApp.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("FlightId");
-
-                    b.HasIndex("FrequentFlyerFlyerId");
 
                     b.ToTable("Flights");
                 });
@@ -79,6 +74,9 @@ namespace WebApp.Migrations
 
                     b.Property<string>("FirstName")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FlightsIds")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsManager")
@@ -129,8 +127,8 @@ namespace WebApp.Migrations
                     b.Property<int>("NumOfSeats3")
                         .HasColumnType("int");
 
-                    b.Property<byte[]>("Picture")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<string>("Picture")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Year")
                         .HasColumnType("int");
@@ -148,8 +146,15 @@ namespace WebApp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TicketId"));
 
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("FlightId")
                         .HasColumnType("int");
+
+                    b.Property<string>("ShabatTimes")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TicketType")
                         .HasColumnType("int");
@@ -157,25 +162,13 @@ namespace WebApp.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
+                    b.Property<string>("price")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("TicketId");
 
                     b.ToTable("FlightTickets");
-                });
-
-            modelBuilder.Entity("WebApp.Models.Flight", b =>
-                {
-                    b.HasOne("WebApp.Models.FrequentFlyer", "FrequentFlyer")
-                        .WithMany("UserFlights")
-                        .HasForeignKey("FrequentFlyerFlyerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("FrequentFlyer");
-                });
-
-            modelBuilder.Entity("WebApp.Models.FrequentFlyer", b =>
-                {
-                    b.Navigation("UserFlights");
                 });
 #pragma warning restore 612, 618
         }

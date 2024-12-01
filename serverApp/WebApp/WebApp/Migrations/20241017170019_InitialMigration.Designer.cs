@@ -12,8 +12,8 @@ using WebApp.Data;
 namespace WebApp.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20240917121626_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20241017170019_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -47,26 +47,19 @@ namespace WebApp.Migrations
                     b.Property<DateTime>("EstimatedArrivalDateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("FrequentFlyerFlyerId")
+                    b.Property<int?>("NumOfTakenSeats1")
                         .HasColumnType("int");
 
-                    b.Property<int>("NumOfTakenSeats1")
+                    b.Property<int?>("NumOfTakenSeats2")
                         .HasColumnType("int");
 
-                    b.Property<int>("NumOfTakenSeats2")
-                        .HasColumnType("int");
-
-                    b.Property<int>("NumOfTakenSeats3")
+                    b.Property<int?>("NumOfTakenSeats3")
                         .HasColumnType("int");
 
                     b.Property<int>("PlaneId")
                         .HasColumnType("int");
 
                     b.HasKey("FlightId");
-
-                    b.HasIndex("FrequentFlyerFlyerId");
-
-                    b.HasIndex("PlaneId");
 
                     b.ToTable("Flights");
                 });
@@ -80,11 +73,13 @@ namespace WebApp.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FlyerId"));
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FlightsIds")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsManager")
@@ -98,7 +93,7 @@ namespace WebApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PhoneNumber")
+                    b.Property<int?>("PhoneNumber")
                         .HasColumnType("int");
 
                     b.Property<string>("UserName")
@@ -135,8 +130,8 @@ namespace WebApp.Migrations
                     b.Property<int>("NumOfSeats3")
                         .HasColumnType("int");
 
-                    b.Property<byte[]>("Picture")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<string>("Picture")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Year")
                         .HasColumnType("int");
@@ -157,45 +152,18 @@ namespace WebApp.Migrations
                     b.Property<int>("FlightId")
                         .HasColumnType("int");
 
+                    b.Property<string>("ShabatTimes")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("TicketType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("TicketId");
 
-                    b.HasIndex("FlightId");
-
                     b.ToTable("FlightTickets");
-                });
-
-            modelBuilder.Entity("WebApp.Models.Flight", b =>
-                {
-                    b.HasOne("WebApp.Models.FrequentFlyer", null)
-                        .WithMany("UserFlights")
-                        .HasForeignKey("FrequentFlyerFlyerId");
-
-                    b.HasOne("WebApp.Models.Plane", "Plane")
-                        .WithMany()
-                        .HasForeignKey("PlaneId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Plane");
-                });
-
-            modelBuilder.Entity("WebApp.models.FlightTicket", b =>
-                {
-                    b.HasOne("WebApp.Models.Flight", "Flight")
-                        .WithMany()
-                        .HasForeignKey("FlightId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Flight");
-                });
-
-            modelBuilder.Entity("WebApp.Models.FrequentFlyer", b =>
-                {
-                    b.Navigation("UserFlights");
                 });
 #pragma warning restore 612, 618
         }

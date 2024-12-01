@@ -80,7 +80,7 @@ namespace WebApp.Controllers
                 return NotFound();
             try
             {
-                await _planeRepo.UpdatePlaneAsync(plane);
+                await _planeRepo.UpdatePlaneAsync(id, plane);
                 return NoContent();
             }
             catch (Exception ex)

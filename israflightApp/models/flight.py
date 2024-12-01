@@ -56,7 +56,6 @@ class Flight:
     def update(self, api_base_url):
         if not self.flight_id:
             raise ValueError("Flight ID is required to update a flight.")
-        
         url = f"{api_base_url}/flights/{self.flight_id}"
         flight_data = self.to_dict()
         response = requests.put(url, json=flight_data)
