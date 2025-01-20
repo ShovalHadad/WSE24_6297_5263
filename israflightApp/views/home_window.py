@@ -3,9 +3,10 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtGui import QPixmap, QFont
 from PySide6.QtCore import Qt
+from views.base_window import BaseWindow
 
 
-class HomeWindow(QMainWindow):
+class HomeWindow(BaseWindow):
     def __init__(self, controller):
         super(HomeWindow, self).__init__()
         self.controller = controller
@@ -122,8 +123,11 @@ class HomeWindow(QMainWindow):
         form_layout.addRow("Password:", password_field)
         form_layout.addWidget(register_button)
 
+        self.create_toolbar()
 
-        self.init_toolbar()
+
+        #self.init_toolbar() 
+        #אפשר למחוק את הקבצים של הtoolbar פה
 
     def init_toolbar(self):
         # Create a toolbar
