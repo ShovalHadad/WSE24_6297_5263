@@ -1,6 +1,9 @@
-from PySide6.QtWidgets import QMainWindow, QLabel, QToolBar, QWidget, QVBoxLayout, QGraphicsOpacityEffect, QSizePolicy, QToolButton
-from PySide6.QtGui import QPixmap, QAction, QFont
+from PySide6.QtWidgets import (
+    QMainWindow, QLabel, QToolBar, QWidget, QVBoxLayout, QLineEdit, QPushButton, QFormLayout, QSizePolicy, QToolButton
+)
+from PySide6.QtGui import QPixmap, QFont
 from PySide6.QtCore import Qt
+
 
 class HomeWindow(QMainWindow):
     def __init__(self, controller):
@@ -22,40 +25,105 @@ class HomeWindow(QMainWindow):
         layout.setSpacing(0)  # Remove spacing
         central_widget.setLayout(layout)
 
-       # Set the background label with transparency
+        # Set the background label
         self.background_label = QLabel(self)
-        pixmap = QPixmap("./israflightApp/images/background.jpg")  # Replace with your image path
+        pixmap = QPixmap("./israflightApp/images/back6-05.png")  # Replace with your image path
         self.background_label.setPixmap(pixmap)
         self.background_label.setScaledContents(True)
-
-        # Apply transparency effect
-        #opacity_effect = QGraphicsOpacityEffect(self.background_label)
-        #opacity_effect.setOpacity(0.5)  # Set opacity level (0.0 is fully transparent, 1.0 is fully opaque)
-        #self.background_label.setGraphicsEffect(opacity_effect)
-
-        # Add the background label to the layout
         layout.addWidget(self.background_label)
-        
 
-        # Overlay the text label
-        self.text_label = QLabel("Your Text Here", self.background_label)
-        font = QFont("Urbanist", 20, QFont.Bold)
-        self.text_label.setFont(font)
-        self.text_label.setStyleSheet("color: white; margin-left: 20px;")  # Text color
-        self.text_label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
-        self.text_label.resize(600, 50)  # Set size of the text label
-        self.text_label.move(20, 20)  # Position the text label
-
-
-         # Add the logo below the text
+        # Add the logo
         self.logo_below_text = QLabel(self.background_label)
         logo_pixmap = QPixmap("./israflightApp/images/israFlight_logo-03.png")  # Replace with your logo path
-        self.logo_below_text.setPixmap(logo_pixmap.scaled(550, 550, Qt.KeepAspectRatio, Qt.SmoothTransformation))  # Resize logo
-        self.logo_below_text.move(80, 150)  # Adjust the position below the text label
+        self.logo_below_text.setPixmap(logo_pixmap.scaled(500, 500, Qt.KeepAspectRatio, Qt.SmoothTransformation))  # Resize logo
+        self.logo_below_text.move(120, 150)  # Position below the text
+
+        # Overlay the text label
+        self.text_label = QLabel(self.background_label)
+        font = QFont("Urbanist", 12, QFont.Bold)
+        self.text_label.setFont(font)
+        self.text_label.setStyleSheet("color: #1C3664; margin-left: 20px;")  # Text color
+        self.text_label.setAlignment(Qt.AlignLeft | Qt.AlignTop)
+        self.text_label.resize(600, 150)  # Adjust height to fit multiple lines
+        self.text_label.move(160, 370)  # Position the text label
+        self.text_label.setText(
+            "Lorem ipsum dolor sit amet, consectetuer adipiscing elit,\nsed diam nonummy nibh euismod tincidunt ut\nlaoreet dolore magna aliquam erat volutpat.\nUt wisi enim ad minim veniam, quis nostrud exerci\ntation ullamcorper suscipit lobortis nisl ut \naliquip ex ea commodo consequat."
+        )
+
+        # Add the form to the same layer
+        self.form_widget = QWidget(self.background_label)
+        self.form_widget.setGeometry(800, 250, 300, 200)  # left, top
+
+        self.form_widget.setStyleSheet("""
+                QWidget {
+                    background-color: rgba(28, 54, 100, 0.8);  /* Semi-transparent dark background */
+                    border-radius: 15px;                     /* Rounded corners */
+                    padding: 15px;                           /* Padding inside the form */
+                }                    
+                                                  
+                QLabel {
+                    color: white;  /* Text color */
+                    background: transparent;  /* Transparent background */
+                    border: none;  /* No border */
+                    font-family: 'Urbanist';       /* Font family */
+                    font-size: 14px;              /* Font size */
+                    font-weight: bold; 
+                                      
+                }
+                QLineEdit {
+                    background-color: white;
+                    color: black;
+                    border-radius: 5px;
+                    padding: 5px;
+                    font-family: 'Urbanist';       /* Font family */
+                    font-size: 14px;              /* Font size */
+                    font-weight: bold;                  
+                }
+                QPushButton {
+                    background-color: #27AAE1;
+                    color: white;
+                    border-radius: 5px;
+                    padding: 10px;
+                    font-family: 'Urbanist';       /* Font family */
+                    font-size: 14px;              /* Font size */
+                    font-weight: bold;
+                }
+            """)
+
+        # Make sure the layout and child widgets are not affected by the transparency
+        self.form_widget.setAttribute(Qt.WA_StyledBackground, True)
+
+        self.form_widget.resize(500, 350)
+
+        # Create the form layout
+        form_layout = QFormLayout(self.form_widget)
+        form_layout.setContentsMargins(40, 30, 90, 5)  # Padding inside the form
+
+
+        # Add a heading or description text to the form
+        form_heading = QLabel("Sign In")
+        form_heading.setFont(QFont("Urbanist", 18, QFont.Bold))
+        form_heading.setStyleSheet("color: white;")  # Text color
+        form_heading.setAlignment(Qt.AlignCenter)
+        form_layout.addRow(form_heading)
+
+
+        # Add fields to the form
+        name_field = QLineEdit()
+        email_field = QLineEdit()
+        password_field = QLineEdit()
+        password_field.setEchoMode(QLineEdit.Password)
+        register_button = QPushButton("Register")
+        register_button.clicked.connect(self.action1_triggered)
+
+        
+        form_layout.addRow("Name:", name_field)
+        form_layout.addRow("Email:", email_field)
+        form_layout.addRow("Password:", password_field)
+        form_layout.addWidget(register_button)
+
 
         self.init_toolbar()
-
-
 
     def init_toolbar(self):
         # Create a toolbar
@@ -84,24 +152,23 @@ class HomeWindow(QMainWindow):
         logo_pixmap = QPixmap("./israflightApp/images/israFlight_logo4-04.png")  # Replace with your logo path
         logo_label.setPixmap(logo_pixmap.scaled(120, 120, Qt.KeepAspectRatio, Qt.SmoothTransformation))  # Resize logo
         toolbar.addWidget(logo_label)
-    
+
         # Add a stretchable spacer to push buttons to the right
         right_spacer = QWidget()
         right_spacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
         toolbar.addWidget(right_spacer)
-    
+
         # Create "About Us" button
         about_us_button = QToolButton(self)
         about_us_button.setText("About Us")
         about_us_button.setToolTip("Learn more about us")
-        about_us_button.clicked.connect(self.action1_triggered)
         toolbar.addWidget(about_us_button)
-    
+
         # Add a small spacer between buttons
         button_spacer = QWidget()
         button_spacer.setFixedWidth(15)  # Adjust spacing between buttons
         toolbar.addWidget(button_spacer)
-    
+
         # Create "Help" button
         help_button = QToolButton(self)
         help_button.setText("Help")
@@ -112,7 +179,6 @@ class HomeWindow(QMainWindow):
         right_space = QWidget()
         right_space.setFixedWidth(60)  # Adjust spacing between buttons
         toolbar.addWidget(right_space)
-
 
     def action1_triggered(self):
         print("Action 1 triggered")
