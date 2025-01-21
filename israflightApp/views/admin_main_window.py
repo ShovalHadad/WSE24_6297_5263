@@ -18,30 +18,42 @@ class ManagerMainWindow(BaseWindow):
         central_widget = QWidget(self)
         self.setCentralWidget(central_widget)
 
+        # Main vertical layout to center the buttons
         layout = QVBoxLayout()
+        layout.setAlignment(Qt.AlignCenter)  # Center the content vertically and horizontally
         central_widget.setLayout(layout)
 
         # Example content
-        label = QLabel("Welcome to IsraFlight Manager Page")
-        label.setFont(QFont("Urbanist", 14))
+        label = QLabel("Manager Main Page")
+        label.setFont(QFont("Urbanist", 22, 700))
+        label.setStyleSheet("""color: #27AAE1 """)
         label.setAlignment(Qt.AlignCenter)
         layout.addWidget(label)
 
+
         # Add a horizontal layout for buttons
         button_layout = QHBoxLayout()
+        button_layout.setSpacing(25)  # Space between buttons
+
+
+        # Add a spacer widget with fixed height
+        spacer = QWidget()
+        spacer.setFixedHeight(30)  # Adjust height as needed
+        layout.addWidget(spacer)
         layout.addLayout(button_layout)
 
         # Button 1
-        button1 = QPushButton("Flight Management") #ניהול טיסות
-        button1.setIcon(QIcon("./israflightApp/images/add_icon.png"))  # Replace with your icon path
+        button1 = QPushButton("Flight Management")  # ניהול טיסות
+        button1.setIcon(QIcon("./israflightApp/images/flight_managment.png"))  # Replace with your icon path
+        button1.setFixedSize(250, 75)  # Resize the button
         button1.setStyleSheet("""
             QPushButton {
                 background-color: #1C3664;
                 color: white;
-                border-radius: 5px;
+                border-radius: 15px;
                 padding: 10px;
                 font-family: 'Urbanist';       /* Font family */
-                font-size: 14px;              /* Font size */
+                font-size: 19px;              /* Font size */
             }
             QPushButton:hover {
                 background-color: #27AAE1;
@@ -51,16 +63,17 @@ class ManagerMainWindow(BaseWindow):
         button_layout.addWidget(button1)
 
         # Button 2
-        button2 = QPushButton("Add Manager") #מינוי מנהל
-        button2.setIcon(QIcon("./israflightApp/images/edit_icon.png"))  # Replace with your icon path
+        button2 = QPushButton("Add Manager")  # מינוי מנהל
+        button2.setIcon(QIcon("./israflightApp/images/add_manager.png"))  # Replace with your icon path
+        button2.setFixedSize(250, 75)  # Resize the button
         button2.setStyleSheet("""
             QPushButton {
                 background-color: #1C3664;
                 color: white;
-                border-radius: 5px;
+                border-radius: 15px;
                 padding: 10px;
                 font-family: 'Urbanist';       /* Font family */
-                font-size: 14px;
+                font-size: 19px;
             }
             QPushButton:hover {
                 background-color: #27AAE1;
@@ -70,16 +83,17 @@ class ManagerMainWindow(BaseWindow):
         button_layout.addWidget(button2)
 
         # Button 3
-        button3 = QPushButton("Airplanes Management")
-        button3.setIcon(QIcon("./israflightApp/images/add_manager.png"))  # Replace with your icon path
+        button3 = QPushButton("Planes Management")
+        button3.setIcon(QIcon("./israflightApp/images/planes_managment.png"))  # Replace with your icon path
+        button3.setFixedSize(250, 75)  # Resize the button
         button3.setStyleSheet("""
             QPushButton {
                 background-color: #1C3664;
                 color: white;
-                border-radius: 5px;
-                padding: 10px;
+                border-radius: 15px;
+                padding: 20px;
                 font-family: 'Urbanist';       /* Font family */
-                font-size: 14px;
+                font-size: 19px;
             }
             QPushButton:hover {
                 background-color: #27AAE1;

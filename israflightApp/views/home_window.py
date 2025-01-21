@@ -111,19 +111,18 @@ class HomeWindow(BaseWindow):
 
         # Add fields to the form
         name_field = QLineEdit()
-        email_field = QLineEdit()
         password_field = QLineEdit()
         password_field.setEchoMode(QLineEdit.Password)
-        register_button = QPushButton("Register")
+        register_button = QPushButton("Sign In")
         register_button.clicked.connect(self.action1_triggered)
 
         
-        form_layout.addRow("Name:", name_field)
-        form_layout.addRow("Email:", email_field)
+        form_layout.addRow("User Name:", name_field)
         form_layout.addRow("Password:", password_field)
         form_layout.addWidget(register_button)
 
         self.create_toolbar()
+        #להוסיף עוד כפתור 
 
 
         #self.init_toolbar() 
