@@ -1,26 +1,27 @@
 import sys
 from PySide6.QtWidgets import QApplication
-from views.home_window import HomeWindow
-from views.admin_main_window import ManagerMainWindow
 from controllers.mainController import MainController
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
 
-    main_window = HomeWindow(None)
-    main_controller = MainController(main_window)
+    #main_window = HomeWindow(None)
+    #main_controller = MainController(main_window)
 
-    main_window.controller = main_controller
+    #main_window.controller = main_controller
 
     #main_window.show()  # Show the Home Window
 
 
-    manager_window = ManagerMainWindow(None)  # Replace `None` with an actual controller if needed
-    manager_window.show()  # Show the ManagerMainWindow
+  # Initialize the main controller
+    main_controller = MainController()
 
+    # Show the manager window as the starting point
+    main_controller.show_manager_window()
 
-
+    # Start the application event loop
     sys.exit(app.exec())
   
 
