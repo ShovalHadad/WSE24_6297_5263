@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import (
-    QMainWindow, QLabel, QToolBar, QWidget, QVBoxLayout, QLineEdit, QPushButton, QFormLayout, QSizePolicy, QToolButton
+    QMainWindow, QLabel, QToolBar, QWidget, QVBoxLayout, QLineEdit, QPushButton, QFormLayout, QSizePolicy, QStackedWidget
 )
 from PySide6.QtGui import QPixmap, QFont
 from PySide6.QtCore import Qt
@@ -51,146 +51,124 @@ class HomeWindow(BaseWindow):
             "Lorem ipsum dolor sit amet, consectetuer adipiscing elit,\nsed diam nonummy nibh euismod tincidunt ut\nlaoreet dolore magna aliquam erat volutpat.\nUt wisi enim ad minim veniam, quis nostrud exerci\ntation ullamcorper suscipit lobortis nisl ut \naliquip ex ea commodo consequat."
         )
 
-        # Add the form to the same layer
-        self.form_widget = QWidget(self.background_label)
-        self.form_widget.setGeometry(800, 250, 300, 200)  # left, top
+        # Add a QStackedWidget to hold both forms
+        self.stacked_widget = QStackedWidget(self.background_label)
+        self.stacked_widget.setGeometry(800, 250, 500, 350)
 
-        self.form_widget.setStyleSheet("""
-                QWidget {
-                    background-color: rgba(28, 54, 100, 0.8);  /* Semi-transparent dark background */
-                    border-radius: 15px;                     /* Rounded corners */
-                    padding: 15px;                           /* Padding inside the form */
-                }                    
-                                                  
-                QLabel {
-                    color: white;  /* Text color */
-                    background: transparent;  /* Transparent background */
-                    border: none;  /* No border */
-                    font-family: 'Urbanist';       /* Font family */
-                    font-size: 14px;              /* Font size */
-                    font-weight: bold; 
-                                      
-                }
-                QLineEdit {
-                    background-color: white;
-                    color: black;
-                    border-radius: 5px;
-                    padding: 5px;
-                    font-family: 'Urbanist';       /* Font family */
-                    font-size: 14px;              /* Font size */
-                    font-weight: bold;                  
-                }
-                QPushButton {
-                    background-color: #27AAE1;
-                    color: white;
-                    border-radius: 5px;
-                    padding: 10px;
-                    font-family: 'Urbanist';       /* Font family */
-                    font-size: 14px;              /* Font size */
-                    font-weight: bold;
-                }
-            """)
+        # Add Sign-In and Registration forms
+        self.sign_in_form = self.create_sign_in_form()
+        self.registration_form = self.create_registration_form()
 
-        # Make sure the layout and child widgets are not affected by the transparency
-        self.form_widget.setAttribute(Qt.WA_StyledBackground, True)
+        self.stacked_widget.addWidget(self.sign_in_form)  # Page 0: Sign-In Form
+        self.stacked_widget.addWidget(self.registration_form)  # Page 1: Registration Form
 
-        self.form_widget.resize(500, 350)
+        self.stacked_widget.setCurrentWidget(self.sign_in_form)  # Show Sign-In form initially
 
-        # Create the form layout
-        form_layout = QFormLayout(self.form_widget)
+    def create_sign_in_form(self):
+        """Create the sign-in form."""
+        form_widget = QWidget()
+        form_widget.setStyleSheet("""
+        QLineEdit {
+            background-color: #FFFFFF;  /* White background */
+            color: #1C3664;  /* Text color */
+            border: 2px solid #27AAE1;  /* Border color */
+            border-radius: 8px;  /* Rounded corners */
+            padding: 5px;  /* Internal padding */
+            font-family: 'Urbanist';  /* Font family */
+            font-size: 14px;  /* Font size */
+        }
+        QLineEdit:focus {
+            border-color: #FF6347;  /* Change border color when focused */
+        }
+    """)
+        
+        form_layout = QFormLayout(form_widget)
         form_layout.setContentsMargins(40, 30, 90, 5)  # Padding inside the form
 
-
-        # Add a heading or description text to the form
+        # Add a heading
         form_heading = QLabel("Sign In")
-        form_heading.setFont(QFont("Urbanist", 18, QFont.Bold))
-        form_heading.setStyleSheet("color: white;")  # Text color
+        form_heading.setFont(QFont("Urbanist", 22, QFont.Bold))
+        form_heading.setStyleSheet("color: #27AAE1;")
         form_heading.setAlignment(Qt.AlignCenter)
         form_layout.addRow(form_heading)
 
-
-        # Add fields to the form
+        # Add fields
         name_field = QLineEdit()
         password_field = QLineEdit()
         password_field.setEchoMode(QLineEdit.Password)
-        register_button = QPushButton("Sign In")
-        register_button.clicked.connect(self.action1_triggered)
+        sign_in_button = QPushButton("Sign In")
+        sign_in_button.clicked.connect(self.action1_triggered)
 
-        
+        sign_up_button = QPushButton("Sign Up")
+        sign_up_button.setStyleSheet("""
+            QPushButton {
+                background-color: transparent;
+                color: white;
+                border-radius: 10px;
+                padding: 10px;
+                font-family: 'Urbanist';
+                font-size: 14px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                color: #FF4500;
+            }
+            QPushButton:pressed {
+                color: #CD5C5C;
+            }
+        """)
+        sign_up_button.clicked.connect(self.show_registration_form)
+
         form_layout.addRow("User Name:", name_field)
+        form_layout.addRow("Password:", password_field)
+        form_layout.addWidget(sign_in_button)
+        form_layout.addWidget(sign_up_button)
+
+        return form_widget
+
+    def create_registration_form(self):
+        """Create the registration form."""
+        form_widget = QWidget()
+        form_layout = QFormLayout(form_widget)
+        form_layout.setContentsMargins(40, 30, 90, 5)
+
+
+        # Add a heading
+        form_heading = QLabel("Register")
+        form_heading.setFont(QFont("Urbanist", 22, QFont.Bold))
+        form_heading.setStyleSheet("color: #27AAE1;")
+        form_heading.setAlignment(Qt.AlignCenter)
+        form_layout.addRow(form_heading)
+
+        # Add fields
+        first_name_field = QLineEdit()
+        last_name_field = QLineEdit()
+        email_field = QLineEdit()
+        password_field = QLineEdit()
+        password_field.setEchoMode(QLineEdit.Password)
+        register_button = QPushButton("Register")
+        register_button.clicked.connect(self.action2_triggered)
+
+        form_layout.addRow("First Name:", first_name_field)
+        form_layout.addRow("Last Name:", last_name_field)
+        form_layout.addRow("Email:", email_field)
         form_layout.addRow("Password:", password_field)
         form_layout.addWidget(register_button)
 
-        self.create_toolbar()
-        #להוסיף עוד כפתור 
+        return form_widget
 
-
-        #self.init_toolbar() 
-        #אפשר למחוק את הקבצים של הtoolbar פה
-
-    def init_toolbar(self):
-        # Create a toolbar
-        toolbar = QToolBar("Main Toolbar", self)
-        self.addToolBar(toolbar)
-
-        toolbar.setStyleSheet("""
-           QToolBar { 
-              background-color: #1C3664; 
-              color: white; 
-              min-height: 50px; 
-          }
-          QToolButton {
-              color: white;
-              font-family: Urbanist;
-              font-size: 15px;
-          }
-        """)
-
-        left_space = QWidget()
-        left_space.setFixedWidth(20)  # Adjust spacing between buttons
-        toolbar.addWidget(left_space)
-
-        # Add a logo to the toolbar
-        logo_label = QLabel(self)
-        logo_pixmap = QPixmap("./israflightApp/images/israFlight_logo4-04.png")  # Replace with your logo path
-        logo_label.setPixmap(logo_pixmap.scaled(120, 120, Qt.KeepAspectRatio, Qt.SmoothTransformation))  # Resize logo
-        toolbar.addWidget(logo_label)
-
-        # Add a stretchable spacer to push buttons to the right
-        right_spacer = QWidget()
-        right_spacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
-        toolbar.addWidget(right_spacer)
-
-        # Create "About Us" button
-        about_us_button = QToolButton(self)
-        about_us_button.setText("About Us")
-        about_us_button.setToolTip("Learn more about us")
-        toolbar.addWidget(about_us_button)
-
-        # Add a small spacer between buttons
-        button_spacer = QWidget()
-        button_spacer.setFixedWidth(15)  # Adjust spacing between buttons
-        toolbar.addWidget(button_spacer)
-
-        # Create "Help" button
-        help_button = QToolButton(self)
-        help_button.setText("Help")
-        help_button.setToolTip("Need help?")
-        help_button.clicked.connect(self.action2_triggered)
-        toolbar.addWidget(help_button)
-
-        right_space = QWidget()
-        right_space.setFixedWidth(60)  # Adjust spacing between buttons
-        toolbar.addWidget(right_space)
+    def show_registration_form(self):
+        """Switch to the registration form."""
+        self.stacked_widget.setCurrentWidget(self.registration_form)
 
     def action1_triggered(self):
-        print("Action 1 triggered")
+        print("Sign In triggered")
 
     def action2_triggered(self):
-        print("Action 2 triggered")
+        print("Registration triggered")
 
     def resizeEvent(self, event):
-        # Resize the background label
+        """Resize the background label."""
         if hasattr(self, 'background_label') and self.background_label:
             self.background_label.resize(self.size())
         super().resizeEvent(event)
