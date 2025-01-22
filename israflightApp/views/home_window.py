@@ -28,7 +28,7 @@ class HomeWindow(BaseWindow):
 
         # Set the background label
         self.background_label = QLabel(self)
-        pixmap = QPixmap("./israflightApp/images/back6-05.png")  # Replace with your image path
+        pixmap = QPixmap("./israflightApp/images/background2.png")  # Replace with your image path
         self.background_label.setPixmap(pixmap)
         self.background_label.setScaledContents(True)
         layout.addWidget(self.background_label)

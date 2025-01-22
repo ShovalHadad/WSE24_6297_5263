@@ -17,3 +17,9 @@ class ManagerMainWindowController:
     def open_flight_management(self):
         """Handle the action for opening the Flight Management Window."""
         self.main_controller.show_flight_management_window()
+
+
+    def open_add_manager(self):
+        self.main_controller.show_add_manager_window()
+
+

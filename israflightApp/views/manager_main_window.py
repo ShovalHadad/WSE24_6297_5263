@@ -23,7 +23,7 @@ class ManagerMainWindow(BaseWindow):
         # Add a QLabel for the background image
         self.background_label = QLabel(central_widget)
         self.background_label.setGeometry(self.rect())  # Set to cover the entire window
-        self.background_label.setPixmap(QPixmap("./israflightApp/images/manager_background.jpg").scaled(
+        self.background_label.setPixmap(QPixmap("./israflightApp/images/manager_background.png").scaled(
             self.size(),
             Qt.KeepAspectRatioByExpanding,
             Qt.SmoothTransformation
@@ -119,5 +119,5 @@ class ManagerMainWindow(BaseWindow):
 
         # Connect buttons to controller methods
         self.button1.clicked.connect(self.controller.open_flight_management)
-        #self.button2.clicked.connect(self.controller.open_add_manager)
+        self.button2.clicked.connect(self.controller.open_add_manager)
         #self.button3.clicked.connect(self.controller.open_planes_management)
