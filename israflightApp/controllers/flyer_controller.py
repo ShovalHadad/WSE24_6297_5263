@@ -1,5 +1,5 @@
 import requests
-from models.flyer import FrequentFlyer  # Make sure to import your Plane model
+from israflightApp.models.frequent_flyer import FrequentFlyer  # Make sure to import your Plane model
 
 class FrequentFlyerController:
     BASE_URL = "http://localhost:5000/api/frequentflyer"  # Update the URL as necessary

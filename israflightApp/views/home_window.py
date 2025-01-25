@@ -20,6 +20,9 @@ class HomeWindow(BaseWindow):
         central_widget = QWidget(self)
         self.setCentralWidget(central_widget)
 
+        self.create_toolbar()
+
+
         # Create a layout for the central widget
         layout = QVBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)  # Remove margins
@@ -68,6 +71,12 @@ class HomeWindow(BaseWindow):
         """Create the sign-in form."""
         form_widget = QWidget()
         form_widget.setStyleSheet("""
+        QWidget{
+            background-color: #F0F9FC;
+            border-radius: 15px; 
+            padding-top: 20px;
+            padding-left: 20px;                           
+        }
         QLineEdit {
             background-color: #FFFFFF;  /* White background */
             color: #1C3664;  /* Text color */
@@ -76,9 +85,19 @@ class HomeWindow(BaseWindow):
             padding: 5px;  /* Internal padding */
             font-family: 'Urbanist';  /* Font family */
             font-size: 14px;  /* Font size */
+            margin-top: 8px;
+                                  
         }
         QLineEdit:focus {
-            border-color: #FF6347;  /* Change border color when focused */
+            border-color: #1C3664;  /* Change border color when focused */
+        }
+        QLabel{
+            color: #1C3664;
+            font-family: 'Urbanist';  /* Font family */
+            font-size: 14px;  /* Font size */
+            font-weight: 500px;
+            padding: 5px;  /* Internal padding */
+            
         }
     """)
         
@@ -87,7 +106,7 @@ class HomeWindow(BaseWindow):
 
         # Add a heading
         form_heading = QLabel("Sign In")
-        form_heading.setFont(QFont("Urbanist", 22, QFont.Bold))
+        form_heading.setFont(QFont("Urbanist", 18, QFont.Bold))
         form_heading.setStyleSheet("color: #27AAE1;")
         form_heading.setAlignment(Qt.AlignCenter)
         form_layout.addRow(form_heading)
@@ -97,13 +116,31 @@ class HomeWindow(BaseWindow):
         password_field = QLineEdit()
         password_field.setEchoMode(QLineEdit.Password)
         sign_in_button = QPushButton("Sign In")
+        sign_in_button.setStyleSheet("""
+            QPushButton {
+                background-color: #27AAE1;
+                color: #ffffff;
+                border-radius: 10px;
+                padding: 10px;
+                font-family: 'Urbanist';
+                font-size: 14px;
+                font-weight: bold;
+                margin-top: 10px;
+            }
+            QPushButton:hover {
+                background-color: #218FB5;
+            }
+            QPushButton:pressed {
+                background-color: #82CEE8;
+            }
+        """)
         sign_in_button.clicked.connect(self.action1_triggered)
 
         sign_up_button = QPushButton("Sign Up")
         sign_up_button.setStyleSheet("""
             QPushButton {
                 background-color: transparent;
-                color: white;
+                color: #1C3664;
                 border-radius: 10px;
                 padding: 10px;
                 font-family: 'Urbanist';
@@ -111,24 +148,57 @@ class HomeWindow(BaseWindow):
                 font-weight: bold;
             }
             QPushButton:hover {
-                color: #FF4500;
+                color: #27AAE1;
             }
             QPushButton:pressed {
-                color: #CD5C5C;
+                color: #82CEE8;
             }
         """)
         sign_up_button.clicked.connect(self.show_registration_form)
 
-        form_layout.addRow("User Name:", name_field)
-        form_layout.addRow("Password:", password_field)
+        first_name_label = QLabel("First Name:")
+        password_label = QLabel("Last Name:")
+
+        form_layout.addRow(first_name_label, name_field)
+        form_layout.addRow(password_label, password_field)
         form_layout.addWidget(sign_in_button)
         form_layout.addWidget(sign_up_button)
+        
 
         return form_widget
 
     def create_registration_form(self):
         """Create the registration form."""
         form_widget = QWidget()
+        form_widget.setStyleSheet("""
+        QWidget{
+            background-color: #F0F9FC;
+            border-radius: 15px; 
+            padding-top: 20px;
+            padding-left: 20px;                           
+        }
+        QLineEdit {
+            background-color: #FFFFFF;  /* White background */
+            color: #1C3664;  /* Text color */
+            border: 2px solid #27AAE1;  /* Border color */
+            border-radius: 8px;  /* Rounded corners */
+            padding: 5px;  /* Internal padding */
+            font-family: 'Urbanist';  /* Font family */
+            font-size: 14px;  /* Font size */
+            font-weight: 500px;
+        }
+        QLineEdit:focus {
+            border-color: #1C3664;  /* Change border color when focused */
+        }
+        QLabel{
+            color: #1C3664;
+            font-family: 'Urbanist';  /* Font family */
+            font-size: 14px;  /* Font size */
+            font-weight: 500px;
+            padding: 5px;  /* Internal padding */
+            
+        }
+    """)
         form_layout = QFormLayout(form_widget)
         form_layout.setContentsMargins(40, 30, 90, 5)
 
@@ -147,19 +217,74 @@ class HomeWindow(BaseWindow):
         password_field = QLineEdit()
         password_field.setEchoMode(QLineEdit.Password)
         register_button = QPushButton("Register")
+        register_button.setStyleSheet("""
+            QPushButton {
+                background-color: #27AAE1;
+                color: #ffffff;
+                border-radius: 10px;
+                padding: 10px;
+                font-family: 'Urbanist';
+                font-size: 14px;
+                font-weight: bold;
+                margin-top: 10px;
+            }
+            QPushButton:hover {
+                background-color: #218FB5;
+            }
+            QPushButton:pressed {
+                background-color: #82CEE8;
+            }
+        """)
+        
         register_button.clicked.connect(self.action2_triggered)
 
-        form_layout.addRow("First Name:", first_name_field)
-        form_layout.addRow("Last Name:", last_name_field)
-        form_layout.addRow("Email:", email_field)
-        form_layout.addRow("Password:", password_field)
+
+        # Back to Sign In Button
+        back_to_sign_in_button = QPushButton("Sign In")
+        back_to_sign_in_button.setStyleSheet("""
+            QPushButton {
+                background-color: transparent;
+                color: #1C3664;
+                border-radius: 10px;
+                padding: 10px;
+                font-family: 'Urbanist';
+                font-size: 14px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                color: #27AAE1;
+            }
+            QPushButton:pressed {
+                color: #82CEE8;
+            }
+        """)
+
+        back_to_sign_in_button.clicked.connect(self.show_sign_in_form)
+
+
+
+        first_name_label = QLabel("First Name:")
+        last_name_label = QLabel("Last Name:")
+        email_label = QLabel("Email:")
+        password_label = QLabel("Password:")
+
+        form_layout.addRow(first_name_label, first_name_field)
+        form_layout.addRow(last_name_label, last_name_field)
+        form_layout.addRow(email_label, email_field)
+        form_layout.addRow(password_label, password_field)
         form_layout.addWidget(register_button)
+        form_layout.addWidget(back_to_sign_in_button) 
 
         return form_widget
 
     def show_registration_form(self):
         """Switch to the registration form."""
         self.stacked_widget.setCurrentWidget(self.registration_form)
+
+
+    def show_sign_in_form(self):
+        """Switch to the sign-in form."""
+        self.stacked_widget.setCurrentWidget(self.sign_in_form)
 
     def action1_triggered(self):
         print("Sign In triggered")
