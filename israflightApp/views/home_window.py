@@ -210,11 +210,19 @@ class HomeWindow(BaseWindow):
         form_heading.setAlignment(Qt.AlignCenter)
         form_layout.addRow(form_heading)
 
-        # Add fields
         first_name_field = QLineEdit()
+        first_name_field.setObjectName("first_name_field")  # Assign object name
+
         last_name_field = QLineEdit()
+        last_name_field.setObjectName("last_name_field")  # Assign object name
+
         email_field = QLineEdit()
+        email_field.setObjectName("email_field")  # Assign object name
+
         password_field = QLineEdit()
+        password_field.setObjectName("password_field")  # Assign object name
+
+
         password_field.setEchoMode(QLineEdit.Password)
         register_button = QPushButton("Register")
         register_button.setStyleSheet("""
@@ -236,7 +244,7 @@ class HomeWindow(BaseWindow):
             }
         """)
         
-        register_button.clicked.connect(self.action2_triggered)
+        register_button.clicked.connect(self.controller.register_button_action())
 
 
         # Back to Sign In Button
