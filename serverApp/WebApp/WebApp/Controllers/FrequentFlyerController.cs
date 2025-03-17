@@ -70,6 +70,24 @@ namespace WebApp.Controllers
             }
         }
 
+       // POST - Login
+        [HttpPost("login")]
+        public async Task<IActionResult> LoginFrequentFlyerAsync([FromBody] FrequentFlyer loginRequest)
+        {
+            var user = await _frequentFlyerRepo.GetFrequentFlyersAsync();
+            
+            var frequentFlyer = user.FirstOrDefault(f => f.UserName == loginRequest.UserName);
+
+            if (frequentFlyer == null)
+                return NotFound("User not found");
+
+            if (frequentFlyer.Password != loginRequest.Password) // Use hashing in production!
+                return Unauthorized("Invalid password");
+
+            return Ok(frequentFlyer);
+        }
+
+
         // PUT - update
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateFrequentFlyer(int id, FrequentFlyer frequentFlyer)

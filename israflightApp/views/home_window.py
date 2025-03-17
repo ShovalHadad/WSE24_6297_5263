@@ -4,6 +4,7 @@ from PySide6.QtWidgets import (
 from PySide6.QtGui import QPixmap, QFont
 from PySide6.QtCore import Qt
 from views.base_window import BaseWindow
+from PySide6.QtWidgets import QMessageBox
 
 
 class HomeWindow(BaseWindow):
@@ -86,7 +87,6 @@ class HomeWindow(BaseWindow):
             font-family: 'Urbanist';  /* Font family */
             font-size: 14px;  /* Font size */
             margin-top: 8px;
-                                  
         }
         QLineEdit:focus {
             border-color: #1C3664;  /* Change border color when focused */
@@ -97,10 +97,9 @@ class HomeWindow(BaseWindow):
             font-size: 14px;  /* Font size */
             font-weight: 500px;
             padding: 5px;  /* Internal padding */
-            
         }
-    """)
-        
+        """)
+    
         form_layout = QFormLayout(form_widget)
         form_layout.setContentsMargins(40, 30, 90, 5)  # Padding inside the form
 
@@ -110,11 +109,16 @@ class HomeWindow(BaseWindow):
         form_heading.setStyleSheet("color: #27AAE1;")
         form_heading.setAlignment(Qt.AlignCenter)
         form_layout.addRow(form_heading)
-
+    
         # Add fields
-        name_field = QLineEdit()
-        password_field = QLineEdit()
-        password_field.setEchoMode(QLineEdit.Password)
+        self.username_field = QLineEdit()
+        self.username_field.setObjectName("username_field")  # Object name for easy access
+    
+        self.password_field = QLineEdit()
+        self.password_field.setObjectName("password_field")  # Object name for easy access
+        self.password_field.setEchoMode(QLineEdit.Password)
+    
+        # Sign In Button
         sign_in_button = QPushButton("Sign In")
         sign_in_button.setStyleSheet("""
             QPushButton {
@@ -134,8 +138,13 @@ class HomeWindow(BaseWindow):
                 background-color: #82CEE8;
             }
         """)
-        sign_in_button.clicked.connect(self.action1_triggered)
-
+    
+        # Connect button with lambda function to send input values
+        sign_in_button.clicked.connect(lambda: self.controller.sign_in_button_action(
+            self.username_field.text(), self.password_field.text()
+        ))
+    
+        # Sign Up Button
         sign_up_button = QPushButton("Sign Up")
         sign_up_button.setStyleSheet("""
             QPushButton {
@@ -155,17 +164,21 @@ class HomeWindow(BaseWindow):
             }
         """)
         sign_up_button.clicked.connect(self.show_registration_form)
-
-        first_name_label = QLabel("First Name:")
-        password_label = QLabel("Last Name:")
-
-        form_layout.addRow(first_name_label, name_field)
-        form_layout.addRow(password_label, password_field)
+    
+        # Labels
+        username_label = QLabel("Username:")
+        password_label = QLabel("Password:")
+    
+        # Add widgets to form layout
+        form_layout.addRow(username_label, self.username_field)
+        form_layout.addRow(password_label, self.password_field)
         form_layout.addWidget(sign_in_button)
         form_layout.addWidget(sign_up_button)
-        
-
+    
         return form_widget
+
+
+   
 
     def create_registration_form(self):
         """Create the registration form."""
@@ -244,8 +257,6 @@ class HomeWindow(BaseWindow):
             }
         """)
         
-        register_button.clicked.connect(self.controller.register_button_action())
-
 
         # Back to Sign In Button
         back_to_sign_in_button = QPushButton("Sign In")
@@ -267,10 +278,6 @@ class HomeWindow(BaseWindow):
             }
         """)
 
-        back_to_sign_in_button.clicked.connect(self.show_sign_in_form)
-
-
-
         first_name_label = QLabel("First Name:")
         last_name_label = QLabel("Last Name:")
         email_label = QLabel("Email:")
@@ -280,8 +287,23 @@ class HomeWindow(BaseWindow):
         form_layout.addRow(last_name_label, last_name_field)
         form_layout.addRow(email_label, email_field)
         form_layout.addRow(password_label, password_field)
-        form_layout.addWidget(register_button)
         form_layout.addWidget(back_to_sign_in_button) 
+
+    
+        back_to_sign_in_button.clicked.connect(self.show_sign_in_form)
+
+        #register_button.clicked.connect(self.controller.register_button_action())
+         # Connect the button to a lambda function that gathers user input and calls register_button_action
+        register_button.clicked.connect(lambda: self.controller.register_button_action(
+           {
+            "first_name": self.first_name_field.text(),
+            "last_name": self.last_name_field.text(),
+            "email": self.email_field.text(),
+            "password": self.password_field.text()
+           }
+        ))
+
+        form_layout.addRow(register_button)
 
         return form_widget
 
@@ -305,3 +327,11 @@ class HomeWindow(BaseWindow):
         if hasattr(self, 'background_label') and self.background_label:
             self.background_label.resize(self.size())
         super().resizeEvent(event)
+
+    def show_error_message(self, message):
+        """Displays an error message in a pop-up window."""
+        msg_box = QMessageBox()
+        msg_box.setIcon(QMessageBox.Critical)
+        msg_box.setWindowTitle("Error")
+        msg_box.setText(message)
+        msg_box.exec()
