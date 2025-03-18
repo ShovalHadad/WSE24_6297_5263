@@ -142,7 +142,8 @@ class HomeWindow(BaseWindow):
         # Connect button with lambda function to send input values
         sign_in_button.clicked.connect(lambda: self.controller.sign_in_button_action(
             self.username_field.text(), self.password_field.text()
-        ))
+            ))
+
     
         # Sign Up Button
         sign_up_button = QPushButton("Sign Up")
@@ -294,14 +295,13 @@ class HomeWindow(BaseWindow):
 
         #register_button.clicked.connect(self.controller.register_button_action())
          # Connect the button to a lambda function that gathers user input and calls register_button_action
-        register_button.clicked.connect(lambda: self.controller.register_button_action(
-           {
+        register_button.clicked.connect(lambda: self.controller.register_button_action({
             "first_name": self.first_name_field.text(),
             "last_name": self.last_name_field.text(),
             "email": self.email_field.text(),
             "password": self.password_field.text()
-           }
-        ))
+        }))
+
 
         form_layout.addRow(register_button)
 
@@ -333,5 +333,14 @@ class HomeWindow(BaseWindow):
         msg_box = QMessageBox()
         msg_box.setIcon(QMessageBox.Critical)
         msg_box.setWindowTitle("Error")
+        msg_box.setText(message)
+        msg_box.exec()
+
+
+    def show_success_message(self, message):
+        """Displays a success message in a pop-up window."""
+        msg_box = QMessageBox()
+        msg_box.setIcon(QMessageBox.Information)
+        msg_box.setWindowTitle("Success")
         msg_box.setText(message)
         msg_box.exec()

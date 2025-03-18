@@ -22,7 +22,7 @@ class ManagerMainWindow(BaseWindow):
 
         # Add a QLabel for the background image
         self.background_label = QLabel(central_widget)
-        self.background_label.setGeometry(self.rect())  # Set to cover the entire window
+        #self.background_label.setGeometry(self.rect())  # Set to cover the entire window
         self.background_label.setPixmap(QPixmap("./israflightApp/images/manager_background.png").scaled(
             self.size(),
             Qt.KeepAspectRatioByExpanding,

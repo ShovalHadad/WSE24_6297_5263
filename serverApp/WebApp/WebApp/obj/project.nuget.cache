@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "D+VxqnQ0a+b4ethUOwBuEDa2FBFIxMrLWf2IZs2wrnpvGpXNftzCK5FN9GH/NZqjXtQgvRL6mgbwk/oDRI+/UQ==",
+  "dgSpecHash": "UFmXHI/l1LKgXAS0m4d5i1E/2HQNgOI9xPW432D2+VbD9t7MkKTggYlXODozPBUQJYZmy3EHxArcjgX3x6qMFw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\user\\source\\repos\\WSE24_6297_5263\\serverApp\\WebApp\\WebApp\\WebApp.csproj",
+  "projectFilePath": "C:\\Tehila\\class\\year3\\WSE24_6297_5263\\serverApp\\WebApp\\WebApp\\WebApp.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\user\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\azure.identity\\1.11.3\\azure.identity.1.11.3.nupkg.sha512",

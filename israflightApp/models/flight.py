@@ -31,7 +31,7 @@ class Flight:
 
     @staticmethod
     def get_all_flights(api_base_url):
-        url = f"{api_base_url}/flights"
+        url = f"{api_base_url}"
         response = requests.get(url)
         response.raise_for_status()
         flights_data = response.json()

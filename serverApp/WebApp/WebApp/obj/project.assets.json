@@ -7798,11 +7798,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\user\\Source\\Repos\\WSE24_6297_5263\\serverApp\\WebApp\\WebApp\\WebApp.csproj",
+      "projectUniqueName": "C:\\Tehila\\class\\year3\\WSE24_6297_5263\\serverApp\\WebApp\\WebApp\\WebApp.csproj",
       "projectName": "WebApp",
-      "projectPath": "C:\\Users\\user\\Source\\Repos\\WSE24_6297_5263\\serverApp\\WebApp\\WebApp\\WebApp.csproj",
+      "projectPath": "C:\\Tehila\\class\\year3\\WSE24_6297_5263\\serverApp\\WebApp\\WebApp\\WebApp.csproj",
       "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\user\\Source\\Repos\\WSE24_6297_5263\\serverApp\\WebApp\\WebApp\\obj\\",
+      "outputPath": "C:\\Tehila\\class\\year3\\WSE24_6297_5263\\serverApp\\WebApp\\WebApp\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config",
