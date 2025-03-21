@@ -15,101 +15,144 @@ class FlightManagementWindow(QMainWindow):
         self.setMinimumSize(900, 600)
         self.showMaximized()
 
-        # Main Layout
+        # 🌟 Main Layout
         main_layout = QHBoxLayout()
 
-        # ✈ Right Side: Flight List (Increased width)
+        # ✈ Right Side: Flight List
         self.flight_list = QListWidget()
-        self.flight_list.setFixedWidth(900)  # Set a fixed width
+        self.flight_list.setFixedSize(600, 650)  # Adjust width
         self.flight_list.setStyleSheet("""
             QListWidget {
-                margin: 60px;
-                margin-top: 30px;
-                background-color: #E3F2FD; /* Light blue */
+                background-color: white; 
+                color: #1C3664;
                 border-radius: 10px;
                 padding: 15px;
                 font-size: 14px;
                 font-family: 'Urbanist';
-                border: 2px solid #0277BD;
-                width: 50%;
             }
             QListWidget::item {
                 padding: 10px;
             }
             QListWidget::item:selected {
-                background-color: #29B6F6; /* Highlight */
+                background-color: #29B6F6; 
                 color: white;
             }
-        """)
+            /* SCROLLBAR DESIGN */
+            QListWidget::verticalScrollBar {
+                border: none;
+                background: transparent;
+                width: 8px;  
+            }
+            QListWidget::verticalScrollBar::handle {
+                background: rgba(0, 0, 0, 0.2);
+                border-radius: 4px;  
+                min-height: 30px;  
+                border: none;                       
+            }
+            QListWidget::verticalScrollBar::handle:hover {
+                background: rgba(0, 0, 0, 0.3); 
+                border: none;
+            }
+            QListWidget::verticalScrollBar::add-line,
+            QListWidget::verticalScrollBar::sub-line {
+                background: none;
+                border: none;
+            }
+            """)
         self.flight_list.itemClicked.connect(self.select_flight)
 
+        # ✅ Right Side Layout (Flight List)
         right_layout = QVBoxLayout()
-        
-        # ✈ Header for Flight List (Modified size & color)
-        flight_header = QLabel("✈️ All Flights")
-        flight_header.setAlignment(Qt.AlignCenter)
-        flight_header.setFont(QFont("Urbanist", 18, QFont.Bold))
-        flight_header.setStyleSheet("color: #01579B; margin-bottom: 10px; margin-top: 60px;")  # Dark Blue
-
-        right_layout.addWidget(flight_header)
         right_layout.addWidget(self.flight_list)
-
-        main_layout.addLayout(right_layout, 2)  # Increased proportion
+        main_layout.addLayout(right_layout, 2)
 
         # 🔹 Left Side: Add Flight Button & Form
         self.add_flight_button = QPushButton("➕ Add Flight")
+        self.add_flight_button.setFixedHeight(45)
+        self.add_flight_button.setObjectName("addFlightButton")
         self.add_flight_button.setStyleSheet("""
-            QPushButton {
+            QPushButton#addFlightButton {
                 background-color: #1C3664;
                 color: white;
-                border-radius: 8px;
+                border-radius: 20px;
                 padding: 8px;
-                font-size: 12px;
-                width: 120px;  /* Reduced width */
-                margin-left: 30px;
+                font-size: 14px;
+                width: 140px;
+                border: none;
             }
-            QPushButton:hover {
-                background-color: #27AAE1;
+            QPushButton#addFlightButton:hover {
+                background-color: #3A5A89;
+            }
+            QPushButton#addFlightButton:pressed {
+                background-color: #0D253F;
             }
         """)
-        self.add_flight_button.clicked.connect(self.show_add_flight_form)
+        self.add_flight_button.clicked.connect(self.toggle_add_flight_form)
 
-        # 🚀 Apply styling to the entire form area
+        # 🚀 Flight Form (Initially Hidden)
         self.form_widget = QWidget()
+        self.form_widget.setFixedSize(600, 650)
         self.form_widget.setStyleSheet("""
             QWidget {
-                background-color: #F0F9FC;
-                border-radius: 10px;
+                background-color: #CDEBF6;  
+                border-radius: 20px;  
                 padding: 15px;                   
-                margin-top: 80px;
-                margin-left: 20px;
-                border: 2px solid #0277BD;
-            }
-            QLabel {
-                border: none; /* Removes any default border */
-                padding: 1px; /* Reduce extra padding */
-                font-size: 14px; /* Reduce font size if necessary */
-                background: none;
-            }
-            QLineEdit, QDateTimeEdit {
-                background-color: #FFFFFF;
                 border: none;
-                border-radius: 5px;
-                padding: 5px;
-                font-size: 12px;
-                margin-top: 5px;
-            }
-            QLineEdit:focus, QDateTimeEdit:focus {
-                border: 2px solid #0277BD;
-                
             }
         """)
+        self.form_widget.hide()  # Form is hidden initially
 
         self.form_layout = QVBoxLayout()
         self.form_widget.setLayout(self.form_layout)
-        self.form_widget.hide()  # Initially hidden
 
-        # Form Fields
+        # 🌟 Form Header
+        form_header = QLabel("ADD NEW FLIGHT")
+        form_header.setAlignment(Qt.AlignCenter)
+        form_header.setFont(QFont("Urbanist", 12, QFont.Bold))
+        form_header.setStyleSheet("color: #123456; margin-bottom: 10px; margin-top: 10px; text-transform: uppercase;")
+        self.form_layout.addWidget(form_header)
+
+        # 📝 Function to create form fields with labels
+        def create_form_field(label_text, input_widget):
+            container = QVBoxLayout()
+            container.setSpacing(1)  
+
+            label = QLabel(label_text)
+            label.setAlignment(Qt.AlignLeft)
+            label.setFont(QFont("Urbanist", 12, QFont.Bold))
+            label.setStyleSheet("""
+                QLabel {
+                    color: #123456;
+                    padding-top: 8px;  
+                    padding-bottom: 2px;  
+                    font-size: 12px;
+                    margin-left: 15px; 
+                }
+            """)
+            label.setFixedHeight(30)  
+            input_widget.setStyleSheet("""
+                QLineEdit, QDateTimeEdit {
+                    background-color: white;
+                    border: none;
+                    border-radius: 10px;
+                    padding: 8px;
+                    font-size: 10px;
+                    margin-top: 3px;
+                    margin-bottom: 8px;  
+                    margin-left: 25px; 
+                    margin-right: 25px;                                      
+                    color: black;
+                }
+                QLineEdit::placeholder, QDateTimeEdit::placeholder {
+                    color: gray;
+                }
+            """)
+
+            container.addWidget(label)
+            container.addWidget(input_widget)
+            return container
+
+        # 📋 Form Fields
         self.departure_input = QLineEdit()
         self.departure_input.setPlaceholderText("Departure Location")
 
@@ -125,69 +168,64 @@ class FlightManagementWindow(QMainWindow):
         self.plane_id_input = QLineEdit()
         self.plane_id_input.setPlaceholderText("Plane ID")
 
-        self.save_button = QPushButton("💾 Save Flight")
-        self.save_button.setStyleSheet("background-color: #0277BD; color: white; border-radius: 8px; padding: 10px;")
+        # 🔗 Add Form Fields
+        self.form_layout.addLayout(create_form_field("Arrival location", self.arrival_input))
+        self.form_layout.addLayout(create_form_field("Departure location", self.departure_input))
+        self.form_layout.addLayout(create_form_field("Departure Date Time", self.departure_time))
+        self.form_layout.addLayout(create_form_field("Estimated Arrival Date Time", self.arrival_time))
+        self.form_layout.addLayout(create_form_field("Plane ID", self.plane_id_input))
+
+        # 💾 Save Button
+        self.save_button = QPushButton("Save Flight")
+        self.save_button.setFixedHeight(45)
+        self.save_button.setObjectName("saveButton")
+        self.save_button.setStyleSheet("""
+            QPushButton#saveButton {
+                background-color: #1C3664;
+                color: white;
+                border-radius: 20px;
+                padding: 8px;
+                font-size: 14px;
+                width: 140px;
+                border: none;
+            }
+            QPushButton#saveButton:hover {
+                background-color: #3A5A89;
+            }
+            QPushButton#saveButton:pressed {
+                background-color: #0D253F;
+            }
+        """)
         self.save_button.clicked.connect(self.save_flight)
+        self.form_layout.addWidget(self.save_button, alignment=Qt.AlignCenter)
 
-        self.delete_button = QPushButton("🗑 Delete Flight")
-        self.delete_button.setStyleSheet("background-color: red; color: white; border-radius: 8px; padding: 10px;")
-        self.delete_button.clicked.connect(self.delete_selected_flight)
+        # 📦 Left Side Container (Keeps Layout Consistent)
+        left_container = QWidget()
+        left_container.setFixedSize(600, 650)
+        left_container_layout = QVBoxLayout(left_container)
+        left_container_layout.addWidget(self.add_flight_button, alignment=Qt.AlignCenter)
+        left_container_layout.addWidget(self.form_widget)
 
-        # Add Fields to Form
-        form_header = QLabel("➕ Add New Flight")
-        form_header.setAlignment(Qt.AlignCenter)
-        form_header.setFont(QFont("Urbanist", 16, QFont.Bold))
-        form_header.setStyleSheet("color: #0277BD; margin-bottom: 5px;")
+        main_layout.addWidget(left_container, 1)
 
-        self.form_layout.addWidget(form_header)
-        self.form_layout.addWidget(self.departure_input)
-        self.form_layout.addWidget(self.arrival_input)
-        #self.form_layout.addWidget(QLabel("Departure Time"))
-        departure_time_label = QLabel("Departure Time")
-        departure_time_label.setFixedHeight(80)  # Reduce height
-        departure_time_label.setStyleSheet("""
-            QLabel {
-                border: none; /* Removes any default border */
-                padding: 5px; /* Reduce extra padding */
-                font-size: 14px; /* Reduce font size if necessary */
-                background: none;
-            } """)
-        self.form_layout.addWidget(departure_time_label)
-        self.form_layout.addWidget(self.departure_time)
-
-
-        #self.form_layout.addWidget(QLabel("Estimated Arrival Time"))
-        estimated_arrival_label = QLabel("Estimated Arrival Time")
-        estimated_arrival_label.setFixedHeight(40)  # Reduce height
-        estimated_arrival_label.setStyleSheet("""
-            QLabel {
-                border: none; /* Removes any default border */
-                padding: 5px; /* Reduce extra padding */
-                font-size: 14px; /* Reduce font size if necessary */
-                background: none;
-            } """)
-        self.form_layout.addWidget(estimated_arrival_label)
-        self.form_layout.addWidget(self.arrival_time)
-
-        self.form_layout.addWidget(self.plane_id_input)
-        self.form_layout.addWidget(self.save_button)
-        self.form_layout.addWidget(self.delete_button)
-
-        left_layout = QVBoxLayout()
-        left_layout.addWidget(self.add_flight_button, alignment=Qt.AlignLeft)
-        left_layout.addWidget(self.form_widget)
-        main_layout.addLayout(left_layout, 1)  # Reduced proportion
-
+        # 📌 Set Central Widget
         central_widget = QWidget()
         central_widget.setLayout(main_layout)
+        central_widget.setStyleSheet("background-color: #F0F4F8;")
         self.setCentralWidget(central_widget)
 
-        # Load flights initially
+        # 🚀 Load flights initially
         self.load_flights()
 
-    def show_add_flight_form(self):
-        """Shows the form to add a new flight."""
-        self.form_widget.show()
+    def toggle_add_flight_form(self):
+        """Toggles the visibility of the Add Flight form."""
+        if self.form_widget.isVisible():
+            self.form_widget.hide()
+            self.add_flight_button.show()
+        else:
+            self.form_widget.show()
+            self.add_flight_button.hide()
+
 
     def load_flights(self):
         """Fetches and displays flights from the controller."""
@@ -209,9 +247,10 @@ class FlightManagementWindow(QMainWindow):
         success = self.controller.add_flight(flight_data)
         if success:
             self.load_flights()  # Refresh list
-            self.form_widget.hide()  # Hide form after saving
         else:
             self.flight_list.addItem("⚠️ Error adding flight")
+
+
 
     def select_flight(self, item):
         """Selects a flight from the list."""

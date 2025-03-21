@@ -1,5 +1,8 @@
 from models.flight import Flight  # Import the Flight model
 import requests
+from datetime import datetime
+from models.flight import Flight
+import json
 
 class FlightManagementController:
     def __init__(self, main_controller):
@@ -27,18 +30,43 @@ class FlightManagementController:
     def add_flight(self, flight_data):
         """Creates a new flight using the Flight model."""
         try:
+            departure_datetime = datetime.fromisoformat(flight_data["DepartureDateTime"])
+            estimated_arrival_datetime = datetime.fromisoformat(flight_data["EstimatedArrivalDateTime"])
+
+            
+            # Create a Flight instance
             flight = Flight(
+                flight_id=None,  # Ensure it's not sent
                 plane_id=int(flight_data["PlaneId"]),
                 departure_location=flight_data["DepartureLocation"],
                 arrival_location=flight_data["ArrivalLocation"],
-                departure_datetime=flight_data["DepartureDateTime"],
-                estimated_arrival_datetime=flight_data["EstimatedArrivalDateTime"],
+                departure_datetime=departure_datetime,
+                estimated_arrival_datetime=estimated_arrival_datetime,
+                num_of_taken_seats1=0,  # Default values
+                num_of_taken_seats2=0,
+                num_of_taken_seats3=0,
             )
+
+            json_data=flight.to_dict()
+
+            print(f"🔹 JSON Sent from Python: {json.dumps(json_data, indent=4)}")  # Print JSON payload
+
+            #response = requests.post(self.api_base_url, json=json_data)
+            #response.raise_for_status()
+            
+
+            # Call the `create` method from the Flight model
             flight.create(self.api_base_url)
+
             return True  # Successfully created
-        except Exception as e:
-            print(f"Error adding flight: {e}")
+        except requests.exceptions.HTTPError as http_err:
+            print(f"❌ HTTP Error: {http_err}")
+            print(f"❌ Response Content: {http_err.response.text}")  # Print server error details
             return False
+        except Exception as e:
+            print(f"❌ General Error: {e}")
+            return False
+
 
     def delete_flight(self, flight_id):
         """Deletes a flight by ID."""

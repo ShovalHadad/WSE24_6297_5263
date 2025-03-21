@@ -45,13 +45,20 @@ class Flight:
         data = response.json()
         return Flight.from_dict(data)
 
+   
+
     def create(self, api_base_url):
-        url = f"{api_base_url}/flights"
+        url = f"{api_base_url}"
         flight_data = self.to_dict()
-        response = requests.post(url, json=flight_data)
+        headers = {'Content-Type': 'application/json'}
+        
+        print(f"🔹 Flight Data Sent: {flight_data}")  # For debugging
+        response = requests.post(url, json=flight_data, headers=headers)
         response.raise_for_status()
         created_flight_data = response.json()
         self.flight_id = created_flight_data["flightId"]
+
+
 
     def update(self, api_base_url):
         if not self.flight_id:
