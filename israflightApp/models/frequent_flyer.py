@@ -16,15 +16,15 @@ class FrequentFlyer:
     @classmethod
     def from_dict(cls, data):
         return cls(
-            flyer_id=data.get("FlyerId"),
-            username=data.get("UserName"),
-            password=data.get("Password"),
-            first_name=data.get("FirstName"),
-            last_name=data.get("LastName"),
-            email=data.get("Email"),
-            phone_number=data.get("PhoneNumber"),
-            flights_ids=data.get("FlightsIds", []),
-            is_manager=data.get("IsManager", False)
+            flyer_id=data.get("flyerId"),  
+            username=data.get("userName"),  
+            password=data.get("password"),
+            first_name=data.get("firstName"),
+            last_name=data.get("lastName"),
+            email=data.get("email"),
+            phone_number=data.get("phoneNumber"),
+            flights_ids=data.get("flightsIds", []),
+            is_manager=data.get("isManager", False)
         )
 
     def to_dict(self):
@@ -43,30 +43,62 @@ class FrequentFlyer:
     @staticmethod
     def get_all_flyers(base_url):
         try:
-            response = requests.get(f"{base_url}/api/frequentflyers")
+            response = requests.get(f"{base_url}")
             response.raise_for_status()
-            flyer_data_list = response.json()
-            return [FrequentFlyer.from_dict(data) for data in flyer_data_list]
-        except requests.exceptions.RequestException as e:
-            print(f"Error fetching frequent flyers: {e}")
-            return []
 
+            flyer_data_list = response.json()
+            flyers = [FrequentFlyer.from_dict(data) for data in flyer_data_list]
+
+            return flyers
+
+        except requests.exceptions.RequestException as e:
+            print(f"❌ Error fetching frequent flyers: {e}")
+            return []
+   
+   
     @staticmethod
     def get_flyer_by_id(base_url, flyer_id):
         try:
-            response = requests.get(f"{base_url}/api/frequentflyers/{flyer_id}")
+            response = requests.get(f"{base_url}/{flyer_id}")
             response.raise_for_status()
             flyer_data = response.json()
             return FrequentFlyer.from_dict(flyer_data)
         except requests.exceptions.RequestException as e:
             print(f"Error fetching frequent flyer {flyer_id}: {e}")
             return None
+        
+
+    @staticmethod
+    def get_flyer_by_username(base_url, username):
+        """Fetches a frequent flyer by username (email)."""
+        try:
+            if not username:
+                print("Error: Username is None or empty.")
+                return None
+
+            # Fetch all frequent flyers
+            flyers = FrequentFlyer.get_all_flyers(base_url)  # This returns a list of dictionaries
+
+            # Ensure username is valid before calling `.lower()`
+            flyer = next((f for f in flyers if f.username and f.username.lower() == username.lower()), None)
+
+            if flyer:
+                return flyer
+            else:
+                print(f"Frequent flyer with username '{username}' not found.")
+                return None
+
+        except Exception as e:
+            print(f"Error fetching frequent flyer {username}: {e}")
+            return None
+
+        
 
     def create(self, base_url):
         try:
             flyer_data = self.to_dict()
             if self.flyer_id == 0:  # יצירת נוסע מתמיד חדש
-                response = requests.post(f"{base_url}/api/frequentflyers", json=flyer_data)
+                response = requests.post(f"{base_url}/api/FrequentFlyer", json=flyer_data)
                 response.raise_for_status()
                 print("Frequent flyer created successfully")
             else:  # עדכון נוסע מתמיד קיים

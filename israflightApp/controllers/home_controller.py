@@ -1,6 +1,3 @@
-from PySide6.QtWidgets import (
-    QMainWindow, QLabel, QToolBar, QWidget, QVBoxLayout, QLineEdit, QPushButton, QFormLayout, QSizePolicy, QStackedWidget
-)
 from views.home_window import HomeWindow
 from models.frequent_flyer import FrequentFlyer
 import re
@@ -10,57 +7,61 @@ class HomeController:
     def __init__(self, Main_controller):
         self.mainController = Main_controller
         self.home_window = HomeWindow(self)
+        self.api_base_url = "http://localhost:5177/api/FrequentFlyer"  # Update with correct API URL
 
     def show_window(self):
         self.home_window.show()
 
     def register_button_action(self, user_data):
-        """Handles user registration by sending data to the API."""
-        
-        base_url = "http://localhost:5000/api/FrequentFlyer"  # Change to your server URL
-        headers = {"Content-Type": "application/json"}
-
+        """Handles user registration using the FrequentFlyer model."""
         try:
-            response = requests.post(base_url, json=user_data, headers=headers)
+            new_flyer = FrequentFlyer(
+                flyer_id=0,  # New user (ID assigned by the server)
+                username=user_data["email"],  # Use email as username
+                password=user_data["password"],
+                first_name=user_data["first_name"],
+                last_name=user_data["last_name"],
+                email=user_data["email"],
+                phone_number=None,
+                flights_ids=[],
+                is_manager=False
+            )
 
-            if response.status_code == 201:
-                self.home_window.show_success_message("Registration successful! Please log in.")
-                self.home_window.show_sign_in_form()  # Redirect to Sign In page
-            elif response.status_code == 400:
-                self.home_window.show_error_message("User already exists or invalid data.")
-            else:
-                self.home_window.show_error_message(f"Unexpected error: {response.text}")
+            new_flyer.create(self.api_base_url)  # Call the model method to create the flyer
+            self.home_window.show_success_message("Registration successful! Please log in.")
+            self.home_window.show_sign_in_form()
 
         except Exception as e:
             self.home_window.show_error_message(f"Failed to register: {str(e)}")
 
-
-        
-
-    def sign_in_button_action(self, username, password):
-        """Sends a secure login request using POST."""
-        base_url = "http://localhost:5000/api/FrequentFlyer/login"  # Change to your server URL
-        headers = {"Content-Type": "application/json"}
-        login_data = {"UserName": username, "Password": password}
     
+    def sign_in_button_action(self, username, password):
+        """Handles user login and checks if the user is a manager."""
         try:
-            response = requests.post(base_url, json=login_data, headers=headers)
+            flyer = FrequentFlyer.get_flyer_by_username(self.api_base_url, username)
 
-            if response.status_code == 200:
-                self.home_window.show_success_message("Login successful!")
-                self.home_window.show_home_screen()
-            elif response.status_code == 401:
-                self.home_window.show_error_message("Invalid password. Try again.")
-            elif response.status_code == 404:
+            if not flyer:
                 self.home_window.show_error_message("User not found.")
+                return
+
+            if flyer.password != password:
+                self.home_window.show_error_message("Invalid password. Try again.")
+                return
+
+            # Successful login
+            self.home_window.show_success_message("Login successful!")
+
+            # Redirect user based on role
+            if flyer.is_manager:
+                self.mainController.show_manager_window()
             else:
-                self.home_window.show_error_message(f"Unexpected error: {response.text}")
+                self.mainController.show_user_main_window()
 
         except Exception as e:
             self.home_window.show_error_message(f"Failed to log in: {str(e)}")
 
-      
-    
+
+
     def is_valid_email(self, email):
         """Check if the email follows a valid format."""
         email_regex = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
