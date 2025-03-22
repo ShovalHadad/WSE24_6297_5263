@@ -6,7 +6,7 @@ namespace WebApp.Models
     public class Flight
     {
         [Key]
-        public int FlightId { get; set; } // flight number
+        public int? FlightId { get; set; } // flight number
         public int PlaneId { get; set; } // Navigation to plane
         public string DepartureLocation { get; set; } = string.Empty; // Departure Location /\
         public string ArrivalLocation { get; set; } = string.Empty; // Arrival Location  \/

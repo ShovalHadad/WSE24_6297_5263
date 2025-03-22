@@ -4,6 +4,10 @@ using WebApp.Models;
 using WebApp.Data;
 using WebApp.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+
+
+
 
 
 namespace WebApp.Controllers
@@ -59,6 +63,7 @@ namespace WebApp.Controllers
         [HttpPost]
         public async Task<ActionResult<Flight>> CreateFlight(Flight flight)
         {
+            Console.WriteLine($"🔹 Incoming Flight Data: {JsonConvert.SerializeObject(flight)}");
             try
             {
                 await _flightRepo.CreateFlightAsync(flight);
@@ -66,9 +71,13 @@ namespace WebApp.Controllers
             }
             catch (Exception ex)
             {
-                throw new Exception("can not create new flight ", ex);
+                Console.WriteLine($"❌ Error in CreateFlight: {ex.Message}");
+                return BadRequest(ex.Message);
             }
         }
+
+
+
 
         // PUT - update
         [HttpPut("{id}")]

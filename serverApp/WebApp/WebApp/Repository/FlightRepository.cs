@@ -56,8 +56,11 @@ namespace WebApp.Repositories
         // create new flight
         public async Task CreateFlightAsync(Flight flight)
         {
+            Console.WriteLine($"🔹 Flight Data Received: {Newtonsoft.Json.JsonConvert.SerializeObject(flight)}");
             try
             {
+               
+
                 Flight emptyFlight = new Flight();
                 if (flight.ArrivalLocation == emptyFlight.ArrivalLocation)
                     throw new FlightRepositoryException("Arrival locations is required.");
