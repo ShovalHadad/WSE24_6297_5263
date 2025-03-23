@@ -173,6 +173,27 @@ namespace WebApp.Repository
         {
             return await _context.FrequentFlyers.AnyAsync(e => e.FlyerId == id);
         }
+
+        public async Task LoginFrequentFlyerAsync(FrequentFlyer loginRequest)
+        {
+            try
+            {
+                var flyer = await _context.FrequentFlyers
+                    .FirstOrDefaultAsync(f => f.UserName == loginRequest.UserName && f.Password == loginRequest.Password);
+
+                if (flyer == null)
+                {
+                    throw new FrequentFlyerRepositoryException("Invalid username or password.");
+                }
+
+                // If needed, return or log the authenticated flyer
+            }
+            catch (Exception ex)
+            {
+                throw new FrequentFlyerRepositoryException("Login failed.", ex);
+            }
+        }
+
     }
 
 }
