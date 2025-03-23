@@ -32,7 +32,6 @@ class FlightManagementController:
         try:
             departure_datetime = datetime.fromisoformat(flight_data["DepartureDateTime"])
             estimated_arrival_datetime = datetime.fromisoformat(flight_data["EstimatedArrivalDateTime"])
-
             
             # Create a Flight instance
             flight = Flight(
@@ -68,6 +67,26 @@ class FlightManagementController:
             return False
 
 
+    def update_flight(self, flight_data):
+        try:
+            updated_flight = Flight(
+                flight_id=flight_data.get("FlightId"),
+                plane_id=flight_data.get("PlaneId"),
+                departure_location=flight_data.get("DepartureLocation"),
+                arrival_location=flight_data.get("ArrivalLocation"),
+                departure_datetime=datetime.fromisoformat(flight_data.get("DepartureDateTime")),
+                estimated_arrival_datetime=datetime.fromisoformat(flight_data.get("EstimatedArrivalDateTime")),
+                num_of_taken_seats1=flight_data.get("NumOfTakenSeats1", 0),
+                num_of_taken_seats2=flight_data.get("NumOfTakenSeats2", 0),
+                num_of_taken_seats3=flight_data.get("NumOfTakenSeats3", 0)
+            )
+            updated_flight.update(self.api_base_url)
+            return True
+        except Exception as e:
+            print(f"❌ Failed to update flight: {e}")
+            return False
+
+    
     def delete_flight(self, flight_id):
         """Deletes a flight by ID."""
         try:
