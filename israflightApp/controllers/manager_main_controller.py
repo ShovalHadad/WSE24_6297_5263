@@ -22,4 +22,8 @@ class ManagerMainWindowController:
     def open_add_manager(self):
         self.main_controller.show_add_manager_window()
 
+    def open_planes_management(self):
+        self.main_controller.show_plane_management_window()
+
+
 
