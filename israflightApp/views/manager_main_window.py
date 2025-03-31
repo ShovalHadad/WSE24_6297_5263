@@ -120,4 +120,4 @@ class ManagerMainWindow(BaseWindow):
         # Connect buttons to controller methods
         self.button1.clicked.connect(self.controller.open_flight_management)
         self.button2.clicked.connect(self.controller.open_add_manager)
-        #self.button3.clicked.connect(self.controller.open_planes_management)
+        self.button3.clicked.connect(self.controller.open_planes_management)

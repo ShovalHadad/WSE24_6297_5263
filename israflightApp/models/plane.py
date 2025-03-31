@@ -17,15 +17,16 @@ class Plane:
     @classmethod
     def from_dict(cls, data):
         return cls(
-            plane_id=data.get("PlaneId"),
-            name=data.get("Name"),
-            year=data.get("Year"),
-            made_by=data.get("MadeBy"),
-            picture=data.get("Picture"),
-            num_of_seats1=data.get("NumOfSeats1"),
-            num_of_seats2=data.get("NumOfSeats2"),
-            num_of_seats3=data.get("NumOfSeats3")
+            plane_id=data.get("planeId"),
+            name=data.get("name"),
+            year=data.get("year"),
+            made_by=data.get("madeBy"),
+            picture=data.get("picture"),
+            num_of_seats1=data.get("numOfSeats1"),
+            num_of_seats2=data.get("numOfSeats2"),
+            num_of_seats3=data.get("numOfSeats3")
         )
+
 
     def to_dict(self):
         return {
@@ -40,9 +41,9 @@ class Plane:
         }
 
     @staticmethod
-    def get_all_planes():
+    def get_all_planes(api_base_url):
         try:
-            response = requests.get(f"{Plane.base_url}")
+            response = requests.get(f"{api_base_url}")
             response.raise_for_status()
             plane_data_list = response.json()
             return [Plane.from_dict(data) for data in plane_data_list]

@@ -39,7 +39,7 @@ class Flight:
 
     @staticmethod
     def get_flight_by_id(api_base_url, flight_id):
-        url = f"{api_base_url}/flights/{flight_id}"
+        url = f"{api_base_url}/{flight_id}"
         response = requests.get(url)
         response.raise_for_status()
         data = response.json()
@@ -63,7 +63,7 @@ class Flight:
     def update(self, api_base_url):
         if not self.flight_id:
             raise ValueError("Flight ID is required to update a flight.")
-        url = f"{api_base_url}/flights/{self.flight_id}"
+        url = f"{api_base_url}/{self.flight_id}"
         flight_data = self.to_dict()
         response = requests.put(url, json=flight_data)
         response.raise_for_status()
@@ -72,7 +72,7 @@ class Flight:
         if not self.flight_id:
             raise ValueError("Flight ID is required to delete a flight.")
         
-        url = f"{api_base_url}/flights/{self.flight_id}"
+        url = f"{api_base_url}/{self.flight_id}"
         response = requests.delete(url)
         response.raise_for_status()
 

@@ -2,6 +2,7 @@ from controllers.manager_main_controller import ManagerMainWindowController
 from controllers.home_controller import HomeController
 from controllers.flight_management_controller import FlightManagementController
 from controllers.add_manager_controller import AddManagerController
+from controllers.plane_management_controller import PlaneManagementController
 
 
 class MainController:
@@ -11,6 +12,7 @@ class MainController:
         self.manager_main_controller = None
         self.flight_management_controller = None
         self.add_manager_controller = None
+        self.plane_management_controller = None
 
         # Track the currently active window
         self.current_window = None
@@ -51,6 +53,15 @@ class MainController:
             self.add_manager_controller = AddManagerController(self)
         self.close_all_windows()
         self.current_window = self.add_manager_controller.show_window()
+
+        
+    def show_plane_management_window(self):
+        if not self.plane_management_controller:
+            self.plane_management_controller = PlaneManagementController(self)
+        self.close_all_windows()
+        self.current_window = self.plane_management_controller.show_window()
+
+
 
 
 
