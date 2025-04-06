@@ -1,7 +1,7 @@
 import requests
 
 class Plane:
-    base_url = "http://airline.mssql.somee.com/api/planes" 
+    api_base_url = "http://localhost:5177/api/Plane"  
 
     def __init__(self, plane_id, name, year, made_by, picture, 
                  num_of_seats1, num_of_seats2, num_of_seats3):
@@ -41,9 +41,9 @@ class Plane:
         }
 
     @staticmethod
-    def get_all_planes(api_base_url):
+    def get_all_planes():
         try:
-            response = requests.get(f"{api_base_url}")
+            response = requests.get(f"{Plane.api_base_url}")
             response.raise_for_status()
             plane_data_list = response.json()
             return [Plane.from_dict(data) for data in plane_data_list]
@@ -54,7 +54,7 @@ class Plane:
     @staticmethod
     def get_plane_by_id(plane_id):
         try:
-            response = requests.get(f"{Plane.base_url}/{plane_id}")
+            response = requests.get(f"{Plane.api_base_url}/{plane_id}")
             response.raise_for_status()
             plane_data = response.json()
             return Plane.from_dict(plane_data)
@@ -65,16 +65,18 @@ class Plane:
     def create(self):
         try:
             plane_data = self.to_dict()
-            response = requests.post(f"{Plane.base_url}", json=plane_data)
+            response = requests.post(f"{Plane.api_base_url}", json=plane_data)
             response.raise_for_status()
             print("Plane created successfully")
+            return True
         except requests.exceptions.RequestException as e:
             print(f"Error creating plane: {e}")
+            return False
 
     def update(self):
         try:
             plane_data = self.to_dict()
-            response = requests.put(f"{Plane.base_url}/{self.plane_id}", json=plane_data)
+            response = requests.put(f"{Plane.api_base_url}/{self.plane_id}", json=plane_data)
             response.raise_for_status()
             print("Plane updated successfully")
         except requests.exceptions.RequestException as e:
@@ -82,7 +84,7 @@ class Plane:
 
     def delete(self):
         try:
-            response = requests.delete(f"{Plane.base_url}/{self.plane_id}")
+            response = requests.delete(f"{Plane.api_base_url}/{self.plane_id}")
             response.raise_for_status()
             print("Plane deleted successfully")
         except requests.exceptions.RequestException as e:
