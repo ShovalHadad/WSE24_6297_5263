@@ -10,7 +10,6 @@ class PlaneManagementController:
 
     def show_window(self):
         if not self.plane_management_window:
-            from views.plane_management_window import PlaneManagementWindow
             self.plane_management_window = PlaneManagementWindow(self)
 
         self.plane_management_window.show()
