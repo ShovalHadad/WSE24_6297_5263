@@ -51,7 +51,6 @@ class MainController:
         self.current_window = self.flight_management_controller.show_window()
 
 
-
     def show_add_manager_window(self):
         if not self.add_manager_controller:
             self.add_manager_controller = AddManagerController(self)
@@ -74,8 +73,6 @@ class MainController:
             self.frequent_flyer_controller = FrequentFlyerMainController(self)
 
         self.current_window = self.frequent_flyer_controller.show_window()
-
-
 
 
     def close_all_windows(self):

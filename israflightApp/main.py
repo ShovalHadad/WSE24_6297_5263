@@ -11,7 +11,7 @@ if __name__ == "__main__":
 
     #main_controller.show_home_window()
 
-    main_controller.show_plane_management_window()
+    main_controller.show_frequent_flyer_window()
 
     # Start the application event loop
     sys.exit(app.exec())

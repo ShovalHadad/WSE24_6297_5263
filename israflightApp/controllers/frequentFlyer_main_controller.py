@@ -1,18 +1,23 @@
 from models.flight import Flight
 from PySide6.QtCore import QDate
+from models.ticket import FlightTicket
+from views.frequentFlyer_main_window import FrequentFlyerMainWindow
 
 class FrequentFlyerMainController:
     def __init__(self, main_controller):
         self.main_controller = main_controller
-        self.api_base_url = "https://yourserver.com/api/flights"  # תעדכני לפי השרת שלך
-        self.frequent_flyer_main_window = FrequentFlyerMainWindow(self)
+        #self.api_base_url = "https://yourserver.com/api/flights"  # תעדכני לפי השרת שלך
+        self.frequent_flyer_main_window = None
 
     def show_window(self):
-        self.frequent_flyer_main_window.showMaximized()
+        if not self.frequent_flyer_main_window:
+                self.frequent_flyer_main_window = FrequentFlyerMainWindow(self)
+
+        self.frequent_flyer_main_window.show()
         return self.frequent_flyer_main_window
 
     def find_flights(self, arrival, landing, start_date, end_date):
-        all_flights = Flight.get_all_flights(self.api_base_url)
+        all_flights = Flight.get_all_flights()
 
         filtered = []
         for f in all_flights:
@@ -36,15 +41,4 @@ class FrequentFlyerMainController:
 
         return filtered
 
-    def order_flight(self, flight, user_id, ticket_type, price, shabat_times):
-        from models.flight_ticket import FlightTicket
-        ticket = FlightTicket(
-            ticket_id=0,
-            ticket_type=ticket_type,
-            user_id=user_id,
-            flight_id=flight.flight_id,
-            shabat_times=shabat_times,
-            created_date=datetime.now(),
-            price=price
-        )
-        ticket.create("https://yourserver.com")
+    
