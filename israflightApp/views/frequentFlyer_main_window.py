@@ -4,7 +4,6 @@ from PySide6.QtCore import Qt, QDate
 from views.base_window import BaseWindow
 
 
-
 class FrequentFlyerMainWindow(BaseWindow):
     def __init__(self, controller):
         super().__init__()
@@ -17,8 +16,8 @@ class FrequentFlyerMainWindow(BaseWindow):
 
         self.create_toolbar()
 
-
-        main_layout = QHBoxLayout(self)
+        # ✅ יצירת לייאאוט ראשי מבלי לחבר אותו לחלון
+        main_layout = QHBoxLayout()
 
         # --- Right Side: Search + Results ---
         right_layout = QVBoxLayout()
@@ -43,7 +42,7 @@ class FrequentFlyerMainWindow(BaseWindow):
         self.end_date.setDate(QDate.currentDate())
 
         self.search_button = QPushButton("Search Flights")
-        self.search_button.clicked.connect(self.search_flights)
+        #self.search_button.clicked.connect(self.search_flights)
 
         for widget in [self.arrival_input, self.landing_input, self.start_date, self.end_date, self.search_button]:
             widget.setFixedHeight(30)
@@ -54,27 +53,9 @@ class FrequentFlyerMainWindow(BaseWindow):
 
         main_layout.addLayout(right_layout, 2)
 
-    def search_flights(self):
-        arrival = self.arrival_input.text()
-        landing = self.landing_input.text()
-        start = self.start_date.date()
-        end = self.end_date.date()
-
-        # Call controller to get flights (mocked here)
-        flights = self.controller.find_flights(arrival, landing, start, end)
-
-        self.results_list.clear()
-        if not flights:
-            self.results_list.addItem("No matching flights found.")
-            return
-
-        for flight in flights:
-            item_text = f"{flight['flight_id']}: {flight['departure']} → {flight['arrival']} on {flight['date']}"
-            item = QListWidgetItem(item_text)
-            self.results_list.addItem(item)
-
-            button = QPushButton("Order")
-            button.clicked.connect(lambda _, f=flight: self.open_flight_details(f))
-            self.results_list.setItemWidget(item, button)
+        # ✅ עטיפה בווידג'ט והגדרת כ-central widget
+        central_widget = QWidget()
+        central_widget.setLayout(main_layout)
+        self.setCentralWidget(central_widget)
 
     
