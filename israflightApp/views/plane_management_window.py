@@ -41,7 +41,7 @@ class PlaneManagementWindow(BaseWindow):
 
         right_layout = QVBoxLayout()
         #right_layout.setContentsMargins(70, 50, 180, 50)
-        right_layout.setContentsMargins(40, 50, 60, 50)
+        right_layout.setContentsMargins(90, 50, 60, 50)
 
         right_layout.setSpacing(10)
 
@@ -147,7 +147,7 @@ class PlaneManagementWindow(BaseWindow):
         right_container = QWidget()
         right_container.setLayout(right_layout)
         right_container.setStyleSheet("background-color: none; border-radius: 20px;")
-        right_container.setMinimumWidth(400)
+        right_container.setMinimumWidth(100)
 
         main_layout.addWidget(right_container, 2)
 
@@ -346,7 +346,7 @@ class PlaneManagementWindow(BaseWindow):
         left_layout.addWidget(self.form_widget)
 
         left_container = QWidget()
-        left_container.setFixedSize(600, 700)
+        left_container.setFixedSize(700, 700)
         left_container.setLayout(left_layout)
         #left_container.setFixedWidth(600)
 
