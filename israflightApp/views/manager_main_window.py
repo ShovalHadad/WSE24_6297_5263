@@ -2,41 +2,53 @@ from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushBu
 from PySide6.QtGui import QFont, QIcon, QPixmap
 from PySide6.QtCore import Qt
 from views.base_window import BaseWindow
-
+from PySide6.QtGui import QGuiApplication
 
 class ManagerMainWindow(BaseWindow):
     def __init__(self, controller):
         super().__init__()
         self.controller = controller
+        screen = QGuiApplication.primaryScreen()
+        screen_width = screen.size().width()
 
         self.setWindowTitle("IsraFlight - Manager")
-        self.setGeometry(500, 200, 800, 600)
+        self.setGeometry(screen.geometry())
         self.setMinimumSize(800, 600)
         self.showMaximized()
-
-        self.create_toolbar()
-
-        # Additional ManagerMainWindow-specific layout
         central_widget = QWidget(self)
         self.setCentralWidget(central_widget)
+        self.create_toolbar()
+        # Create a layout for the central widget
+        #layout = QHBoxLayout()
+        #layout.setContentsMargins(0, 0, 0, 0)  # Remove margins
+        #layout.setSpacing(0)  # Remove spacing
+        #central_widget.setLayout(layout)
+
+        # Additional ManagerMainWindow-specific layout
+        
 
         # Add a QLabel for the background image
         self.background_label = QLabel(central_widget)
         #self.background_label.setGeometry(self.rect())  # Set to cover the entire window
-        self.background_label.setPixmap(QPixmap("./israflightApp/images/manager_background.png").scaled(
+        self.background_label.setPixmap(QPixmap("images/manager_background.png").scaled(
             self.size(),
             Qt.KeepAspectRatioByExpanding,
             Qt.SmoothTransformation
         ))
         self.background_label.setScaledContents(True)
+        
 
         # Main vertical layout to center the buttons
         layout = QVBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)  # Remove margins
+        layout.setSpacing(0)  # Remove spacing
         layout.setAlignment(Qt.AlignCenter)  # Center the content vertically and horizontally
         central_widget.setLayout(layout)
+        layout.addWidget(self.background_label)
 
         # Example content
         label = QLabel("Manager Main Page")
+        
         label.setFont(QFont("Urbanist", 22, 700))
         label.setStyleSheet("""color: #27AAE1 """)
         label.setAlignment(Qt.AlignCenter)
@@ -58,7 +70,7 @@ class ManagerMainWindow(BaseWindow):
     def create_buttons(self):
         # Button 1
         self.button1 = QPushButton("Flight Management")  # ניהול טיסות
-        self.button1.setIcon(QIcon("./israflightApp/images/flight_managment.png"))  # Replace with your icon path
+        self.button1.setIcon(QIcon("images/flight_managment.png"))  # Replace with your icon path
         self.button1.setFixedSize(250, 75)  # Resize the button
         self.button1.setStyleSheet("""
             QPushButton {
@@ -77,7 +89,7 @@ class ManagerMainWindow(BaseWindow):
 
         # Button 2
         self.button2 = QPushButton("Add Manager")  # מינוי מנהל
-        self.button2.setIcon(QIcon("./israflightApp/images/add_manager.png"))  # Replace with your icon path
+        self.button2.setIcon(QIcon("images/add_manager.png"))  # Replace with your icon path
         self.button2.setFixedSize(250, 75)  # Resize the button
         self.button2.setStyleSheet("""
             QPushButton {
@@ -96,7 +108,7 @@ class ManagerMainWindow(BaseWindow):
 
         # Button 3
         self.button3 = QPushButton("Planes Management")
-        self.button3.setIcon(QIcon("./israflightApp/images/planes_managment.png"))  # Replace with your icon path
+        self.button3.setIcon(QIcon("images/planes_managment.png"))  # Replace with your icon path
         self.button3.setFixedSize(250, 75)  # Resize the button
         self.button3.setStyleSheet("""
             QPushButton {

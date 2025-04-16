@@ -3,7 +3,7 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtCore import Qt
 
-class UserMainWindow(QWidget):
+class UserMainWindow(QWidget):  # מיותר
     def __init__(self, controller):
         super().__init__()
         self.controller = controller

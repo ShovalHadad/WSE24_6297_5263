@@ -65,12 +65,12 @@ class MainController:
         self.current_window = self.plane_management_controller.show_window()
 
 
-    def show_frequent_flyer_window(self):
+    def show_frequent_flyer_window(self, flyer_id):
         # Close the currently active window
         self.close_all_windows()
 
         if not self.frequent_flyer_controller:
-            self.frequent_flyer_controller = FrequentFlyerMainController(self)
+            self.frequent_flyer_controller = FrequentFlyerMainController(self, flyer_id)
 
         self.current_window = self.frequent_flyer_controller.show_window()
 

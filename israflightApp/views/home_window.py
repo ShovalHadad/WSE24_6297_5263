@@ -1,22 +1,25 @@
-from PySide6.QtWidgets import (
-    QMainWindow, QLabel, QToolBar, QWidget, QVBoxLayout, QLineEdit, QPushButton, QFormLayout, QSizePolicy, QStackedWidget
-)
+from PySide6.QtWidgets import *
 from PySide6.QtGui import QPixmap, QFont
 from PySide6.QtCore import Qt
 from views.base_window import BaseWindow
 from PySide6.QtWidgets import QMessageBox
+from PySide6.QtGui import QGuiApplication
+
 
 
 class HomeWindow(BaseWindow):
     def __init__(self, controller):
         super(HomeWindow, self).__init__()
         self.controller = controller
-
+        screen = QGuiApplication.primaryScreen()
         self.setWindowTitle("IsraFlight")
-        self.setGeometry(500, 200, 800, 600)
+        self.setGeometry(screen.geometry())
         self.setMinimumSize(800, 600)
         self.showMaximized()
-
+        screen_height = screen.size().height()
+        screen_width = screen.size().width()
+        print(f"screen hight: {screen_height}")
+        print(f"screen width: {screen_width}")
         # Set the central widget
         central_widget = QWidget(self)
         self.setCentralWidget(central_widget)
@@ -25,23 +28,23 @@ class HomeWindow(BaseWindow):
 
 
         # Create a layout for the central widget
-        layout = QVBoxLayout()
+        layout = QHBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)  # Remove margins
         layout.setSpacing(0)  # Remove spacing
         central_widget.setLayout(layout)
 
         # Set the background label
         self.background_label = QLabel(self)
-        pixmap = QPixmap("./israflightApp/images/background2.png")  # Replace with your image path
+        pixmap = QPixmap("images/background2.png")  # Replace with your image path
         self.background_label.setPixmap(pixmap)
         self.background_label.setScaledContents(True)
         layout.addWidget(self.background_label)
 
         # Add the logo
         self.logo_below_text = QLabel(self.background_label)
-        logo_pixmap = QPixmap("./israflightApp/images/israFlight_logo-03.png")  # Replace with your logo path
+        logo_pixmap = QPixmap("images/israFlight_logo-03.png")  # Replace with your logo path
         self.logo_below_text.setPixmap(logo_pixmap.scaled(500, 500, Qt.KeepAspectRatio, Qt.SmoothTransformation))  # Resize logo
-        self.logo_below_text.move(120, 150)  # Position below the text
+        self.logo_below_text.move(int(screen_width/16), 100)  # Position below the text
 
         # Overlay the text label
         self.text_label = QLabel(self.background_label)
@@ -50,14 +53,19 @@ class HomeWindow(BaseWindow):
         self.text_label.setStyleSheet("color: #1C3664; margin-left: 20px;")  # Text color
         self.text_label.setAlignment(Qt.AlignLeft | Qt.AlignTop)
         self.text_label.resize(600, 150)  # Adjust height to fit multiple lines
-        self.text_label.move(160, 370)  # Position the text label
+        self.text_label.move(int(screen_width/16), 370)  # Position the text label
         self.text_label.setText(
-            "Lorem ipsum dolor sit amet, consectetuer adipiscing elit,\nsed diam nonummy nibh euismod tincidunt ut\nlaoreet dolore magna aliquam erat volutpat.\nUt wisi enim ad minim veniam, quis nostrud exerci\ntation ullamcorper suscipit lobortis nisl ut \naliquip ex ea commodo consequat."
+            "IsraFlight is a full-service airline offering a premium travel experience \n"
+            "with modern aviation technology.\n"
+            "Our platform makes booking easy and personalized.\n"
+            "We are committed to safety, reliability, and outstanding service.\n"
+            "Enjoy a seamless journey—from check-in to arrival.\n"
+            "Experience the future of air travel with IsraFlight."
         )
 
         # Add a QStackedWidget to hold both forms
         self.stacked_widget = QStackedWidget(self.background_label)
-        self.stacked_widget.setGeometry(800, 250, 500, 350)
+        self.stacked_widget.setGeometry(int(screen_width*(5/8)), 120, 400, 450)
 
         # Add Sign-In and Registration forms
         self.sign_in_form = self.create_sign_in_form()
@@ -76,7 +84,8 @@ class HomeWindow(BaseWindow):
             background-color: #F0F9FC;
             border-radius: 15px; 
             padding-top: 20px;
-            padding-left: 20px;                           
+            padding-left: 15px;
+            padding-right: 15px;                                                  
         }
         QLineEdit {
             background-color: #FFFFFF;  /* White background */
@@ -189,7 +198,8 @@ class HomeWindow(BaseWindow):
             background-color: #F0F9FC;
             border-radius: 15px; 
             padding-top: 20px;
-            padding-left: 20px;                           
+            padding-left: 15px;    
+            padding-right: 15px;                       
         }
         QLineEdit {
             background-color: #FFFFFF;  /* White background */
@@ -199,6 +209,7 @@ class HomeWindow(BaseWindow):
             padding: 5px;  /* Internal padding */
             font-family: 'Urbanist';  /* Font family */
             font-size: 14px;  /* Font size */
+            margin-top: 8px;                      
             font-weight: 500px;
         }
         QLineEdit:focus {
@@ -212,7 +223,7 @@ class HomeWindow(BaseWindow):
             padding: 5px;  /* Internal padding */
             
         }
-    """)
+        """)
         form_layout = QFormLayout(form_widget)
         form_layout.setContentsMargins(40, 30, 90, 5)
 
@@ -224,6 +235,12 @@ class HomeWindow(BaseWindow):
         form_heading.setAlignment(Qt.AlignCenter)
         form_layout.addRow(form_heading)
 
+        user_field = QLineEdit()
+        user_field.setObjectName("user_field")  # Assign object name
+
+        pass_field = QLineEdit()
+        pass_field.setObjectName("password_field")  # Assign object name
+
         first_name_field = QLineEdit()
         first_name_field.setObjectName("first_name_field")  # Assign object name
 
@@ -233,11 +250,13 @@ class HomeWindow(BaseWindow):
         email_field = QLineEdit()
         email_field.setObjectName("email_field")  # Assign object name
 
-        password_field = QLineEdit()
-        password_field.setObjectName("password_field")  # Assign object name
+        #phone_field = QLineEdit()
+        #phone_field.setObjectName("phone_field")  # Assign object name
+
+        #phone_field = None
 
 
-        password_field.setEchoMode(QLineEdit.Password)
+        pass_field.setEchoMode(QLineEdit.Password)
         register_button = QPushButton("Register")
         register_button.setStyleSheet("""
             QPushButton {
@@ -278,28 +297,32 @@ class HomeWindow(BaseWindow):
                 color: #82CEE8;
             }
         """)
-
+        user_label = QLabel("Username:")
+        pass_label = QLabel("Password:")
         first_name_label = QLabel("First Name:")
         last_name_label = QLabel("Last Name:")
         email_label = QLabel("Email:")
-        password_label = QLabel("Password:")
-
+        #phone_label = QLabel("Phone Number:")
+        
+        form_layout.addRow(user_label, user_field)
+        form_layout.addRow(pass_label, pass_field)
         form_layout.addRow(first_name_label, first_name_field)
         form_layout.addRow(last_name_label, last_name_field)
         form_layout.addRow(email_label, email_field)
-        form_layout.addRow(password_label, password_field)
-        form_layout.addWidget(back_to_sign_in_button) 
+        #form_layout.addRow(phone_label, phone_field)
 
+        form_layout.addWidget(back_to_sign_in_button) 
     
         back_to_sign_in_button.clicked.connect(self.show_sign_in_form)
 
         #register_button.clicked.connect(self.controller.register_button_action())
          # Connect the button to a lambda function that gathers user input and calls register_button_action
         register_button.clicked.connect(lambda: self.controller.register_button_action({
-            "first_name": self.first_name_field.text(),
-            "last_name": self.last_name_field.text(),
-            "email": self.email_field.text(),
-            "password": self.password_field.text()
+            "username": user_field.text(),
+            "password": pass_field.text(),
+            "first_name": first_name_field.text(),
+            "last_name": last_name_field.text(),
+            "email": email_field.text()
         }))
 
 

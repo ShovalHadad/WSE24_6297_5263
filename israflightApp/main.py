@@ -6,12 +6,14 @@ from controllers.mainController import MainController
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
+
   # Initialize the main controller
     main_controller = MainController()
 
     #main_controller.show_home_window()
 
-    main_controller.show_frequent_flyer_window()
+    #main_controller.show_frequent_flyer_window()
+    
 
     # Start the application event loop
     sys.exit(app.exec())

@@ -98,7 +98,7 @@ class FrequentFlyer:
         try:
             flyer_data = self.to_dict()
             if self.flyer_id == 0:  # יצירת נוסע מתמיד חדש
-                response = requests.post(f"{base_url}/api/FrequentFlyer", json=flyer_data)
+                response = requests.post(f"{base_url}", json=flyer_data)
                 response.raise_for_status()
                 print("Frequent flyer created successfully")
             else:  # עדכון נוסע מתמיד קיים

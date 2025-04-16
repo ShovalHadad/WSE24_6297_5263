@@ -17,13 +17,13 @@ class HomeController:
         try:
             new_flyer = FrequentFlyer(
                 flyer_id=0,  # New user (ID assigned by the server)
-                username=user_data["email"],  # Use email as username
+                username=user_data["username"],  # Use email as username
                 password=user_data["password"],
                 first_name=user_data["first_name"],
                 last_name=user_data["last_name"],
                 email=user_data["email"],
                 phone_number=None,
-                flights_ids=[],
+                flights_ids=None,
                 is_manager=False
             )
 
@@ -55,7 +55,7 @@ class HomeController:
             if flyer.is_manager:
                 self.mainController.show_manager_window()
             else:
-                self.mainController.show_user_main_window()
+                self.mainController.show_frequent_flyer_window(flyer.flyer_id)
 
         except Exception as e:
             self.home_window.show_error_message(f"Failed to log in: {str(e)}")

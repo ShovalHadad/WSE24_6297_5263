@@ -4,14 +4,15 @@ from models.ticket import FlightTicket
 from views.frequentFlyer_main_window import FrequentFlyerMainWindow
 
 class FrequentFlyerMainController:
-    def __init__(self, main_controller):
+    def __init__(self, main_controller, flyer_id):
         self.main_controller = main_controller
+        self.flyer_id = flyer_id
         #self.api_base_url = "https://yourserver.com/api/flights"  # תעדכני לפי השרת שלך
         self.frequent_flyer_main_window = None
 
     def show_window(self):
         if not self.frequent_flyer_main_window:
-                self.frequent_flyer_main_window = FrequentFlyerMainWindow(self)
+                self.frequent_flyer_main_window = FrequentFlyerMainWindow(self, self.flyer_id)
 
         self.frequent_flyer_main_window.show()
         return self.frequent_flyer_main_window
@@ -41,4 +42,8 @@ class FrequentFlyerMainController:
 
         return filtered
 
-    
+    def get_flights(self, id_list):
+        flights = []
+        for id in id_list:
+            flights.append(Flight.get_flight_by_id("http://localhost:5177/api/Flight",id))
+        return flights

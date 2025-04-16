@@ -46,7 +46,7 @@ class FlightManagementWindow(BaseWindow):
         right_layout.setSpacing(5)  # מרווח מינימלי בין הכותרת לרשימה
 
 
-        # Right Side: Flight List
+        # left Side: Flight List
         self.flight_list = QListWidget()
         self.flight_list.setFixedWidth(600)
         self.flight_list.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
