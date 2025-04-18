@@ -1,6 +1,8 @@
 import requests
 
 class FrequentFlyer:
+    base_url = "http://localhost:5177/api/FrequentFlyer"
+
     def __init__(self, flyer_id, username, password, first_name, last_name, 
                  email=None, phone_number=None, flights_ids=None, is_manager=False):
         self.flyer_id = flyer_id
@@ -12,6 +14,7 @@ class FrequentFlyer:
         self.phone_number = phone_number
         self.flights_ids = flights_ids if flights_ids else []
         self.is_manager = is_manager
+        
 
     @classmethod
     def from_dict(cls, data):
@@ -57,9 +60,9 @@ class FrequentFlyer:
    
    
     @staticmethod
-    def get_flyer_by_id(base_url, flyer_id):
+    def get_flyer_by_id(flyer_id):
         try:
-            response = requests.get(f"{base_url}/{flyer_id}")
+            response = requests.get(f"{FrequentFlyer.base_url}/{flyer_id}")
             response.raise_for_status()
             flyer_data = response.json()
             return FrequentFlyer.from_dict(flyer_data)

@@ -2,12 +2,13 @@ from models.flight import Flight
 from PySide6.QtCore import QDate
 from models.ticket import FlightTicket
 from views.frequentFlyer_main_window import FrequentFlyerMainWindow
+from models.frequent_flyer import FrequentFlyer
 
 class FrequentFlyerMainController:
     def __init__(self, main_controller, flyer_id):
         self.main_controller = main_controller
         self.flyer_id = flyer_id
-        #self.api_base_url = "https://yourserver.com/api/flights"  # תעדכני לפי השרת שלך
+        #self.api_base_url =  "http://localhost:5177/api/FrequentFlyer" # תעדכני לפי השרת שלך
         self.frequent_flyer_main_window = None
 
     def show_window(self):
@@ -47,3 +48,6 @@ class FrequentFlyerMainController:
         for id in id_list:
             flights.append(Flight.get_flight_by_id("http://localhost:5177/api/Flight",id))
         return flights
+    
+    def get_flyer_by_id(self, flyer_id):
+        return FrequentFlyer.get_flyer_by_id(flyer_id)
