@@ -12,7 +12,7 @@ class FrequentFlyerMainWindow(BaseWindow):
         self.controller = controller
         screen = QGuiApplication.primaryScreen()
         flyer = self.controller.get_flyer_by_id(flyer_id)
-
+        self.found_flights = []
         self.setWindowTitle("IsraFlight - Frequent Flyer")
         self.setGeometry(screen.geometry())
         self.setMinimumSize(800, 600)
@@ -64,9 +64,9 @@ class FrequentFlyerMainWindow(BaseWindow):
             container.addWidget(widget)
             return container
         
-        self.landing_input = QLineEdit()
-        self.landing_input.setPlaceholderText("Landing location")
-        search_row.addLayout(styled_input("Landing location", self.landing_input))
+        self.departure_input = QLineEdit()
+        self.departure_input.setPlaceholderText("Departure location")
+        search_row.addLayout(styled_input("Departure location", self.departure_input))
 
         self.arrival_input = QLineEdit()
         self.arrival_input.setPlaceholderText("Arrival location")
@@ -75,13 +75,13 @@ class FrequentFlyerMainWindow(BaseWindow):
         self.start_date = QDateEdit()
         self.start_date.setCalendarPopup(True)
         self.start_date.setDate(QDate.currentDate())
-        search_row.addLayout(styled_input("Landing date", self.start_date))
+        search_row.addLayout(styled_input("Departure date", self.start_date))
 
-        self.end_date = QDateEdit()
-        self.end_date.setCalendarPopup(True)
-        self.end_date.setDate(QDate.currentDate())
-        search_row.addLayout(styled_input("Arrival date", self.end_date))
 
+        #self.end_date = QDateEdit()
+        #self.end_date.setCalendarPopup(True)
+        #self.end_date.setDate(QDate.currentDate())
+        #search_row.addLayout(styled_input("Arrival date", self.end_date))
         
 
         search_container.addLayout(search_row)
@@ -106,13 +106,13 @@ class FrequentFlyerMainWindow(BaseWindow):
         # 🔹 Temporary image shown before search
         self.flight_image = QLabel()
         self.flight_image.setContentsMargins(0, 110, 0, 0)
-        self.flight_image.setPixmap(QPixmap("./israflightApp/images/findFlight.png").scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+        self.flight_image.setPixmap(QPixmap("./images/findFlight.png").scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation)) # Shoval path
+        # self.flight_image.setPixmap(QPixmap("./israflightApp/images/findFlight.png").scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation)) # Tehila path
         self.flight_image.setAlignment(Qt.AlignHCenter)
         opacity = QGraphicsOpacityEffect()
         opacity.setOpacity(0.4)  
         self.flight_image.setGraphicsEffect(opacity)
         search_container.addWidget(self.flight_image)
-
 
         right_layout.addLayout(search_container)
 
@@ -135,7 +135,12 @@ class FrequentFlyerMainWindow(BaseWindow):
         self.results_list.hide()
 
         right_layout.addWidget(self.results_list)
-
+        self.search_button.clicked.connect(lambda: self.show_results_section(
+            self.departure_input, 
+            self.arrival_input,
+            self.start_date
+            #self.end_date
+        ))
 
 
 
@@ -163,7 +168,8 @@ class FrequentFlyerMainWindow(BaseWindow):
 
         picture_container = QVBoxLayout()
         picture_label = QLabel()
-        pixmap = QPixmap("./israflightApp/images/user.png")
+        pixmap = QPixmap("./images/user.png") # Shoval path
+        # pixmap = QPixmap("./israflightApp/images/user.png") # Tehila path
         pixmap = pixmap.scaled(120, 120, Qt.KeepAspectRatio, Qt.SmoothTransformation)
         picture_label.setPixmap(pixmap)
         picture_label.setAlignment(Qt.AlignHCenter)
@@ -251,6 +257,7 @@ class FrequentFlyerMainWindow(BaseWindow):
             }
         """)
 
+        self.update_button.clicked.connect(lambda: self.update_clicked())
         form_layout.addWidget(self.update_button)
         form_inner_layout.addLayout(form_layout)
 
@@ -332,9 +339,10 @@ class FrequentFlyerMainWindow(BaseWindow):
                 self.flight_list.addItem(flight_info)
         else:
             self.flight_list.addItem("No registered flights.")
-
+        self.flight_list.itemClicked.connect(self.user_flight_selected)
         registered_flights_container.addWidget(self.flight_list)
         left_layout.addLayout(registered_flights_container)
+        
 
 
         main_layout.addLayout(right_layout, 3)  # Search section on the left (wider)
@@ -345,11 +353,60 @@ class FrequentFlyerMainWindow(BaseWindow):
         central_widget = QWidget()
         central_widget.setLayout(main_layout)
         self.setCentralWidget(central_widget)
-
-        #self.search_button.clicked.connect(self.show_results_section)
-
-    def show_results_section(self):
-        self.results_label.show()
+       
+    def show_results_section(self, Departure, landing, start_date):
+        self.results_list.clear()  # Clear previous results
+    
+        # Get flights from controller
+        self.found_flights = self.controller.find_flights(Departure, landing, start_date)    
+        if self.found_flights:
+            for flight in self.found_flights:
+                print(f"{flight.flight_id} | ✈ {flight.departure_location} → {flight.arrival_location} at {flight.departure_datetime}")
+                flight_info = f"{flight.flight_id} | ✈ {flight.departure_location} → {flight.arrival_location} at {flight.departure_datetime}"
+                self.results_list.addItem(flight_info)
+        else:
+            self.results_list.addItem("No flights found.")
+        # Connect item click event to handler
+        self.results_list.itemClicked.connect(self.flight_selected)
+        # Show results and hide image
         self.results_list.show()
-        self.flight_image.hide()  # 🔹 הסתרת התמונה לאחר לחיצה על כפתור החיפוש
+        self.flight_image.hide()
 
+    def flight_selected(self, item):
+        # Get the flight ID from the selected item text
+        flight_id = int(item.text().split('|')[0].strip())
+    
+        # Find the corresponding flight object
+        selected_flight = next((f for f in self.found_flights if f.flight_id == flight_id), None)
+    
+        if selected_flight:
+            # Let the controller handle opening the booking window
+            self.controller.open_flight_booking(flight_id)
+        else:
+            QMessageBox.warning(self, "Error", "Could not find flight information.1")
+
+    def user_flight_selected(self, item):
+        # Get the flight ID from the selected item text
+        flight_id = int(item.text().split('|')[0].strip())
+        print(f"flight id {flight_id}")
+        if flight_id:
+        # Find the corresponding flight object
+            selected_flight = self.controller.get_flight_user(flight_id)
+            if selected_flight:
+            # Let the controller handle opening the booking window
+                self.controller.open_flight_user(flight_id)
+            else:
+                QMessageBox.warning(self, "Error", "Could not find flight information.")
+        else:
+            QMessageBox.warning(self, "Error", "Could not find flight id.")
+
+    def update_clicked(self):
+        first_name = self.first_input.text()
+        last_name = self.last_input.text()
+        email = self.email_input.text()
+        phone = self.phone_input.text()
+    
+        if self.controller.update_flyer(self.controller.flyer_id, first_name, last_name, email, phone):
+            QMessageBox.information(self, "Success", "Your profile has been updated successfully.")
+        else:
+            QMessageBox.warning(self, "Error", "Failed to update profile. Please try again.")

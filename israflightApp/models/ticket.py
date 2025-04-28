@@ -56,6 +56,59 @@ class FlightTicket:
         except requests.exceptions.RequestException as e:
             print(f"Error fetching flight ticket {ticket_id}: {e}")
             return None
+        
+
+    @staticmethod
+    def get_tickets_by_user(base_url, user_id):
+        try:
+        # First try to get all tickets and filter by user ID
+            all_tickets_url = f"http://localhost:5177/api/FlightTicket"
+            all_tickets_response = requests.get(all_tickets_url)
+            all_tickets_response.raise_for_status()
+            all_tickets_data = all_tickets_response.json()
+        
+        # Filter tickets belonging to this user
+            user_tickets = []
+            for ticket_data in all_tickets_data:
+                if ticket_data.get("UserId") == user_id:
+                    try:
+                        ticket = FlightTicket.from_dict(ticket_data)
+                        user_tickets.append(ticket)
+                    except Exception as e:
+                        print(f"Error creating ticket object: {e}")
+                        continue
+        
+            if user_tickets:
+                return user_tickets
+            
+        # If no tickets found with direct filter, try the original method
+            flyer_url = f"http://localhost:5177/api/FrequentFlyer/{user_id}"
+            flyer_response = requests.get(flyer_url)
+            flyer_response.raise_for_status()
+            flyer_data = flyer_response.json()
+        
+            flight_ids = flyer_data.get("FlightsIds", [])
+            if not flight_ids:
+                return []
+        
+        # Look for tickets matching these flight IDs
+            tickets = []
+            for flight_id in flight_ids:
+                # Try to find a ticket for this flight and user
+                for ticket_data in all_tickets_data:
+                    if (ticket_data.get("FlightId") == flight_id and 
+                        ticket_data.get("UserId") == user_id):
+                        try:
+                            ticket = FlightTicket.from_dict(ticket_data)
+                            tickets.append(ticket)
+                        except Exception as e:
+                            print(f"Error creating ticket object: {e}")
+                        break
+                    
+            return tickets
+        except Exception as e:
+            print(f"Error getting tickets for user {user_id}: {e}")
+            return []
 
     def create(self, base_url):
         try:

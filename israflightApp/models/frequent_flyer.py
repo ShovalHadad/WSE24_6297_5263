@@ -115,11 +115,27 @@ class FrequentFlyer:
                 raise ValueError("Flyer ID is required to update a frequent flyer.")
 
             flyer_data = self.to_dict()
-            response = requests.put(f"{base_url}/api/frequentflyers/{self.flyer_id}", json=flyer_data)
+            print(f"Sending update request with data: {flyer_data}")
+        
+            headers = {
+                'Content-Type': 'application/json'
+            }
+        
+            response = requests.put(f"{base_url}/{self.flyer_id}", json=flyer_data, headers=headers)
+        
+            if response.status_code != 200:
+                print(f"Error response code: {response.status_code}")
+                print(f"Response content: {response.text}")
+            
             response.raise_for_status()
             print("Frequent flyer updated successfully")
+            return True
         except requests.exceptions.RequestException as e:
             print(f"Error updating frequent flyer {self.flyer_id}: {e}")
+            if hasattr(e, 'response'):
+                print(f"Status code: {e.response.status_code}")
+                print(f"Response content: {e.response.text}")
+            return False
 
     def delete(self, base_url):
         try:

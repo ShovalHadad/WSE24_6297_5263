@@ -4,7 +4,7 @@ from controllers.flight_management_controller import FlightManagementController
 from controllers.add_manager_controller import AddManagerController
 from controllers.plane_management_controller import PlaneManagementController
 from controllers.frequentFlyer_main_controller import FrequentFlyerMainController
-
+from controllers.flight_controller import FlightController
 
 
 class MainController:
@@ -64,6 +64,11 @@ class MainController:
         self.close_all_windows()
         self.current_window = self.plane_management_controller.show_window()
 
+    def show_flight_window(self):
+        if not self.flight_controller:
+            self.flight_controller = FlightController(self)
+        self.close_all_windows()
+        self.current_window = self.flight_controller.show_window()
 
     def show_frequent_flyer_window(self, flyer_id):
         # Close the currently active window

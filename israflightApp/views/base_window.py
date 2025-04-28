@@ -31,7 +31,8 @@ class BaseWindow(QMainWindow):
 
         # Add a logo to the toolbar
         logo_label = QLabel(self)
-        logo_pixmap = QPixmap("./israflightApp/images/israFlight_logo4-04.png")  # Replace with your logo path
+        logo_pixmap = QPixmap("./images/israFlight_logo4-04.png")  # Shoval path
+        # logo_pixmap = QPixmap("./israflightApp/images/israFlight_logo4-04.png")  # Tehila path
         logo_label.setPixmap(logo_pixmap.scaled(120, 120, Qt.KeepAspectRatio, Qt.SmoothTransformation))  # Resize logo
         toolbar.addWidget(logo_label)
 
