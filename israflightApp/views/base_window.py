@@ -1,12 +1,13 @@
-from PySide6.QtWidgets import QMainWindow, QToolBar, QLabel, QWidget, QToolButton, QSizePolicy
-from PySide6.QtGui import QPixmap
-from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QMainWindow, QToolBar, QLabel, QWidget, QToolButton, QSizePolicy ,QStyle
+from PySide6.QtGui import QPixmap , QIcon
+from PySide6.QtCore import Qt ,QSize
 
 
 class BaseWindow(QMainWindow):
-    def __init__(self, controller=None):
+    def __init__(self, controller=None, nav_controller=None):  # ✅ nav_controller נוסף כאן
         super(BaseWindow, self).__init__()
         self.controller = controller
+        self.nav_controller = nav_controller  # ✅ שמירה של הנוויגציה
 
     def create_toolbar(self):
         toolbar = QToolBar("Main Toolbar", self)
@@ -26,38 +27,68 @@ class BaseWindow(QMainWindow):
         """)
 
         left_space = QWidget()
-        left_space.setFixedWidth(20)  # Adjust spacing between buttons
+        left_space.setFixedWidth(20)
         toolbar.addWidget(left_space)
 
-        # Add a logo to the toolbar
         logo_label = QLabel(self)
-        logo_pixmap = QPixmap("./images/israFlight_logo4-04.png")  # Shoval path
-        # logo_pixmap = QPixmap("./israflightApp/images/israFlight_logo4-04.png")  # Tehila path
-        logo_label.setPixmap(logo_pixmap.scaled(120, 120, Qt.KeepAspectRatio, Qt.SmoothTransformation))  # Resize logo
+        logo_pixmap = QPixmap("./israflightApp/images/israFlight_logo4-04.png")
+        logo_label.setPixmap(logo_pixmap.scaled(120, 120, Qt.KeepAspectRatio, Qt.SmoothTransformation))
         toolbar.addWidget(logo_label)
 
-        # Add a stretchable spacer to push buttons to the right
         right_spacer = QWidget()
         right_spacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
         toolbar.addWidget(right_spacer)
 
-        # Create "About Us" button
+        # HOME Button
+        home_button = QToolButton(self)
+        home_button.setText("Home")
+        home_button.setToolTip("Go back to the home page")
+        toolbar.addWidget(home_button)
+        spacer2 = QWidget()
+        spacer2.setFixedWidth(30)
+        toolbar.addWidget(spacer2)
+       
+        # ABOUT US Button
         about_us_button = QToolButton(self)
         about_us_button.setText("About Us")
-        about_us_button.setToolTip("Learn more about us")
         toolbar.addWidget(about_us_button)
+        spacer3 = QWidget()
+        spacer3.setFixedWidth(30)
+        toolbar.addWidget(spacer3)
 
-        # Add a small spacer between buttons
-        button_spacer = QWidget()
-        button_spacer.setFixedWidth(15)  # Adjust spacing between buttons
-        toolbar.addWidget(button_spacer)
 
-        # Create "Help" button
+        # HELP Button
         help_button = QToolButton(self)
         help_button.setText("Help")
-        help_button.setToolTip("Need help?")
         toolbar.addWidget(help_button)
+        spacer1 = QWidget()
+        spacer1.setFixedWidth(30)
+        toolbar.addWidget(spacer1)
+
+    
+        # BACK Button
+        back_button = QToolButton(self)
+        back_button.setIcon(QIcon("./israflightApp/images/back.png"))
+        back_button.setIconSize(QSize(30,30))  # גודל מותאם אישית
+        #back_button.setText("Back")
+        back_button.setToolTip("Go back to the previous page")
+        toolbar.addWidget(back_button)
 
         right_space = QWidget()
-        right_space.setFixedWidth(60)  # Adjust spacing between buttons
+        right_space.setFixedWidth(60)
         toolbar.addWidget(right_space)
+
+
+        # ✅ חיבור הכפתורים לנוויגציה
+        back_button.clicked.connect(self.go_back)
+        home_button.clicked.connect(self.go_home)
+
+    def go_back(self):
+        """Go back to the previous page using the navigation controller."""
+        if self.nav_controller:
+            self.nav_controller.go_back()
+
+    def go_home(self):
+        """Go home directly using the navigation controller."""
+        if self.nav_controller:
+            self.nav_controller.go_home()

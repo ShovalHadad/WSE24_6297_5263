@@ -12,7 +12,7 @@ if __name__ == "__main__":
 
     #main_controller.show_home_window()
 
-    # main_controller.show_frequent_flyer_window(flyer_id=31)
+    #main_controller.show_manager_window()
     
 
     # Start the application event loop

@@ -10,7 +10,11 @@ class PlaneManagementController:
 
     def show_window(self):
         if not self.plane_management_window:
-            self.plane_management_window = PlaneManagementWindow(self)
+            self.plane_management_window = PlaneManagementWindow(
+                controller=self,
+                nav_controller=self.main_controller.navigation_controller
+            )
+
 
         self.plane_management_window.show()
         return self.plane_management_window

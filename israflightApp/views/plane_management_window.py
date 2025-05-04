@@ -21,8 +21,8 @@ class ClickableLabel(QLabel):
 
 
 class PlaneManagementWindow(BaseWindow):
-    def __init__(self, controller):
-        super().__init__()
+    def __init__(self, controller, nav_controller=None):
+        super().__init__(controller=controller, nav_controller=nav_controller)
         self.controller = controller
 
         self.setWindowTitle("Plane Management")

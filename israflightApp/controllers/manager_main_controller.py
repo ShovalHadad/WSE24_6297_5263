@@ -5,7 +5,10 @@ from controllers.flight_management_controller import FlightManagementController
 class ManagerMainWindowController:
     def __init__(self, main_controller):
         self.main_controller = main_controller
-        self.manager_main_window = ManagerMainWindow(self)
+        self.manager_main_window = ManagerMainWindow(
+            controller=self,
+            nav_controller=main_controller.navigation_controller  
+        )
 
         # Initialize controller connections in the window
         self.manager_main_window.initialize_controller(self)

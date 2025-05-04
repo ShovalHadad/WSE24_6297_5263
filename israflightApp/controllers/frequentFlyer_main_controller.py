@@ -16,7 +16,8 @@ class FrequentFlyerMainController:
 
     def show_window(self):
         if not self.frequent_flyer_main_window:
-                self.frequent_flyer_main_window = FrequentFlyerMainWindow(self, self.flyer_id)
+                self.frequent_flyer_main_window = FrequentFlyerMainWindow(self, self.flyer_id, nav_controller=self.main_controller.navigation_controller
+            )
 
         self.frequent_flyer_main_window.show()
         return self.frequent_flyer_main_window

@@ -13,7 +13,9 @@ class FlightManagementController:
     def show_window(self):
         if not self.flight_management_window:
             from views.flight_management_window import FlightManagementWindow
-            self.flight_management_window = FlightManagementWindow(self)
+            self.flight_management_window = FlightManagementWindow(controller=self,
+                nav_controller=self.main_controller.navigation_controller
+            )
 
         self.flight_management_window.show()
         return self.flight_management_window

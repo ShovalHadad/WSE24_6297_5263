@@ -7,8 +7,8 @@ from models.flight import Flight
 from PySide6.QtWidgets import QGraphicsOpacityEffect
 
 class FrequentFlyerMainWindow(BaseWindow):
-    def __init__(self, controller, flyer_id):
-        super().__init__()
+    def __init__(self, controller, flyer_id, nav_controller=None):
+        super().__init__(controller=controller, nav_controller=nav_controller)
         self.controller = controller
         screen = QGuiApplication.primaryScreen()
         flyer = self.controller.get_flyer_by_id(flyer_id)
@@ -106,8 +106,8 @@ class FrequentFlyerMainWindow(BaseWindow):
         # 🔹 Temporary image shown before search
         self.flight_image = QLabel()
         self.flight_image.setContentsMargins(0, 110, 0, 0)
-        self.flight_image.setPixmap(QPixmap("./images/findFlight.png").scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation)) # Shoval path
-        # self.flight_image.setPixmap(QPixmap("./israflightApp/images/findFlight.png").scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation)) # Tehila path
+        #self.flight_image.setPixmap(QPixmap("./images/findFlight.png").scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation)) # Shoval path
+        self.flight_image.setPixmap(QPixmap("./israflightApp/images/findFlight.png").scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation)) # Tehila path
         self.flight_image.setAlignment(Qt.AlignHCenter)
         opacity = QGraphicsOpacityEffect()
         opacity.setOpacity(0.4)  

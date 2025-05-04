@@ -9,8 +9,8 @@ from PySide6.QtCore import Qt
 
 
 class FlightManagementWindow(BaseWindow):
-    def __init__(self, controller):
-        super().__init__()
+    def __init__(self,controller, nav_controller=None):
+        super().__init__(controller=controller, nav_controller=nav_controller)
         self.controller = controller
 
         #self.bg_image_path = "israflightApp/images/manager_background.png"

@@ -5,11 +5,11 @@ from controllers.add_manager_controller import AddManagerController
 from controllers.plane_management_controller import PlaneManagementController
 from controllers.frequentFlyer_main_controller import FrequentFlyerMainController
 from controllers.flight_controller import FlightController
+from controllers.navigation_controller import NavigationController  
 
 
 class MainController:
     def __init__(self):
-        # Initialize controllers
         self.home_controller = HomeController(self)
         self.manager_main_controller = None
         self.flight_management_controller = None
@@ -17,71 +17,62 @@ class MainController:
         self.plane_management_controller = None
         self.frequent_flyer_controller = None
 
+        self.history_stack = []  # ✅ לשמור היסטוריה
 
-        # Track the currently active window
-        self.current_window = None
+        self.navigation_controller = NavigationController(self)  # ✅ יצירת נוויגציה
 
-    def show_home_window(self):
-        # Close the currently active window
-        self.close_all_windows()
-
-        # Show the Home Window
         self.current_window = self.home_controller.show_window()
 
-    def show_manager_window(self):
-        # Close the currently active window
-        self.close_all_windows()
+    def navigate_to(self, show_func):
+        """General navigation function to keep history."""
+        if self.current_window:
+            self.history_stack.append(self.current_window)
+            self.current_window.close()
+        self.current_window = show_func()
 
-        # Lazy initialize the ManagerMainWindowController
+    def go_back(self):
+        if self.history_stack:
+            prev_window = self.history_stack.pop()
+            if self.current_window:
+                self.current_window.close()
+            self.current_window = prev_window
+            self.current_window.show()
+        else:
+            self.show_home_window()
+
+    def show_home_window(self):
+        if self.current_window:
+            self.current_window.close()
+        self.current_window = self.home_controller.show_window()
+        self.history_stack.clear()
+
+    # ✅ דוגמה איך לקרוא לחלון אחר (עשינו כאן שינוי קטן: navigate_to)
+    def show_manager_window(self):
         if not self.manager_main_controller:
             self.manager_main_controller = ManagerMainWindowController(self)
-
-        # Show the Manager Main Window
-        self.current_window = self.manager_main_controller.show_window()
+        self.navigate_to(self.manager_main_controller.show_window)
 
     def show_flight_management_window(self):
-        # Close the currently active window
-        self.close_all_windows()
-
-        # Lazy initialize the FlightManagementController
         if not self.flight_management_controller:
             self.flight_management_controller = FlightManagementController(self)
-
-        # Show the Flight Management Window
-        self.current_window = self.flight_management_controller.show_window()
-
+        self.navigate_to(self.flight_management_controller.show_window)
 
     def show_add_manager_window(self):
         if not self.add_manager_controller:
             self.add_manager_controller = AddManagerController(self)
-        self.close_all_windows()
-        self.current_window = self.add_manager_controller.show_window()
+        self.navigate_to(self.add_manager_controller.show_window)
 
-        
     def show_plane_management_window(self):
         if not self.plane_management_controller:
             self.plane_management_controller = PlaneManagementController(self)
-        self.close_all_windows()
-        self.current_window = self.plane_management_controller.show_window()
+        self.navigate_to(self.plane_management_controller.show_window)
 
     def show_flight_window(self):
         if not self.flight_controller:
             self.flight_controller = FlightController(self)
-        self.close_all_windows()
-        self.current_window = self.flight_controller.show_window()
+        self.navigate_to(self.flight_controller.show_window)
 
     def show_frequent_flyer_window(self, flyer_id):
-        # Close the currently active window
-        self.close_all_windows()
-
         if not self.frequent_flyer_controller:
             self.frequent_flyer_controller = FrequentFlyerMainController(self, flyer_id)
-
-        self.current_window = self.frequent_flyer_controller.show_window()
-
-
-    def close_all_windows(self):
-        # Close the currently active window, if any
-        if self.current_window:
-            self.current_window.close()
-            self.current_window = None
+        self.navigate_to(self.frequent_flyer_controller.show_window)

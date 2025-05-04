@@ -46,7 +46,7 @@ class FlightWindow(BaseWindow):
         # Try to add plane icon - with proper error handling
         plane_icon = QLabel()
         try:
-            pixmap = QPixmap("./images/flight_managment.png")
+            pixmap = QPixmap("./israflightApp/images/flight_managment.png")
             if not pixmap.isNull():
                 plane_icon.setPixmap(pixmap.scaled(40, 40, Qt.KeepAspectRatio, Qt.SmoothTransformation))
                 header_layout.addWidget(plane_icon)

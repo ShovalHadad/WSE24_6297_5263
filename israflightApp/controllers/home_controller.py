@@ -6,11 +6,14 @@ import requests
 class HomeController:
     def __init__(self, Main_controller):
         self.mainController = Main_controller
-        self.home_window = HomeWindow(self)
+        #self.home_window = HomeWindow(self)
         self.api_base_url = "http://localhost:5177/api/FrequentFlyer"  # Update with correct API URL
 
     def show_window(self):
+        self.home_window = HomeWindow(self)  # ✅ יצירה מחדש כל פעם
         self.home_window.show()
+        return self.home_window  # ✅ חובה להחזיר כדי ש-main controller יוכל לסגור אותו
+
 
     def register_button_action(self, user_data):
         """Handles user registration using the FrequentFlyer model."""
