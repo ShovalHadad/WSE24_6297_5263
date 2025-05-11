@@ -10,6 +10,7 @@ class FrequentFlyerMainController:
     def __init__(self, main_controller, flyer_id):
         self.main_controller = main_controller
         self.flyer_id = flyer_id
+        self.api_base_url_ticket = "http://localhost:5177/api/FlightTicket"
         self.api_base_url_flyer =  "http://localhost:5177/api/FrequentFlyer" # תעדכני לפי השרת שלך
         self.api_base_url_flight = "http://localhost:5177/api/Flight"
         self.frequent_flyer_main_window = None
@@ -120,24 +121,25 @@ class FrequentFlyerMainController:
         return Flight.get_flight_by_id(self.api_base_url_flight, flight_id)
     
     def get_ticket_by_flight_user(self, flight_id, user_id):
-        """Get a ticket by flight ID and user ID"""
         try:
-        # Use the correct API URL for tickets
-            tickets_url = "http://localhost:5177/api/flighttickets"
-            tickets = FlightTicket.get_tickets_by_user(tickets_url, user_id)
+            print(f"Searching for ticket with flight_id={flight_id}, user_id={user_id}")
     
-            if not tickets:
-                return None
-            
-        # Find the ticket for this flight
+        # Get all tickets
+            tickets = FlightTicket.get_all_tickets(self.api_base_url_ticket)
+        
             for ticket in tickets:
-                if ticket.flight_id == flight_id:
+                print(f"Checking ticket {ticket.ticket_id} : flight_id={ticket.flight_id}, user_id={ticket.user_id}")
+                if int(ticket.flight_id) == int(flight_id) and int(ticket.user_id) == int(user_id):
                     return ticket
-                
+
+            print("No matching ticket found")
             return None
+
         except Exception as e:
             print(f"Error getting ticket: {e}")
-            return None
+            import traceback
+            traceback.print_exc()  # Print full stack trace
+            return None  
         
     def get_seat_class_name(self, seat_class):
         """Get the name of the seat class based on its ID"""
@@ -154,42 +156,25 @@ class FrequentFlyerMainController:
 
     # Add this method to FrequentFlyerMainController class
     def book_flight(self, flyer_id, flight_id, seat_class):
-        """Book a flight ticket"""
         try:
         # Calculate ticket price based on seat class
-            base_price = 100  # Base price in dollars
-            class_multiplier = {
-                1: 3.0,  # First class - 3x base price
-                2: 2.0,  # Business class - 2x base price
-                3: 1.0,  # Economy class - 1x base price
-            }
-        
-            price = str(base_price * class_multiplier.get(seat_class, 1.0))
+           
         
         # Create a flight ticket
             new_ticket = FlightTicket(
                 ticket_id=0,  # API will assign real ID
                 user_id=flyer_id,
                 flight_id=flight_id,
-                ticket_type=seat_class,
-                price=price
+                ticket_type=seat_class
             )
     
         # Save the ticket
-            success = new_ticket.create(self.api_base_url_flyer)
+            success = new_ticket.create(self.api_base_url_ticket)
     
-        # Update flyer's flights list
             if success:
-                current_flyer = self.get_flyer_by_id(flyer_id)
-                if current_flyer and flight_id not in current_flyer.flights_ids:
-                    if not current_flyer.flights_ids:
-                        current_flyer.flights_ids = []
-                    current_flyer.flights_ids.append(flight_id)
-                    current_flyer.update(self.api_base_url_flyer)
-        
             # Refresh the registered flights list
                 self.refresh_registered_flights()
-            
+
             return success
         except Exception as e:
             print(f"Error booking flight: {e}")

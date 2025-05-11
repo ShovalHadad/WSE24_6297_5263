@@ -108,7 +108,7 @@ namespace WebApp.Repository
                 await _context.SaveChangesAsync();
                 var flightT = _context.FlightTickets.FirstOrDefault(e => e.FlightId == flightTicket.FlightId && e.UserId == flightTicket.UserId);
                 if (flyer.FlightsIds == null) flyer.FlightsIds = new List<int>();
-                flyer.FlightsIds.Add(flightT.TicketId);
+                flyer.FlightsIds.Add(flightT.FlightId);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -221,7 +221,7 @@ namespace WebApp.Repository
                 }
                 FrequentFlyer? flyer = _context.FrequentFlyers.FirstOrDefault(e => e.FlyerId == flightTicket.UserId);
                 if(flyer != null)
-                    flyer.FlightsIds.Remove(flightTicket.TicketId);
+                    flyer.FlightsIds.Remove(flightTicket.FlightId);
                 
                 if(flightTicket != null)
                     _context.FlightTickets.Remove(flightTicket);

@@ -1,7 +1,6 @@
 from controllers.manager_main_controller import ManagerMainWindowController
 from controllers.home_controller import HomeController
 from controllers.flight_management_controller import FlightManagementController
-from controllers.add_manager_controller import AddManagerController
 from controllers.plane_management_controller import PlaneManagementController
 from controllers.frequentFlyer_main_controller import FrequentFlyerMainController
 from controllers.flight_controller import FlightController
@@ -46,21 +45,15 @@ class MainController:
         self.current_window = self.home_controller.show_window()
         self.history_stack.clear()
 
-    # ✅ דוגמה איך לקרוא לחלון אחר (עשינו כאן שינוי קטן: navigate_to)
-    def show_manager_window(self):
+    def show_manager_window(self, flyer_id):
         if not self.manager_main_controller:
-            self.manager_main_controller = ManagerMainWindowController(self)
+            self.manager_main_controller = ManagerMainWindowController(self, flyer_id)
         self.navigate_to(self.manager_main_controller.show_window)
 
     def show_flight_management_window(self):
         if not self.flight_management_controller:
             self.flight_management_controller = FlightManagementController(self)
         self.navigate_to(self.flight_management_controller.show_window)
-
-    def show_add_manager_window(self):
-        if not self.add_manager_controller:
-            self.add_manager_controller = AddManagerController(self)
-        self.navigate_to(self.add_manager_controller.show_window)
 
     def show_plane_management_window(self):
         if not self.plane_management_controller:

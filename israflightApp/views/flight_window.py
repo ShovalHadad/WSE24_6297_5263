@@ -25,7 +25,7 @@ class FlightWindow(BaseWindow):
         else:
             self.setWindowTitle(f"flight #{flight_id}")
     
-    # Create UI
+    # Create UI    
         self.init_ui()
     
     # Force layout update
@@ -46,7 +46,10 @@ class FlightWindow(BaseWindow):
         # Try to add plane icon - with proper error handling
         plane_icon = QLabel()
         try:
-            pixmap = QPixmap("./israflightApp/images/flight_managment.png")
+            pixmap = QPixmap("./images/f_managment.png")
+            #pixmap = QPixmap("./israflightApp/images/f_managment.png")  # Tehila path
+            #pixmap = QPixmap("./images/flight_managment.png")
+            #pixmap = QPixmap("./israflightApp/images/flight_managment.png") # Tehila path
             if not pixmap.isNull():
                 plane_icon.setPixmap(pixmap.scaled(40, 40, Qt.KeepAspectRatio, Qt.SmoothTransformation))
                 header_layout.addWidget(plane_icon)
@@ -154,9 +157,9 @@ class FlightWindow(BaseWindow):
             
             # Create radio button for each class
             class_info = [
-                {"name": "First Class", "price": "$300", "description": "Premium experience with fully adjustable seats"},
-                {"name": "Business Class", "price": "$200", "description": "Comfortable seats with increased legroom"},
-                {"name": "Economy Class", "price": "$100", "description": "Standard and comfortable ride"}
+                {"name": "First Class", "price": "$1500", "description": "Premium experience with fully adjustable seats"},
+                {"name": "Business Class", "price": "$800", "description": "Comfortable seats with increased legroom"},
+                {"name": "Economy Class", "price": "$300", "description": "Standard and comfortable ride"}
             ]
             
             self.class_button_group = QButtonGroup()
@@ -206,6 +209,7 @@ class FlightWindow(BaseWindow):
             self.class_buttons[2].setChecked(True)
             
             main_layout.addLayout(class_selection_layout)
+            
         else:
             # For view mode, show ticket information if available
             ticket_info_card = QFrame()
@@ -310,7 +314,23 @@ class FlightWindow(BaseWindow):
             }
         """)
         self.close_button.clicked.connect(self.close_window)
-        
+        self.print_button = QPushButton("print")
+        self.print_button.setFixedSize(150, 50)
+        self.print_button.setFont(QFont("Urbanist", 14))
+        self.print_button.setStyleSheet("""
+            QPushButton {
+                background-color: #F5F5F5;
+                color: #333;
+                border: 1px solid #CCC;
+                border-radius: 15px;
+                padding: 10px 20px;
+            }
+            QPushButton:hover {
+                background-color: #E5E5E5;
+            }
+        """)
+        self.print_button.clicked.connect(self.generate_pdf_ticket)
+        buttons_layout.addWidget(self.print_button)
         buttons_layout.addWidget(self.close_button)
         buttons_layout.setAlignment(Qt.AlignRight)
         
@@ -318,25 +338,12 @@ class FlightWindow(BaseWindow):
         
         self.setLayout(main_layout)
 
-        # Debug message to verify layout content
-        print("Layout contains:", main_layout.count(), "items")
-        for i in range(main_layout.count()):
-            item = main_layout.itemAt(i)
-            if item.widget():
-                print(f"- Widget {i}: {item.widget().__class__.__name__}")
-            elif item.layout():
-                print(f"- Layout {i} with {item.layout().count()} items")
-
-        for i in range(main_layout.count()):
-            item = main_layout.itemAt(i)
-            if item.widget():
-                item.widget().setVisible(True)
-
         # Force update layout and repaint
         self.repaint()
     
     def close_window(self):
         """Close the window"""
+        self.controller. refresh_registered_flights()
         self.close()
     
     def book_flight(self):
@@ -347,34 +354,35 @@ class FlightWindow(BaseWindow):
             
         # Get selected class (ID 1-3)
         selected_class = self.class_button_group.checkedId()
-        
+        print(selected_class)
         if selected_class < 1:  # If nothing selected (shouldn't happen with defaults)
             selected_class = 3  # Default to economy
         
+        try:
         # Call controller to book flight
-        success = self.controller.book_flight(self.flyer_id, self.flight.flight_id, selected_class)
+            success = self.controller.book_flight(self.flyer_id, self.flight_id, selected_class)
         
-        if success:
-            class_name = self.controller.get_seat_class_name(selected_class)
-            QMessageBox.information(
-                self, 
-                "Order placed successfully", 
-                f"Successfully booked a ticket!\n\n Order details: \n Flight #{self.flight.flight_id}\n Seat type: {class_name}"
-            )
-            self.close()
-        else:
-            QMessageBox.warning(self, "Error", "The order cannot be placed. Please try again.")
+            if success:
+                self.controller.refresh_registered_flights()
+                class_name = self.controller.get_seat_class_name(selected_class)
+                QMessageBox.information(
+                    self, 
+                    "Order placed successfully", 
+                    f"Successfully booked a ticket!\n\n Order details: \n Flight #{self.flight_id}\n Seat type: {class_name}"
+                )
+                self.close()
+            else:
+                QMessageBox.warning(self, "Error", "The order cannot be placed. Please try again.")
+        except Exception as e:
+            print(f"Booking error: {e}")
+            QMessageBox.warning(self, "Error", f"An error occurred: {str(e)}")
 
-
-            # Add these imports at the top of flight_window.py
-
-
-# Add this method to FlightWindow class
     def generate_pdf_ticket(self):
         """Generate a PDF ticket and save it to the pdfFiles folder"""
         try:
             # Create pdfFiles directory if it doesn't exist
-            pdf_dir = "./israflightApp/pdfFiles"
+            pdf_dir = "./pdfFiles"
+            #pdf_dir = "./israflightApp/pdfFiles"
             if not os.path.exists(pdf_dir):
                 os.makedirs(pdf_dir)
         

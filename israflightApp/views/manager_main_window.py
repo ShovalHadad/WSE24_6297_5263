@@ -7,7 +7,7 @@ from PySide6.QtGui import QGuiApplication
 
 
 class ManagerMainWindow(BaseWindow):
-    def __init__(self, controller, nav_controller=None):
+    def __init__(self, controller, flyer_id, nav_controller=None):
         super().__init__(controller=controller, nav_controller=nav_controller)
         self.controller = controller
         screen = QGuiApplication.primaryScreen()
@@ -47,7 +47,7 @@ class ManagerMainWindow(BaseWindow):
         main_layout.addLayout(self.button_layout)
 
         # Add buttons (connections will be initialized later)
-        self.create_buttons(main_layout)
+        self.create_buttons(main_layout, flyer_id)
 
     def resizeEvent(self, event: QResizeEvent):
         """Update background size when window is resized"""
@@ -56,7 +56,7 @@ class ManagerMainWindow(BaseWindow):
             self.background_label.resize(self.size())
         super().resizeEvent(event)
 
-    def create_buttons(self, main_layout):
+    def create_buttons(self, main_layout, flyer_id):
         # --- LEFT SIDE: Flight Management ---
 
         # Left Container
@@ -72,7 +72,8 @@ class ManagerMainWindow(BaseWindow):
 
         # Icon
         self.button1_icon = QLabel()
-        self.button1_icon.setPixmap(QPixmap("./israflightApp/images/f_managment.png").scaled(60, 60, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+        self.button1_icon.setPixmap(QPixmap("./images/f_managment.png").scaled(60, 60, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+        #self.button1_icon.setPixmap(QPixmap("./israflightApp/images/f_managment.png").scaled(60, 60, Qt.KeepAspectRatio, Qt.SmoothTransformation))
         self.button1_icon.setStyleSheet("margin-left: 130px;")
         left_layout.addWidget(self.button1_icon)
 
@@ -125,7 +126,8 @@ class ManagerMainWindow(BaseWindow):
 
         # Icon
         self.button3_icon = QLabel()
-        self.button3_icon.setPixmap(QPixmap("./israflightApp/images/p_managment.png").scaled(65, 65, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+        self.button3_icon.setPixmap(QPixmap("./images/p_managment.png").scaled(65, 65, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+        #self.button3_icon.setPixmap(QPixmap("./israflightApp/images/p_managment.png").scaled(65, 65, Qt.KeepAspectRatio, Qt.SmoothTransformation))
         self.button3_icon.setStyleSheet("margin-left: 130px;")
         right_layout.addWidget(self.button3_icon)
 
@@ -179,7 +181,7 @@ class ManagerMainWindow(BaseWindow):
         main_layout.addLayout(middle_layout)
 
         # --- BACK BUTTON BELOW ---
-        self.back_button = QPushButton("Back to Frequent Flyer")
+        self.back_button = QPushButton("Go to Frequent Flyer")
         self.back_button.setFixedSize(450, 75)
         self.back_button.setStyleSheet("""
             QPushButton {
@@ -195,12 +197,8 @@ class ManagerMainWindow(BaseWindow):
         """)
         main_layout.addWidget(self.back_button, alignment=Qt.AlignCenter)
 
-
-
-
-
-    def initialize_controller(self, controller):
+    def initialize_controller(self, controller, flyer_id):
         self.controller = controller
         self.button1.clicked.connect(self.controller.open_flight_management)
         self.button3.clicked.connect(self.controller.open_planes_management)
-        #self.back_button.clicked.connect(self.controller.back_to_frequent_flyer)
+        self.back_button.clicked.connect(lambda: self.controller.back_to_frequent_flyer(flyer_id))

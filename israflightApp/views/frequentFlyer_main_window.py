@@ -106,8 +106,8 @@ class FrequentFlyerMainWindow(BaseWindow):
         # 🔹 Temporary image shown before search
         self.flight_image = QLabel()
         self.flight_image.setContentsMargins(0, 110, 0, 0)
-        #self.flight_image.setPixmap(QPixmap("./images/findFlight.png").scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation)) # Shoval path
-        self.flight_image.setPixmap(QPixmap("./israflightApp/images/findFlight.png").scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation)) # Tehila path
+        self.flight_image.setPixmap(QPixmap("./images/findFlight.png").scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation)) # Shoval path
+        #self.flight_image.setPixmap(QPixmap("./israflightApp/images/findFlight.png").scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation)) # Tehila path
         self.flight_image.setAlignment(Qt.AlignHCenter)
         opacity = QGraphicsOpacityEffect()
         opacity.setOpacity(0.4)  
@@ -169,7 +169,7 @@ class FrequentFlyerMainWindow(BaseWindow):
         picture_container = QVBoxLayout()
         picture_label = QLabel()
         pixmap = QPixmap("./images/user.png") # Shoval path
-        # pixmap = QPixmap("./israflightApp/images/user.png") # Tehila path
+        #pixmap = QPixmap("./israflightApp/images/user.png") # Tehila path
         pixmap = pixmap.scaled(120, 120, Qt.KeepAspectRatio, Qt.SmoothTransformation)
         picture_label.setPixmap(pixmap)
         picture_label.setAlignment(Qt.AlignHCenter)
@@ -203,7 +203,7 @@ class FrequentFlyerMainWindow(BaseWindow):
             """)
 
             line_edit.setFixedWidth(250)
-            line_edit.setFixedHeight(30)
+            line_edit.setFixedHeight(40)
             line_edit.setStyleSheet("""
                 QLineEdit {
                     background-color: white;
@@ -241,13 +241,13 @@ class FrequentFlyerMainWindow(BaseWindow):
         add_field("Phone Number:", self.phone_input)
 
         self.update_button = QPushButton("Update")
-        self.update_button.setFixedSize(130, 38)
+        self.update_button.setFixedSize(130, 40)
         self.update_button.setStyleSheet("""
             QPushButton {
                 background-color: #1C3664;
                 color: white;
                 border-radius: 12px;
-                padding: 10px 16px;
+                padding: 8px;
                 font-size: 14px;
                 font-family: 'Urbanist';
                 margin-top: 5px;

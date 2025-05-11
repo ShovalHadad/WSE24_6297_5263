@@ -56,7 +56,7 @@ class HomeController:
 
             # Redirect user based on role
             if flyer.is_manager:
-                self.mainController.show_manager_window()
+                self.mainController.show_manager_window(flyer.flyer_id)
             else:
                 self.mainController.show_frequent_flyer_window(flyer.flyer_id)
 
