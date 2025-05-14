@@ -39,16 +39,16 @@ class HomeWindow(BaseWindow):
 
         # Set the background label
         self.background_label = QLabel(self)
-        #pixmap = QPixmap("./images/background2.png")  # Shoval path
-        pixmap = QPixmap("./israflightApp/images/background2.png")  # Tehila path
+        pixmap = QPixmap("./images/background2.png")  # Shoval path
+        #pixmap = QPixmap("./israflightApp/images/background2.png")  # Tehila path
         self.background_label.setPixmap(pixmap)
         self.background_label.setScaledContents(True)
         layout.addWidget(self.background_label)
 
         # Add the logo
         self.logo_below_text = QLabel(self.background_label)
-        #logo_pixmap = QPixmap("./images/israFlight_logo-03.png")  # Shoval path
-        logo_pixmap = QPixmap("./israflightApp/images/israFlight_logo-03.png")  # Tehila path
+        logo_pixmap = QPixmap("./images/israFlight_logo-03.png")  # Shoval path
+        #logo_pixmap = QPixmap("./israflightApp/images/israFlight_logo-03.png")  # Tehila path
         self.logo_below_text.setPixmap(logo_pixmap.scaled(500, 500, Qt.KeepAspectRatio, Qt.SmoothTransformation))  # Resize logo
         self.logo_below_text.move(int(screen_width/16), 140)  # Position below the text
 

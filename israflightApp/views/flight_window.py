@@ -46,8 +46,8 @@ class FlightWindow(BaseWindow):
         # Try to add plane icon - with proper error handling
         plane_icon = QLabel()
         try:
-            #pixmap = QPixmap("./images/f_managment.png")
-            pixmap = QPixmap("./israflightApp/images/f_managment.png")  # Tehila path
+            pixmap = QPixmap("./images/f_managment.png")
+            #pixmap = QPixmap("./israflightApp/images/f_managment.png")  # Tehila path
             #pixmap = QPixmap("./images/flight_managment.png")
             #pixmap = QPixmap("./israflightApp/images/flight_managment.png") # Tehila path
             if not pixmap.isNull():
@@ -148,7 +148,7 @@ class FlightWindow(BaseWindow):
             seats_label.setFont(QFont("Urbanist", 14, QFont.Bold))
             seats_label.setStyleSheet("color: #1C3664; margin-top: 10px;")
             main_layout.addWidget(seats_label)
-            
+            ######################################################################################
             # Ticket class options in cards
             class_selection_layout = QHBoxLayout()
             class_selection_layout.setSpacing(15)
@@ -297,7 +297,24 @@ class FlightWindow(BaseWindow):
             """)
             self.book_button.clicked.connect(self.book_flight)
             buttons_layout.addWidget(self.book_button)
-        
+        else:
+            self.print_button = QPushButton("print")
+            self.print_button.setFixedSize(150, 50)
+            self.print_button.setFont(QFont("Urbanist", 14))
+            self.print_button.setStyleSheet("""
+                QPushButton {
+                    background-color: #F5F5F5;
+                    color: #333;
+                    border: 1px solid #CCC;
+                    border-radius: 15px;
+                    padding: 10px 20px;
+                }
+                QPushButton:hover {
+                    background-color: #E5E5E5;
+                }
+            """)
+            self.print_button.clicked.connect(self.generate_pdf_ticket)
+            buttons_layout.addWidget(self.print_button)
         self.close_button = QPushButton("close")
         self.close_button.setFixedSize(150, 50)
         self.close_button.setFont(QFont("Urbanist", 14))
@@ -314,23 +331,8 @@ class FlightWindow(BaseWindow):
             }
         """)
         self.close_button.clicked.connect(self.close_window)
-        self.print_button = QPushButton("print")
-        self.print_button.setFixedSize(150, 50)
-        self.print_button.setFont(QFont("Urbanist", 14))
-        self.print_button.setStyleSheet("""
-            QPushButton {
-                background-color: #F5F5F5;
-                color: #333;
-                border: 1px solid #CCC;
-                border-radius: 15px;
-                padding: 10px 20px;
-            }
-            QPushButton:hover {
-                background-color: #E5E5E5;
-            }
-        """)
-        self.print_button.clicked.connect(self.generate_pdf_ticket)
-        buttons_layout.addWidget(self.print_button)
+        
+        
         buttons_layout.addWidget(self.close_button)
         buttons_layout.setAlignment(Qt.AlignRight)
         
