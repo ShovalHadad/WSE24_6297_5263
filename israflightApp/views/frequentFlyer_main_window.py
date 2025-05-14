@@ -106,8 +106,8 @@ class FrequentFlyerMainWindow(BaseWindow):
         # 🔹 Temporary image shown before search
         self.flight_image = QLabel()
         self.flight_image.setContentsMargins(0, 110, 0, 0)
-        self.flight_image.setPixmap(QPixmap("./images/findFlight.png").scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation)) # Shoval path
-        #self.flight_image.setPixmap(QPixmap("./israflightApp/images/findFlight.png").scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation)) # Tehila path
+        #self.flight_image.setPixmap(QPixmap("./images/findFlight.png").scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation)) # Shoval path
+        self.flight_image.setPixmap(QPixmap("./israflightApp/images/findFlight.png").scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation)) # Tehila path
         self.flight_image.setAlignment(Qt.AlignHCenter)
         opacity = QGraphicsOpacityEffect()
         opacity.setOpacity(0.4)  
@@ -170,8 +170,8 @@ class FrequentFlyerMainWindow(BaseWindow):
 
         picture_container = QVBoxLayout()
         picture_label = QLabel()
-        pixmap = QPixmap("./images/user.png") # Shoval path
-        #pixmap = QPixmap("./israflightApp/images/user.png") # Tehila path
+        #pixmap = QPixmap("./images/user.png") # Shoval path
+        pixmap = QPixmap("./israflightApp/images/user.png") # Tehila path
         pixmap = pixmap.scaled(120, 120, Qt.KeepAspectRatio, Qt.SmoothTransformation)
         picture_label.setPixmap(pixmap)
         picture_label.setAlignment(Qt.AlignHCenter)

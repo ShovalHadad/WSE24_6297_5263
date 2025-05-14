@@ -46,8 +46,8 @@ class FlightWindow(BaseWindow):
         # Try to add plane icon - with proper error handling
         plane_icon = QLabel()
         try:
-            pixmap = QPixmap("./images/f_managment.png")
-            #pixmap = QPixmap("./israflightApp/images/f_managment.png")  # Tehila path
+            #pixmap = QPixmap("./images/f_managment.png")
+            pixmap = QPixmap("./israflightApp/images/f_managment.png")  # Tehila path
             #pixmap = QPixmap("./images/flight_managment.png")
             #pixmap = QPixmap("./israflightApp/images/flight_managment.png") # Tehila path
             if not pixmap.isNull():
@@ -245,7 +245,7 @@ class FlightWindow(BaseWindow):
                     ticket_details = [
                         ("Ticket number: ", f"{ticket.ticket_id}"),
                         ("Seat type: ", f"{seat_class}"),
-                        ("rice: ", f"{ticket.price}"),
+                        ("price: ", f"{ticket.price}"),
                         ("Order date: ", f"{ticket.created_date.strftime('%d/%m/%Y %H:%M')}")
                     ]
                     
@@ -407,6 +407,7 @@ class FlightWindow(BaseWindow):
             start_y = height - margin
 
             def draw_label_val(label, value, x, y, bold=False):
+                value = str(value)  # ✅ תוודאי שהערך הוא מחרוזת
                 if bold:
                     pdf.setFont("Helvetica-Bold", 11)
                 else:
@@ -414,6 +415,7 @@ class FlightWindow(BaseWindow):
                 pdf.drawString(x, y, f"{label}")
                 pdf.setFont("Helvetica", 11)
                 pdf.drawRightString(width - margin, y, value)
+
 
             # === Header ===
             pdf.setFont("Helvetica-Bold", 20)
