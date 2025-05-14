@@ -31,8 +31,8 @@ class BaseWindow(QMainWindow):
         toolbar.addWidget(left_space)
 
         logo_label = QLabel(self)
-        logo_pixmap = QPixmap("./images/israFlight_logo4-04.png")
-        #logo_pixmap = QPixmap("./israflightApp/images/israFlight_logo4-04.png")
+        #logo_pixmap = QPixmap("./images/israFlight_logo4-04.png")
+        logo_pixmap = QPixmap("./israflightApp/images/israFlight_logo4-04.png")
         logo_label.setPixmap(logo_pixmap.scaled(120, 120, Qt.KeepAspectRatio, Qt.SmoothTransformation))
         toolbar.addWidget(logo_label)
 
@@ -69,10 +69,10 @@ class BaseWindow(QMainWindow):
     
         # BACK Button
         back_button = QToolButton(self)
-        back_button.setIcon(QIcon("./images/back.png"))
-        #back_button.setIcon(QIcon("./israflightApp/images/back.png"))
-        back_button.setIconSize(QSize(30,30))  # גודל מותאם אישית
-        #back_button.setText("Back")
+        #back_button.setIcon(QIcon("./images/back.png"))
+        back_button.setIcon(QIcon("./israflightApp/images/back.png"))
+        #back_button.setIconSize(QSize(30,30))  # גודל מותאם אישית
+        back_button.setText("Back")
         back_button.setToolTip("Go back to the previous page")
         toolbar.addWidget(back_button)
 

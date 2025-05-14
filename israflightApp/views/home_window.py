@@ -26,6 +26,10 @@ class HomeWindow(BaseWindow):
 
         self.create_toolbar()
 
+        self.sign_in_height = 300
+        self.registration_height = 420
+
+
 
         # Create a layout for the central widget
         layout = QHBoxLayout()
@@ -35,18 +39,18 @@ class HomeWindow(BaseWindow):
 
         # Set the background label
         self.background_label = QLabel(self)
-        pixmap = QPixmap("./images/background2.png")  # Shoval path
-        #pixmap = QPixmap("./israflightApp/images/background2.png")  # Tehila path
+        #pixmap = QPixmap("./images/background2.png")  # Shoval path
+        pixmap = QPixmap("./israflightApp/images/background2.png")  # Tehila path
         self.background_label.setPixmap(pixmap)
         self.background_label.setScaledContents(True)
         layout.addWidget(self.background_label)
 
         # Add the logo
         self.logo_below_text = QLabel(self.background_label)
-        logo_pixmap = QPixmap("./images/israFlight_logo-03.png")  # Shoval path
-        #logo_pixmap = QPixmap("./israflightApp/images/israFlight_logo-03.png")  # Tehila path
+        #logo_pixmap = QPixmap("./images/israFlight_logo-03.png")  # Shoval path
+        logo_pixmap = QPixmap("./israflightApp/images/israFlight_logo-03.png")  # Tehila path
         self.logo_below_text.setPixmap(logo_pixmap.scaled(500, 500, Qt.KeepAspectRatio, Qt.SmoothTransformation))  # Resize logo
-        self.logo_below_text.move(int(screen_width/16), 100)  # Position below the text
+        self.logo_below_text.move(int(screen_width/16), 140)  # Position below the text
 
         # Overlay the text label
         self.text_label = QLabel(self.background_label)
@@ -55,7 +59,7 @@ class HomeWindow(BaseWindow):
         self.text_label.setStyleSheet("color: #1C3664; margin-left: 20px;")  # Text color
         self.text_label.setAlignment(Qt.AlignLeft | Qt.AlignTop)
         self.text_label.resize(600, 150)  # Adjust height to fit multiple lines
-        self.text_label.move(int(screen_width/16), 370)  # Position the text label
+        self.text_label.move(int(screen_width/12), 370)  # Position the text label
         self.text_label.setText(
             "IsraFlight is a full-service airline offering a premium travel experience \n"
             "with modern aviation technology.\n"
@@ -67,7 +71,7 @@ class HomeWindow(BaseWindow):
 
         # Add a QStackedWidget to hold both forms
         self.stacked_widget = QStackedWidget(self.background_label)
-        self.stacked_widget.setGeometry(int(screen_width*(5/8)), 120, 400, 450)
+        self.stacked_widget.setGeometry(int(screen_width*(5/9)), 240, 380, self.sign_in_height)
 
         # Add Sign-In and Registration forms
         self.sign_in_form = self.create_sign_in_form()
@@ -112,11 +116,11 @@ class HomeWindow(BaseWindow):
         """)
     
         form_layout = QFormLayout(form_widget)
-        form_layout.setContentsMargins(40, 30, 90, 5)  # Padding inside the form
+        form_layout.setContentsMargins(40, 30, 50, 5)  # Padding inside the form
 
         # Add a heading
         form_heading = QLabel("Sign In")
-        form_heading.setFont(QFont("Urbanist", 18, QFont.Bold))
+        form_heading.setFont(QFont("Urbanist", 24, QFont.Bold))
         form_heading.setStyleSheet("color: #27AAE1;")
         form_heading.setAlignment(Qt.AlignCenter)
         form_layout.addRow(form_heading)
@@ -140,7 +144,8 @@ class HomeWindow(BaseWindow):
                 font-family: 'Urbanist';
                 font-size: 14px;
                 font-weight: bold;
-                margin-top: 10px;
+                margin-top: 20px;
+                margin-right: 60px;
             }
             QPushButton:hover {
                 background-color: #218FB5;
@@ -167,6 +172,7 @@ class HomeWindow(BaseWindow):
                 font-family: 'Urbanist';
                 font-size: 14px;
                 font-weight: bold;
+                margin-right: 60px;
             }
             QPushButton:hover {
                 color: #27AAE1;
@@ -227,7 +233,7 @@ class HomeWindow(BaseWindow):
         }
         """)
         form_layout = QFormLayout(form_widget)
-        form_layout.setContentsMargins(40, 30, 90, 5)
+        form_layout.setContentsMargins(40, 30, 50, 5)
 
 
         # Add a heading
@@ -269,7 +275,9 @@ class HomeWindow(BaseWindow):
                 font-family: 'Urbanist';
                 font-size: 14px;
                 font-weight: bold;
-                margin-top: 10px;
+                margin-top: 20px;
+                margin-right: 70px;
+                margin-left: 70px;
             }
             QPushButton:hover {
                 background-color: #218FB5;
@@ -291,6 +299,7 @@ class HomeWindow(BaseWindow):
                 font-family: 'Urbanist';
                 font-size: 14px;
                 font-weight: bold;
+                margin-right: 80px;
             }
             QPushButton:hover {
                 color: #27AAE1;
@@ -313,10 +322,6 @@ class HomeWindow(BaseWindow):
         form_layout.addRow(email_label, email_field)
         #form_layout.addRow(phone_label, phone_field)
 
-        form_layout.addWidget(back_to_sign_in_button) 
-    
-        back_to_sign_in_button.clicked.connect(self.show_sign_in_form)
-
         #register_button.clicked.connect(self.controller.register_button_action())
          # Connect the button to a lambda function that gathers user input and calls register_button_action
         register_button.clicked.connect(lambda: self.controller.register_button_action({
@@ -329,17 +334,22 @@ class HomeWindow(BaseWindow):
 
 
         form_layout.addRow(register_button)
+        form_layout.addWidget(back_to_sign_in_button) 
+    
+        back_to_sign_in_button.clicked.connect(self.show_sign_in_form)
 
         return form_widget
 
     def show_registration_form(self):
         """Switch to the registration form."""
         self.stacked_widget.setCurrentWidget(self.registration_form)
+        self.update_form_height(self.registration_height)
 
 
     def show_sign_in_form(self):
         """Switch to the sign-in form."""
         self.stacked_widget.setCurrentWidget(self.sign_in_form)
+        self.update_form_height(self.sign_in_height)
 
     def action1_triggered(self):
         print("Sign In triggered")
@@ -369,3 +379,8 @@ class HomeWindow(BaseWindow):
         msg_box.setWindowTitle("Success")
         msg_box.setText(message)
         msg_box.exec()
+
+
+    def update_form_height(self, height):
+        self.stacked_widget.setFixedHeight(height)
+        self.stacked_widget.currentWidget().setFixedHeight(height)

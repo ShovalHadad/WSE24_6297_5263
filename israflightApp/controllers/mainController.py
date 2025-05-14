@@ -66,6 +66,7 @@ class MainController:
         self.navigate_to(self.flight_controller.show_window)
 
     def show_frequent_flyer_window(self, flyer_id):
-        if not self.frequent_flyer_controller:
-            self.frequent_flyer_controller = FrequentFlyerMainController(self, flyer_id)
+        # צור תמיד controller חדש עם המשתמש הנוכחי
+        self.frequent_flyer_controller = FrequentFlyerMainController(self, flyer_id)
         self.navigate_to(self.frequent_flyer_controller.show_window)
+

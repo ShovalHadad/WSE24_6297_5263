@@ -106,8 +106,8 @@ class FrequentFlyerMainWindow(BaseWindow):
         # 🔹 Temporary image shown before search
         self.flight_image = QLabel()
         self.flight_image.setContentsMargins(0, 110, 0, 0)
-        self.flight_image.setPixmap(QPixmap("./images/findFlight.png").scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation)) # Shoval path
-        #self.flight_image.setPixmap(QPixmap("./israflightApp/images/findFlight.png").scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation)) # Tehila path
+        #self.flight_image.setPixmap(QPixmap("./images/findFlight.png").scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation)) # Shoval path
+        self.flight_image.setPixmap(QPixmap("./israflightApp/images/findFlight.png").scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation)) # Tehila path
         self.flight_image.setAlignment(Qt.AlignHCenter)
         opacity = QGraphicsOpacityEffect()
         opacity.setOpacity(0.4)  
@@ -122,15 +122,20 @@ class FrequentFlyerMainWindow(BaseWindow):
         right_layout.addWidget(results_label)
 
         self.results_list = QListWidget()
+        self.results_list.setFixedWidth(700)  # או כל ערך שתרצי, נניח 350 או 300
+        self.results_list.setSpacing(8)
         self.results_list.setStyleSheet("""
             QListWidget {
-                border: 1px solid #ccc;
                 border-radius: 10px;
                 padding: 10px;
-                font-size: 13px;
+                font-size: 15px;
                 font-family: 'Urbanist';
             }
+            QListWidget::item {
+                margin-left: 16px;
+            }
         """)
+
         results_label.hide()
         self.results_list.hide()
 
@@ -141,9 +146,6 @@ class FrequentFlyerMainWindow(BaseWindow):
             self.start_date
             #self.end_date
         ))
-
-
-
 
 
 
@@ -168,8 +170,8 @@ class FrequentFlyerMainWindow(BaseWindow):
 
         picture_container = QVBoxLayout()
         picture_label = QLabel()
-        pixmap = QPixmap("./images/user.png") # Shoval path
-        #pixmap = QPixmap("./israflightApp/images/user.png") # Tehila path
+        #pixmap = QPixmap("./images/user.png") # Shoval path
+        pixmap = QPixmap("./israflightApp/images/user.png") # Tehila path
         pixmap = pixmap.scaled(120, 120, Qt.KeepAspectRatio, Qt.SmoothTransformation)
         picture_label.setPixmap(pixmap)
         picture_label.setAlignment(Qt.AlignHCenter)
@@ -322,20 +324,21 @@ class FrequentFlyerMainWindow(BaseWindow):
 
         self.flight_list = QListWidget()
         self.flight_list.setFixedWidth(500)
+        self.flight_list.setSpacing(8)
         self.flight_list.setStyleSheet("""
             QListWidget {
                 background-color: white;
                 color: #1C3664;
                 border-radius: 10px;
                 padding: 10px;
-                font-size: 13px;
+                font-size: 14px;
                 font-family: 'Urbanist';
             }
         """)
         if flyer.flights_ids:
             flights = self.controller.get_flights(flyer.flights_ids)
             for flight in flights:
-                flight_info = f"{flight.flight_id}   | ✈ {flight.departure_location} → {flight.arrival_location} at {flight.departure_datetime}"
+                flight_info = f"{flight.flight_id} |  ✈  {flight.departure_location}  →  {flight.arrival_location} at {flight.departure_datetime}"
                 self.flight_list.addItem(flight_info)
         else:
             self.flight_list.addItem("No registered flights.")
@@ -345,9 +348,9 @@ class FrequentFlyerMainWindow(BaseWindow):
         
 
 
-        main_layout.addLayout(right_layout, 3)  # Search section on the left (wider)
+        main_layout.addLayout(right_layout, 2)  # Search section on the left (wider)
         main_layout.addLayout(left_layout, 1)   # User details + registered flights on the right
-        main_layout.setSpacing(60)
+        main_layout.setSpacing(20)
 
 
         central_widget = QWidget()
@@ -361,8 +364,8 @@ class FrequentFlyerMainWindow(BaseWindow):
         self.found_flights = self.controller.find_flights(Departure, landing, start_date)    
         if self.found_flights:
             for flight in self.found_flights:
-                print(f"{flight.flight_id} | ✈ {flight.departure_location} → {flight.arrival_location} at {flight.departure_datetime}")
-                flight_info = f"{flight.flight_id} | ✈ {flight.departure_location} → {flight.arrival_location} at {flight.departure_datetime}"
+                print(f"{flight.flight_id} |   ✈ {flight.departure_location}   →   {flight.arrival_location}  at  {flight.departure_datetime}")
+                flight_info = f"{flight.flight_id} |   ✈   {flight.departure_location}   →   {flight.arrival_location}  at  {flight.departure_datetime}"
                 self.results_list.addItem(flight_info)
         else:
             self.results_list.addItem("No flights found.")

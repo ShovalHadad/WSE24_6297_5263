@@ -46,8 +46,8 @@ class FlightWindow(BaseWindow):
         # Try to add plane icon - with proper error handling
         plane_icon = QLabel()
         try:
-            pixmap = QPixmap("./images/f_managment.png")
-            #pixmap = QPixmap("./israflightApp/images/f_managment.png")  # Tehila path
+            #pixmap = QPixmap("./images/f_managment.png")
+            pixmap = QPixmap("./israflightApp/images/f_managment.png")  # Tehila path
             #pixmap = QPixmap("./images/flight_managment.png")
             #pixmap = QPixmap("./israflightApp/images/flight_managment.png") # Tehila path
             if not pixmap.isNull():
@@ -378,80 +378,99 @@ class FlightWindow(BaseWindow):
             QMessageBox.warning(self, "Error", f"An error occurred: {str(e)}")
 
     def generate_pdf_ticket(self):
-        """Generate a PDF ticket and save it to the pdfFiles folder"""
+        """Generate a better-designed PDF ticket"""
+        from reportlab.lib import colors
+        from reportlab.lib.units import inch
+
         try:
-            # Create pdfFiles directory if it doesn't exist
             pdf_dir = "./pdfFiles"
-            #pdf_dir = "./israflightApp/pdfFiles"
             if not os.path.exists(pdf_dir):
                 os.makedirs(pdf_dir)
-        
-        # Get the ticket
+
             ticket = self.controller.get_ticket_by_flight_user(self.flight_id, self.flyer_id)
             if not ticket:
                 QMessageBox.warning(self, "Error", "No ticket found for this flight.")
                 return
-            
-        # Get seat class name
+
             seat_class = self.controller.get_seat_class_name(ticket.ticket_type)
-        
-        # Create the PDF
+            passenger = self.controller.get_flyer_by_id(self.flyer_id)
+
             pdf_path = f"{pdf_dir}/ticket_{ticket.ticket_id}_flight_{self.flight_id}.pdf"
             pdf = canvas.Canvas(pdf_path, pagesize=letter)
-        
-        # Set title
-            pdf.setTitle(f"Flight Ticket #{ticket.ticket_id}")
-        
-        # Add IsraFlight logo (uncomment if logo exists)
-        # pdf.drawImage("./images/israFlight_logo4-04.png", 50, 700, width=100, height=50)
-        
-        # Add ticket header
-            pdf.setFont("Helvetica-Bold", 18)
-            pdf.drawString(100, 750, "IsraFlight - Flight Ticket")
-        
-        # Add divider line
-            pdf.line(50, 730, 550, 730)
-        
-        # Set font for ticket details
+            width, height = letter
+
+            # === Styling ===
+            margin = 50
+            line_height = 18
+            start_y = height - margin
+
+            def draw_label_val(label, value, x, y, bold=False):
+                if bold:
+                    pdf.setFont("Helvetica-Bold", 11)
+                else:
+                    pdf.setFont("Helvetica", 11)
+                pdf.drawString(x, y, f"{label}")
+                pdf.setFont("Helvetica", 11)
+                pdf.drawRightString(width - margin, y, value)
+
+            # === Header ===
+            pdf.setFont("Helvetica-Bold", 20)
+            pdf.drawString(margin, start_y, "✈ IsraFlight - Boarding Pass")
+            pdf.setStrokeColor(colors.grey)
+            pdf.line(margin, start_y - 10, width - margin, start_y - 10)
+
+            # === Ticket Info ===
+            y = start_y - 40
             pdf.setFont("Helvetica-Bold", 14)
-            pdf.drawString(50, 700, "Ticket Information:")
-        
-        # Add ticket details
-            pdf.setFont("Helvetica", 12)
-            pdf.drawString(70, 670, f"Ticket Number: {ticket.ticket_id}")
-            pdf.drawString(70, 650, f"Flight Number: {self.flight_id}")
-            pdf.drawString(70, 630, f"Route: {self.flight.departure_location} → {self.flight.arrival_location}")
-            pdf.drawString(70, 610, f"Departure: {self.flight.departure_datetime}")
-            pdf.drawString(70, 590, f"Arrival: {self.flight.estimated_arrival_datetime}")
-            pdf.drawString(70, 570, f"Seat Class: {seat_class}")
-            pdf.drawString(70, 550, f"Price: {ticket.price}")
-            pdf.drawString(70, 530, f"Order Date: {ticket.created_date.strftime('%d/%m/%Y %H:%M')}")
-        
-        # Add passenger information
+            pdf.drawString(margin, y, "Flight Information")
+
+            y -= line_height * 1.5
+            draw_label_val("Ticket Number:", str(ticket.ticket_id), margin, y)
+            y -= line_height
+            draw_label_val("Flight Number:", str(self.flight_id), margin, y)
+            y -= line_height
+            draw_label_val("Route:", f"{self.flight.departure_location} → {self.flight.arrival_location}", margin, y)
+            y -= line_height
+            draw_label_val("Departure:", str(self.flight.departure_datetime), margin, y)
+            y -= line_height
+            draw_label_val("Arrival:", str(self.flight.estimated_arrival_datetime), margin, y)
+            y -= line_height
+            draw_label_val("Seat Class:", seat_class, margin, y)
+            y -= line_height
+            draw_label_val("Price:", f"${ticket.price}", margin, y)
+            y -= line_height
+            draw_label_val("Order Date:", ticket.created_date.strftime('%d/%m/%Y %H:%M'), margin, y)
+
+            # === Divider ===
+            y -= line_height * 1.5
+            pdf.setStrokeColor(colors.lightgrey)
+            pdf.line(margin, y, width - margin, y)
+
+            # === Passenger Info ===
+            y -= line_height * 1.5
             pdf.setFont("Helvetica-Bold", 14)
-            pdf.drawString(50, 490, "Passenger Information:")
-        
-        # Get passenger info
-            passenger = self.controller.get_flyer_by_id(self.flyer_id)
-        
-            pdf.setFont("Helvetica", 12)
-            pdf.drawString(70, 460, f"Name: {passenger.first_name} {passenger.last_name}")
-            pdf.drawString(70, 440, f"Email: {passenger.email}")
-            pdf.drawString(70, 420, f"Phone: {passenger.phone_number}")
-        
-        # Add barcode or QR code placeholder
+            pdf.drawString(margin, y, "Passenger")
+
+            y -= line_height * 1.5
+            draw_label_val("Name:", f"{passenger.first_name} {passenger.last_name}", margin, y)
+            y -= line_height
+            draw_label_val("Email:", passenger.email, margin, y)
+            y -= line_height
+            draw_label_val("Phone:", passenger.phone_number or "N/A", margin, y)
+
+            # === Footer ===
+            y -= line_height * 2
             pdf.setFont("Helvetica-Bold", 12)
-            pdf.drawString(200, 350, "** VALID TICKET **")
-        
-        # Add footer
+            pdf.drawCentredString(width / 2, y, "** VALID TICKET **")
+
+            y -= line_height * 3
             pdf.setFont("Helvetica", 10)
-            pdf.drawString(150, 50, "This ticket is required for boarding. Thank you for flying with IsraFlight.")
-        
-        # Save the PDF
+            pdf.drawCentredString(width / 2, y, "This ticket is required for boarding. Thank you for flying with IsraFlight.")
+
+            # === Save ===
             pdf.save()
-        
-            QMessageBox.information(self, "Success", f"Ticket saved as PDF in {pdf_path}")
-        
+            QMessageBox.information(self, "Success", f"PDF saved to: {pdf_path}")
+
         except Exception as e:
             print(f"Error generating PDF: {e}")
             QMessageBox.warning(self, "Error", f"Failed to generate PDF: {str(e)}")
