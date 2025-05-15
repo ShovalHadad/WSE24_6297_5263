@@ -445,6 +445,23 @@ class FlightWindow(BaseWindow):
             y -= line_height
             draw_label_val("Order Date:", ticket.created_date.strftime('%d/%m/%Y %H:%M'), margin, y)
 
+
+            # === Divider ===
+            y -= line_height * 1.5
+            pdf.setStrokeColor(colors.lightgrey)
+            pdf.line(margin, y, width - margin, y)
+
+
+            # === Shabbat Info ===
+            y -= line_height * 3
+            pdf.setFont("Helvetica-Bold", 14)
+            pdf.drawString(margin, y, "Shabbat Information")
+
+            y -= line_height * 1.5
+            pdf.setFont("Helvetica", 11)
+            pdf.drawString(margin, y, ticket.shabat_times)
+
+
             # === Divider ===
             y -= line_height * 1.5
             pdf.setStrokeColor(colors.lightgrey)

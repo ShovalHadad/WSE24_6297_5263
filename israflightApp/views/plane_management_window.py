@@ -207,12 +207,14 @@ class PlaneManagementWindow(BaseWindow):
             }
         """)
         self.close_form_button.clicked.connect(self.close_form)
+       
 
         self.form_layout = QVBoxLayout()
         self.form_layout.setContentsMargins(20, 20, 20, 20)
         self.form_layout.setSpacing(3)
 
         self.form_widget.setLayout(self.form_layout)
+        self.form_layout.addWidget(self.close_form_button, alignment=Qt.AlignLeft)
 
         header_container = QVBoxLayout()
         header_container.setContentsMargins(0, 20, 0, 0)  # Top margin = 20
@@ -452,9 +454,9 @@ class PlaneManagementWindow(BaseWindow):
                 "MadeBy": self.made_in_input.text(),
                 "Year": self.year_input.text(),
                 "Picture": imgur_url,
-                "NumOfSeats1": 10,
-                "NumOfSeats2": 15,
-                "NumOfSeats3": 10,
+                "NumOfSeats1": 20,
+                "NumOfSeats2": 50,
+                "NumOfSeats3": 100,
             }
 
             success = self.controller.add_plane(plane_data)
@@ -464,7 +466,7 @@ class PlaneManagementWindow(BaseWindow):
                 self.form_widget.hide()
                 self.add_plane_button.show()
             else:
-                QMessageBox.warning(self, "Error", "⚠️ Error adding plane.")
+                QMessageBox.warning(self, "Error", "⚠️ there is no plane in the picture.")
 
         except Exception as e:
             QMessageBox.critical(self, "Upload Error", str(e))

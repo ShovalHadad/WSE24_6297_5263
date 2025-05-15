@@ -49,17 +49,11 @@ class FlightManagementController:
             )
 
             json_data=flight.to_dict()
-
             print(f"🔹 JSON Sent from Python: {json.dumps(json_data, indent=4)}")  # Print JSON payload
-
-            #response = requests.post(self.api_base_url, json=json_data)
-            #response.raise_for_status()
-            
-
             # Call the `create` method from the Flight model
             flight.create(self.api_base_url)
-
             return True  # Successfully created
+        
         except requests.exceptions.HTTPError as http_err:
             print(f"❌ HTTP Error: {http_err}")
             print(f"❌ Response Content: {http_err.response.text}")  # Print server error details

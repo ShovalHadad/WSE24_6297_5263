@@ -15,11 +15,9 @@ class MainController:
         self.add_manager_controller = None
         self.plane_management_controller = None
         self.frequent_flyer_controller = None
-
-        self.history_stack = []  # ✅ לשמור היסטוריה
-
-        self.navigation_controller = NavigationController(self)  # ✅ יצירת נוויגציה
-
+        self.navigation_controller = NavigationController(self)  #  הקונטרולר שאחראי על הניווט 
+        self.history_stack = []  # save the history for navigation
+       
         self.current_window = self.home_controller.show_window()
 
     def navigate_to(self, show_func):
@@ -46,7 +44,7 @@ class MainController:
         self.history_stack.clear()
 
     def show_manager_window(self, flyer_id):
-        if not self.manager_main_controller:
+        if not self.manager_main_controller: #אם הקונטרולר לא נוצר-> יוצא חדש
             self.manager_main_controller = ManagerMainWindowController(self, flyer_id)
         self.navigate_to(self.manager_main_controller.show_window)
 

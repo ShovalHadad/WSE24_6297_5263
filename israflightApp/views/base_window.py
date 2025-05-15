@@ -4,10 +4,10 @@ from PySide6.QtCore import Qt ,QSize
 
 
 class BaseWindow(QMainWindow):
-    def __init__(self, controller=None, nav_controller=None):  # ✅ nav_controller נוסף כאן
+    def __init__(self, controller=None, nav_controller=None):  #  nav_controller נוסף כאן
         super(BaseWindow, self).__init__()
         self.controller = controller
-        self.nav_controller = nav_controller  # ✅ שמירה של הנוויגציה
+        self.nav_controller = nav_controller  #  שמירה של הנוויגציה
 
     def create_toolbar(self):
         toolbar = QToolBar("Main Toolbar", self)
@@ -85,9 +85,9 @@ class BaseWindow(QMainWindow):
         back_button.clicked.connect(self.go_back)
         home_button.clicked.connect(self.go_home)
 
-    def go_back(self):
+    def go_back(self): #כל המחלקות שיורשות ממנו וקוראות לכפתור
         """Go back to the previous page using the navigation controller."""
-        if self.nav_controller:
+        if self.nav_controller: #משתנה שנשמר באובייקט, ומכיל את אובייקט הניווט
             self.nav_controller.go_back()
 
     def go_home(self):
