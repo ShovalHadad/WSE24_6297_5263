@@ -3,7 +3,7 @@ from datetime import datetime
 
 class FlightTicket:
     def __init__(self, ticket_id , ticket_type , user_id , flight_id , 
-                 shabat_times , created_date, price):
+                 shabat_times = None , created_date = None, price = None):
         self.ticket_id = ticket_id
         self.ticket_type = ticket_type
         self.user_id = user_id

@@ -376,7 +376,8 @@ class FlightManagementWindow(BaseWindow):
             self.form_widget.hide()
             self.add_flight_button.show()
         else:
-            self.flight_list.addItem("⚠️ Error adding flight")
+            QMessageBox.warning(self, "Error", "⚠️ flight is in Shabbat")
+
 
 
     def update_flight(self):
@@ -466,24 +467,3 @@ class FlightManagementWindow(BaseWindow):
             pass
         self.save_button.clicked.connect(self.save_flight)
 
-
-    """def resizeEvent(self, event):
-        super().resizeEvent(event)
-        self.set_background_image()
-        if hasattr(self, "overlay"):
-            self.overlay.setGeometry(0, 0, self.width(), self.height())
-            """
-
-
-    """def set_background_image(self):
-        pixmap = QPixmap(self.bg_image_path)
-        if not pixmap.isNull():
-            scaled = pixmap.scaled(self.size(), Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
-            palette = QPalette()
-            palette.setBrush(QPalette.Window, QBrush(scaled))
-            self.setPalette(palette)
-            self.setAutoFillBackground(True)
-        else:
-            print("⚠️ לא הצליח לטעון את התמונה")
-
-"""

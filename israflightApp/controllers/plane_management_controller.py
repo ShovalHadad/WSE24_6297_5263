@@ -14,8 +14,6 @@ class PlaneManagementController:
                 controller=self,
                 nav_controller=self.main_controller.navigation_controller
             )
-
-
         self.plane_management_window.show()
         return self.plane_management_window
     

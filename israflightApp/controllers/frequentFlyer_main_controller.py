@@ -177,7 +177,7 @@ class FrequentFlyerMainController:
 
             return success
         except Exception as e:
-            print(f"Error booking flight: {e}")
+            print(f"1111111111Error booking flight: {e}")
             return False
 
     def refresh_registered_flights(self):

@@ -51,7 +51,10 @@ class HomeController:
                 self.home_window.show_error_message("Invalid password. Try again.")
                 return
 
-            # Successful login
+            # ✅ שמירה של המשתמש המחובר
+            self.flyer_id = flyer.flyer_id
+            self.current_flyer = flyer
+
             self.home_window.show_success_message("Login successful!")
 
             # Redirect user based on role
@@ -62,7 +65,6 @@ class HomeController:
 
         except Exception as e:
             self.home_window.show_error_message(f"Failed to log in: {str(e)}")
-
 
 
     def is_valid_email(self, email):

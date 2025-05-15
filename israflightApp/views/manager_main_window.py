@@ -72,8 +72,8 @@ class ManagerMainWindow(BaseWindow):
 
         # Icon
         self.button1_icon = QLabel()
-        self.button1_icon.setPixmap(QPixmap("./images/f_managment.png").scaled(60, 60, Qt.KeepAspectRatio, Qt.SmoothTransformation))
-        #self.button1_icon.setPixmap(QPixmap("./israflightApp/images/f_managment.png").scaled(60, 60, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+        #self.button1_icon.setPixmap(QPixmap("./images/f_managment.png").scaled(60, 60, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+        self.button1_icon.setPixmap(QPixmap("./israflightApp/images/f_managment.png").scaled(60, 60, Qt.KeepAspectRatio, Qt.SmoothTransformation))
         self.button1_icon.setStyleSheet("margin-left: 130px;")
         left_layout.addWidget(self.button1_icon)
 
@@ -126,8 +126,8 @@ class ManagerMainWindow(BaseWindow):
 
         # Icon
         self.button3_icon = QLabel()
-        self.button3_icon.setPixmap(QPixmap("./images/p_managment.png").scaled(65, 65, Qt.KeepAspectRatio, Qt.SmoothTransformation))
-        #self.button3_icon.setPixmap(QPixmap("./israflightApp/images/p_managment.png").scaled(65, 65, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+        #self.button3_icon.setPixmap(QPixmap("./images/p_managment.png").scaled(65, 65, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+        self.button3_icon.setPixmap(QPixmap("./israflightApp/images/p_managment.png").scaled(65, 65, Qt.KeepAspectRatio, Qt.SmoothTransformation))
         self.button3_icon.setStyleSheet("margin-left: 130px;")
         right_layout.addWidget(self.button3_icon)
 

@@ -4,10 +4,10 @@ from PySide6.QtCore import Qt ,QSize
 
 
 class BaseWindow(QMainWindow):
-    def __init__(self, controller=None, nav_controller=None):  # ✅ nav_controller נוסף כאן
+    def __init__(self, controller=None, nav_controller=None):  #  nav_controller נוסף כאן
         super(BaseWindow, self).__init__()
         self.controller = controller
-        self.nav_controller = nav_controller  # ✅ שמירה של הנוויגציה
+        self.nav_controller = nav_controller  #  שמירה של הנוויגציה
 
     def create_toolbar(self):
         toolbar = QToolBar("Main Toolbar", self)
@@ -31,8 +31,8 @@ class BaseWindow(QMainWindow):
         toolbar.addWidget(left_space)
 
         logo_label = QLabel(self)
-        logo_pixmap = QPixmap("./images/israFlight_logo4-04.png")
-        #logo_pixmap = QPixmap("./israflightApp/images/israFlight_logo4-04.png")
+        #logo_pixmap = QPixmap("./images/israFlight_logo4-04.png")
+        logo_pixmap = QPixmap("./israflightApp/images/israFlight_logo4-04.png")
         logo_label.setPixmap(logo_pixmap.scaled(120, 120, Qt.KeepAspectRatio, Qt.SmoothTransformation))
         toolbar.addWidget(logo_label)
 
@@ -69,10 +69,10 @@ class BaseWindow(QMainWindow):
     
         # BACK Button
         back_button = QToolButton(self)
-        back_button.setIcon(QIcon("./images/back.png"))
-        #back_button.setIcon(QIcon("./israflightApp/images/back.png"))
-        back_button.setIconSize(QSize(30,30))  # גודל מותאם אישית
-        #back_button.setText("Back")
+        #back_button.setIcon(QIcon("./images/back.png"))
+        back_button.setIcon(QIcon("./israflightApp/images/back.png"))
+        #back_button.setIconSize(QSize(30,30))  # גודל מותאם אישית
+        back_button.setText("Back")
         back_button.setToolTip("Go back to the previous page")
         toolbar.addWidget(back_button)
 
@@ -85,9 +85,9 @@ class BaseWindow(QMainWindow):
         back_button.clicked.connect(self.go_back)
         home_button.clicked.connect(self.go_home)
 
-    def go_back(self):
+    def go_back(self): #כל המחלקות שיורשות ממנו וקוראות לכפתור
         """Go back to the previous page using the navigation controller."""
-        if self.nav_controller:
+        if self.nav_controller: #משתנה שנשמר באובייקט, ומכיל את אובייקט הניווט
             self.nav_controller.go_back()
 
     def go_home(self):
