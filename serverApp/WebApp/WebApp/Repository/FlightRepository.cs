@@ -14,7 +14,7 @@ namespace WebApp.Repositories
 {
     public class FlightRepository : IFlightRepository
     {
-        private readonly ApplicationDBContext _context;
+        private readonly ApplicationDBContext _context;  //הערך של המשתנה יכול להיות מאותחל רק פעם אחת
         private readonly HebCalService _hebCalService;
 
         // Constructor
@@ -189,7 +189,7 @@ namespace WebApp.Repositories
                         {
                             ticketsIds.Add(flightTicket.TicketId);
                             var frequentFlyer = _context.FrequentFlyers.FirstOrDefault(e => e.FlyerId == flightTicket.UserId);
-                            frequentFlyer.FlightsIds.Remove(flightTicket.TicketId);
+                            frequentFlyer.FlightsIds.Remove(flightTicket.FlightId);
                         }
                     }
                     foreach (int ids in ticketsIds) // delete the flight tickets that are in this flight
