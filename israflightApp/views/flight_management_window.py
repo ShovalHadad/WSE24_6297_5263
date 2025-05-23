@@ -4,7 +4,7 @@ from PySide6.QtWidgets import (
 from PySide6.QtGui import QPixmap, QPalette, QBrush, QFont, QColor
 from views.base_window import BaseWindow
 from PySide6.QtCore import Qt
-
+from PySide6.QtCore import QDateTime
 
 
 
@@ -195,7 +195,7 @@ class FlightManagementWindow(BaseWindow):
             """)
             #label.setFixedHeight(90)  
             input_widget.setStyleSheet("""
-                QLineEdit, QDateTimeEdit {
+                QLineEdit {
                     background-color: white;
                     border: none;
                     border-radius: 10px;
@@ -208,7 +208,18 @@ class FlightManagementWindow(BaseWindow):
                     color: black;
                     max-width: 500px;                   
                 }
-                QLineEdit::placeholder, QDateTimeEdit::placeholder {
+                QDateTimeEdit {
+                    background-color: white;
+                    border: none;
+                    border-radius: 10px;
+                    padding: 8px;
+                    font-size: 10px;
+                    color: black;
+                    max-width: 500px;
+                    margin-left: 25px;
+                    margin-top: 0px;
+                }
+                QLineEdit::placeholder {
                     color: gray;
                 }
             """)
@@ -226,9 +237,14 @@ class FlightManagementWindow(BaseWindow):
 
         self.departure_time = QDateTimeEdit()
         self.departure_time.setCalendarPopup(True)
+        #self.departure_time.setDisplayFormat("yyyy-MM-dd HH:mm")
 
         self.arrival_time = QDateTimeEdit()
         self.arrival_time.setCalendarPopup(True)
+        #self.arrival_time.setDisplayFormat("yyyy-MM-dd HH:mm")
+
+        self.departure_time.setDateTime(QDateTime.currentDateTime())
+        self.arrival_time.setDateTime(QDateTime.currentDateTime())
 
         self.plane_id_input = QLineEdit()
         self.plane_id_input.setPlaceholderText("Plane ID")
@@ -456,8 +472,10 @@ class FlightManagementWindow(BaseWindow):
 
         self.departure_input.clear()
         self.arrival_input.clear()
-        self.departure_time.setDateTime(self.departure_time.minimumDateTime())
-        self.arrival_time.setDateTime(self.arrival_time.minimumDateTime())
+        now = QDateTime.currentDateTime()
+        self.departure_time.setDateTime(now)
+        self.arrival_time.setDateTime(now)
+
         self.plane_id_input.clear()
 
         # נוודא שהכפתור לא מחובר לעדכון
