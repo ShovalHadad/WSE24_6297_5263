@@ -374,10 +374,10 @@ class FlightWindow(BaseWindow):
                 )
                 self.close()
             else:
-                QMessageBox.warning(self, "Error", "The order cannot be placed. Please try again.")
+                QMessageBox.warning(self, "Error", "The order cannot be placed. please call IT.")
         except Exception as e:
             print(f"Booking error: {e}")
-            QMessageBox.warning(self, "Error", f"An error occurred: {str(e)}")
+            QMessageBox.warning(self, "Error", "Error booking flight, please call IT.")
 
     def generate_pdf_ticket(self):
         """Generate a better-designed PDF ticket"""
@@ -391,7 +391,7 @@ class FlightWindow(BaseWindow):
 
             ticket = self.controller.get_ticket_by_flight_user(self.flight_id, self.flyer_id)
             if not ticket:
-                QMessageBox.warning(self, "Error", "No ticket found for this flight.")
+                QMessageBox.warning(self, "Error", "No ticket found for this flight. please call IT.")
                 return
 
             seat_class = self.controller.get_seat_class_name(ticket.ticket_type)
@@ -494,4 +494,4 @@ class FlightWindow(BaseWindow):
 
         except Exception as e:
             print(f"Error generating PDF: {e}")
-            QMessageBox.warning(self, "Error", f"Failed to generate PDF: {str(e)}")
+            QMessageBox.warning(self, "Error", f"Failed to print ticket, please call IT.")

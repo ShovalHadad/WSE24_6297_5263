@@ -414,7 +414,7 @@ class FlightManagementWindow(BaseWindow):
             self.form_widget.hide()
             self.add_flight_button.show()
         else:
-            self.flight_list.addItem("⚠️ Error updating flight")
+            QMessageBox.information(self, "Error", "⚠️ Error updating flight. please call IT.")
 
 
     def select_flight(self, item):
@@ -459,9 +459,9 @@ class FlightManagementWindow(BaseWindow):
                 self.form_widget.hide()
                 self.add_flight_button.show()
             else:
-                self.flight_list.addItem("⚠️ Error deleting flight")
+                QMessageBox.information(self, "Error","⚠️ Error deleting flight, please call IT")
         else:
-            self.flight_list.addItem("⚠️ No flight selected")
+            print("⚠️ No flight selected")
 
 
     def reset_form_to_add_mode(self):
@@ -478,7 +478,6 @@ class FlightManagementWindow(BaseWindow):
 
         self.plane_id_input.clear()
 
-        # נוודא שהכפתור לא מחובר לעדכון
         try:
             self.save_button.clicked.disconnect()
         except TypeError:

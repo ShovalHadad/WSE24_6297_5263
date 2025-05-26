@@ -488,7 +488,7 @@ class PlaneManagementWindow(BaseWindow):
                 QMessageBox.information(self, "Success", "Plane deleted successfully 🗑️")
                 self.close_form()
             else:
-                QMessageBox.warning(self, "Error", "⚠️ Failed to delete plane.")
+                QMessageBox.warning(self, "Error", "⚠️ Failed to delete plane. please call IT.")
 
 
 
@@ -547,7 +547,7 @@ class PlaneManagementWindow(BaseWindow):
     def update_plane(self):
         """Updates an existing plane via the controller."""
         if not self.selected_plane_id:
-            QMessageBox.warning(self, "No Plane Selected", "No plane selected for update.")
+            print("No Plane Selected, No plane selected for update.")
             return
 
         plane_data = {
@@ -565,7 +565,7 @@ class PlaneManagementWindow(BaseWindow):
             QMessageBox.information(self, "Success", "Plane updated successfully ✈️")
             self.close_form()
         else:
-            QMessageBox.warning(self, "Error", "⚠️ Failed to update plane.")
+            QMessageBox.warning(self, "Error", "⚠️ Failed to update plane. piease call IT.")
 
 
     

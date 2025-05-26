@@ -18,8 +18,7 @@ class HomeWindow(BaseWindow):
         self.showMaximized()
         screen_height = screen.size().height()
         screen_width = screen.size().width()
-        print(f"screen hight: {screen_height}")
-        print(f"screen width: {screen_width}")
+        
         # Set the central widget
         central_widget = QWidget(self)
         self.setCentralWidget(central_widget)
@@ -372,6 +371,11 @@ class HomeWindow(BaseWindow):
         msg_box.exec()
 
 
+    def update_form_height(self, height):
+        self.stacked_widget.setFixedHeight(height)
+        self.stacked_widget.currentWidget().setFixedHeight(height)
+
+'''
     def show_success_message(self, message):
         """Displays a success message in a pop-up window."""
         msg_box = QMessageBox()
@@ -379,8 +383,4 @@ class HomeWindow(BaseWindow):
         msg_box.setWindowTitle("Success")
         msg_box.setText(message)
         msg_box.exec()
-
-
-    def update_form_height(self, height):
-        self.stacked_widget.setFixedHeight(height)
-        self.stacked_widget.currentWidget().setFixedHeight(height)
+'''
