@@ -18,7 +18,5 @@ A client–server system for managing flights, aircraft, tickets, and user acces
 
 *External integrations:
     Imagga API – validate that uploaded image URLs are airplane images (via tagging) when adding/updating aircraft.
-    
     HebCal API – detect Shabbat times & Torah portion; warn if selected landing time intersects with Shabbat.
-    
     Landing board: query scheduled landings at Ben Gurion for the next 1–5 hours.
