@@ -77,13 +77,6 @@ class FrequentFlyerMainWindow(BaseWindow):
         self.start_date.setDate(QDate.currentDate())
         search_row.addLayout(styled_input("Departure date", self.start_date))
 
-
-        #self.end_date = QDateEdit()
-        #self.end_date.setCalendarPopup(True)
-        #self.end_date.setDate(QDate.currentDate())
-        #search_row.addLayout(styled_input("Arrival date", self.end_date))
-        
-
         search_container.addLayout(search_row)
 
         self.search_button = QPushButton("Search flight")
@@ -144,10 +137,7 @@ class FrequentFlyerMainWindow(BaseWindow):
             self.departure_input, 
             self.arrival_input,
             self.start_date
-            #self.end_date
         ))
-
-
 
         # --- Left Side: Flyer Info in a card ---
         left_layout = QVBoxLayout()
@@ -188,7 +178,6 @@ class FrequentFlyerMainWindow(BaseWindow):
 
         picture_container.addWidget(picture_label)
         picture_container.addWidget(hi_label)
-        #picture_container.setSpacing(0)
         form_inner_layout.addLayout(picture_container)
 
         form_layout = QVBoxLayout()
@@ -311,9 +300,8 @@ class FrequentFlyerMainWindow(BaseWindow):
             }
         """)
 
-        # עטיפה בלייאאוט אנכי עם מרווח קטן
         registered_flights_container = QVBoxLayout()
-        registered_flights_container.setSpacing(5)  # קטן
+        registered_flights_container.setSpacing(5)  
 
         registered_label = QLabel("Registered Flights:")
         registered_label.setFont(QFont("Urbanist", 13))
@@ -345,8 +333,6 @@ class FrequentFlyerMainWindow(BaseWindow):
         self.flight_list.itemClicked.connect(self.user_flight_selected)
         registered_flights_container.addWidget(self.flight_list)
         left_layout.addLayout(registered_flights_container)
-        
-
 
         main_layout.addLayout(right_layout, 2)  # Search section on the left (wider)
         main_layout.addLayout(left_layout, 1)   # User details + registered flights on the right
@@ -364,7 +350,7 @@ class FrequentFlyerMainWindow(BaseWindow):
         self.found_flights = self.controller.find_flights(Departure, landing, start_date)    
         if self.found_flights:
             for flight in self.found_flights:
-                print(f"{flight.flight_id} |   ✈ {flight.departure_location}   →   {flight.arrival_location}  at  {flight.departure_datetime}")
+                #print(f"{flight.flight_id} |   ✈ {flight.departure_location}   →   {flight.arrival_location}  at  {flight.departure_datetime}")
                 flight_info = f"{flight.flight_id} |   ✈   {flight.departure_location}   →   {flight.arrival_location}  at  {flight.departure_datetime}"
                 self.results_list.addItem(flight_info)
         else:
@@ -386,7 +372,8 @@ class FrequentFlyerMainWindow(BaseWindow):
             # Let the controller handle opening the booking window
             self.controller.open_flight_booking(flight_id)
         else:
-            QMessageBox.warning(self, "Error", "Could not find flight information.1")
+            print("Error, Could not find flight information.1")
+            QMessageBox.warning(self, "Error", "Could not find flight information, please call IT")
 
     def user_flight_selected(self, item):
         # Get the flight ID from the selected item text
@@ -399,9 +386,9 @@ class FrequentFlyerMainWindow(BaseWindow):
             # Let the controller handle opening the booking window
                 self.controller.open_flight_user(flight_id)
             else:
-                QMessageBox.warning(self, "Error", "Could not find flight information.")
+                QMessageBox.warning(self, "Error", "Could not find flight information, please call IT")
         else:
-            QMessageBox.warning(self, "Error", "Could not find flight id.")
+            QMessageBox.warning(self, "Error", "Could not find flight id, please call IT")
 
     def update_clicked(self):
         first_name = self.first_input.text()
@@ -412,4 +399,4 @@ class FrequentFlyerMainWindow(BaseWindow):
         if self.controller.update_flyer(self.controller.flyer_id, first_name, last_name, email, phone):
             QMessageBox.information(self, "Success", "Your profile has been updated successfully.")
         else:
-            QMessageBox.warning(self, "Error", "Failed to update profile. Please try again.")
+            QMessageBox.warning(self, "Error", "Failed to update profile, please call IT.")

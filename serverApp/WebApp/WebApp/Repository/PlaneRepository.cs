@@ -86,7 +86,7 @@ namespace WebApp.Repository
                 Plane oldPlane = _context.Planes.FirstOrDefault(e => e.PlaneId == id);
                 if (emptyPlane == null)
                     throw new PlaneRepositoryException("can not find the plane.");
-                if (oldPlane.Picture != plane.Picture && plane.Picture != emptyPlane.Picture) // change the picture 
+                if (oldPlane.Picture != plane.Picture && plane.Picture != null) // change the picture 
                 {
                     if (await _imaggaService.AnalyzeImageForPlane(plane.Picture))
                         oldPlane.Picture = plane.Picture;

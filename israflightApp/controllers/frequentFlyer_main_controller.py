@@ -124,7 +124,7 @@ class FrequentFlyerMainController:
         try:
             print(f"Searching for ticket with flight_id={flight_id}, user_id={user_id}")
     
-        # Get all tickets
+            # Get all tickets
             tickets = FlightTicket.get_all_tickets(self.api_base_url_ticket)
         
             for ticket in tickets:
@@ -153,8 +153,6 @@ class FrequentFlyerMainController:
     def get_flight(self, flight_id):
         return Flight.get_flight_by_id(self.api_base_url_flight ,flight_id)
     
-
-    # Add this method to FrequentFlyerMainController class
     def book_flight(self, flyer_id, flight_id, seat_class):
         try:
         # Calculate ticket price based on seat class

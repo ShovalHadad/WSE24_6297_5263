@@ -55,7 +55,8 @@ class HomeController:
             self.flyer_id = flyer.flyer_id
             self.current_flyer = flyer
 
-            self.home_window.show_success_message("Login successful!")
+            #self.home_window.show_success_message("Login successful!")
+            print("Login successful!")
 
             # Redirect user based on role
             if flyer.is_manager:
@@ -64,7 +65,8 @@ class HomeController:
                 self.mainController.show_frequent_flyer_window(flyer.flyer_id)
 
         except Exception as e:
-            self.home_window.show_error_message(f"Failed to log in: {str(e)}")
+            print(f"Failed to log in: {str(e)}")
+            self.home_window.show_error_message("Failed to log in, please call IT")
 
 
     def is_valid_email(self, email):
