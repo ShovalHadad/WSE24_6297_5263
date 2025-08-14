@@ -4,10 +4,8 @@ A client–server system for managing flights, aircraft, tickets, and user acces
 
 <h2>Key Features</h2>
 
-Python (PySide6) GUI for Managers & Frequent Flyers with custom navigation.
-
+ **Python (PySide6) ** GUI for Managers & Frequent Flyers with custom navigation.
 ASP.NET Core 6 (C#) REST API backed by SQL Server on Somee.com (Entity Framework Core).
-
 Authentication: username/password for Frequent Flyers.
 
 Flight & Aircraft Management: CRUD for planes and flights, including scheduling (departure/arrival date/time, aircraft assignment, routes).
