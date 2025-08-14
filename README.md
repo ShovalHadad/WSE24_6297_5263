@@ -2,7 +2,7 @@
 
 A client–server system for managing flights, aircraft, tickets, and user access for two roles: Administrators (Managers) and Frequent Flyers. The project demonstrates a distributed architecture built for the Windows Systems Engineering course, using a Python desktop UI (PySide6) and an ASP.NET Core backend with SQL Server hosted on Somee.com.
 
-##Key Features
+<h2>Key Features</h2>
 
 Python (PySide6) GUI for Managers & Frequent Flyers with custom navigation.
 
